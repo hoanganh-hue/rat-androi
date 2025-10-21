@@ -1,7 +1,6 @@
 import express, { type Express } from "express";
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
 
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
@@ -16,9 +15,12 @@ export function log(message: string, source = "express") {
 
 // Serve static assets built by Angular CLI under client/dist/client
 export function serveStatic(app: Express) {
-  const __dirname = path.dirname(fileURLToPath(import.meta.url));
+  // Get the directory - use process.cwd() as fallback for test environment
+  // In production, vite.ts is compiled to dist/server/vite.js
+  const currentDir = typeof __dirname !== 'undefined' ? __dirname : process.cwd();
+  
   const distPath = path.resolve(
-    __dirname,
+    currentDir,
     "..",
     "client",
     "dist",

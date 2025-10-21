@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">30.43% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>7/23</span>
+                <span class='fraction'>23/23</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">20% </span>
+                <span class="strong">80% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>1/5</span>
+                <span class='fraction'>4/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/3</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">23.8% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>5/21</span>
+                <span class='fraction'>21/21</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -150,40 +150,40 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -212,44 +212,44 @@ export interface AuthRequest extends Request {
   };
 }
 &nbsp;
-export const authenticate = <span class="fstat-no" title="function not covered" >async (</span>
+export const authenticate = async (
   req: AuthRequest,
   res: Response,
   next: NextFunction
-): Promise&lt;void&gt; =&gt;<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" > {</span></span>
-<span class="cstat-no" title="statement not covered" >  try {</span>
-    const authHeader = <span class="cstat-no" title="statement not covered" >req.headers.authorization;</span>
+): Promise&lt;void&gt; =&gt; {
+  try {
+    const authHeader = req.headers.authorization;
     
-<span class="cstat-no" title="statement not covered" >    <span class="missing-if-branch" title="if path not taken" >I</span>if (!authHeader || !authHeader.startsWith('Bearer ')) {</span>
-<span class="cstat-no" title="statement not covered" >      res.status(401).json({ error: 'No token provided' });</span>
-<span class="cstat-no" title="statement not covered" >      return;</span>
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      res.status(401).json({ error: 'No token provided' });
+      return;
     }
 &nbsp;
-    const token = <span class="cstat-no" title="statement not covered" >authHeader.substring(7);</span>
+    const token = authHeader.substring(7);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    try {</span>
-      const decoded = <span class="cstat-no" title="statement not covered" >jwt.verify(token, JWT_SECRET) as {</span>
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET) as {
         id: number;
         username: string;
         role: UserRole;
       };
 &nbsp;
       // Attach user info to request
-<span class="cstat-no" title="statement not covered" >      req.user = decoded;</span>
-<span class="cstat-no" title="statement not covered" >      next();</span>
+      req.user = decoded;
+      next();
     } catch (jwtError) {
-<span class="cstat-no" title="statement not covered" >      res.status(401).json({ error: 'Invalid token' });</span>
-<span class="cstat-no" title="statement not covered" >      return;</span>
+      res.status(401).json({ error: 'Invalid token' });
+      return;
     }
   } catch (error) {
-<span class="cstat-no" title="statement not covered" >    console.error('Authentication error:', error);</span>
-<span class="cstat-no" title="statement not covered" >    res.status(500).json({ error: 'Internal server error' });</span>
+    console.error('Authentication error:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 &nbsp;
 // Generate JWT token
-export const generateToken = <span class="fstat-no" title="function not covered" >(u</span>ser: { id: number; username: string; role: UserRole }): string =&gt; {
-<span class="cstat-no" title="statement not covered" >  return jwt.sign(</span>
+export const generateToken = (user: { id: number; username: string; role: UserRole }): string =&gt; {
+  return jwt.sign(
     {
       id: user.id,
       username: user.username,
@@ -268,7 +268,7 @@ export default authenticate;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-10-20T19:09:57.718Z
+                at 2025-10-21T06:37:10.875Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

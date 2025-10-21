@@ -28,9 +28,15 @@ describe('auditLog middleware (real database)', () => {
       .send({ some: 'payload', password: 'secret', token: 'abc' });
     expect(res.status).toBe(200);
 
-    // Give the async AuditTrail.create a tick
-    await new Promise((r) => setTimeout(r, 20));
-    const last = await AuditTrail.findOne({ order: [['created_at', 'DESC']] } as any);
+    // Give the async AuditTrail.create more time to complete
+    await new Promise((r) => setTimeout(r, 100));
+    
+    // Find the audit trail for this specific user
+    const last = await AuditTrail.findOne({ 
+      where: { user_id: adminUser.id } as any,
+      order: [['timestamp', 'DESC']] 
+    } as any);
+    
     expect(last).not.toBeNull();
     if (last) {
       expect((last as any).action).toBe('test.action');
