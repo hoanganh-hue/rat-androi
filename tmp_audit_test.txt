@@ -1,0 +1,102 @@
+import { auditLog } from '../../middleware/audit';
+import type { Request, Response, NextFunction } from 'express';
+
+// Mock AuditTrail model to avoid DB
+jest.mock('../../models', () => ({
+  AuditTrail: {
+    create: jest.fn().mockResolvedValue({})
+  }
+}));
+
+describe('auditLog middleware', () => {
+  function createRes() {
+    const res: any = {};
+    res.statusCode = 200;
+    res.status = jest.fn((code: number) => { res.statusCode = code; return res; });
+    res.json = jest.fn((_body?: any) => res);
+    return res as Response;
+  }
+
+  it('creates audit log on 2xx response and redacts sensitive fields', async () => {
+    const { AuditTrail } = require('../../models');
+    const req: any = { method: 'POST', path: '/ok', params: {}, query: {}, body: { password: 'secret', token: 'abc' }, user: { id: 123 }, ip: '127.0.0.1', socket: { remoteAddress: '127.0.0.1' }, get: () => 'jest' } as unknown as Request;
+    const res = createRes();
+    const next = jest.fn() as NextFunction;
+    const mw = auditLog({ action: 'test.action', targetType: 'device' });
+    await mw(req as any, res as any, next);
+    // simulate controller
+    (res as any).json({ success: true });
+    await new Promise((r) => setTimeout(r, 0));
+    expect(AuditTrail.create).toHaveBeenCalled();
+    const callArg = (AuditTrail.create as jest.Mock).mock.calls.at(-1)[0];
+    expect(callArg.action).toBe('test.action');
+    expect(callArg.metadata.body.password).toBe('[REDACTED]');
+    expect(callArg.metadata.body.token).toBe('[REDACTED]');
+  });
+
+  it('does not create audit log on non-2xx response', async () => {
+    const { AuditTrail } = require('../../models');
+    (AuditTrail.create as jest.Mock).mockClear();
+    const req: any = { method: 'GET', path: '/bad', params: {}, query: {}, body: {}, get: () => 'jest' } as unknown as Request;
+    const res = createRes();
+    res.status(400);
+    const next = jest.fn() as NextFunction;
+    const mw = auditLog({ action: 'bad' });
+    await mw(req as any, res as any, next);
+    (res as any).json({ error: 'bad' });
+    await new Promise((r) => setTimeout(r, 0));
+    expect(AuditTrail.create).not.toHaveBeenCalled();
+  });
+
+  it('handles create rejection (catch branch)', async () => {
+    const { AuditTrail } = require('../../models');
+    (AuditTrail.create as jest.Mock).mockRejectedValueOnce(new Error('db'));
+    const req: any = { method: 'POST', path: '/ok', params: {}, query: {}, body: {}, user: { id: 1 }, socket: { remoteAddress: '127.0.0.1' }, get: () => 'jest' } as unknown as Request;
+    const res = createRes();
+    const next = jest.fn() as NextFunction;
+    const mw = auditLog({ action: 'x' });
+    await mw(req as any, res as any, next);
+    (res as any).json({ ok: true });
+    await new Promise((r) => setTimeout(r, 0));
+    expect(AuditTrail.create).toHaveBeenCalled();
+  });
+
+  it('outer try/catch continues next on error', async () => {
+    const req: any = { method: 'GET', path: '/', params: {}, query: {}, body: {}, get: () => 'jest' } as unknown as Request;
+    const res: any = {}; // missing json will cause error when binding
+    const next = jest.fn() as NextFunction;
+    const mw = auditLog({ action: 'x' });
+    await mw(req as any, res as any, next);
+    expect(next).toHaveBeenCalled();
+  });
+
+  it('sets null ip and user_agent when not available', async () => {
+    const { AuditTrail } = require('../../models');
+    (AuditTrail.create as jest.Mock).mockClear();
+    const req: any = { method: 'POST', path: '/ok', params: {}, query: {}, body: {}, socket: {}, get: () => undefined } as unknown as Request;
+    const res = createRes();
+    const next = jest.fn() as NextFunction;
+    const mw = auditLog({ action: 'x' });
+    await mw(req as any, res as any, next);
+    (res as any).json({ ok: true });
+    await new Promise((r) => setTimeout(r, 0));
+    const callArg = (AuditTrail.create as jest.Mock).mock.calls.at(-1)[0];
+    expect(callArg.ip_address).toBeNull();
+    expect(callArg.user_agent).toBeNull();
+  });
+
+  it('sanitizes when body is undefined (early return path)', async () => {
+    const { AuditTrail } = require('../../models');
+    (AuditTrail.create as jest.Mock).mockClear();
+    const req: any = { method: 'POST', path: '/ok', params: {}, query: {}, socket: { remoteAddress: '127.0.0.1' }, get: () => 'jest' } as unknown as Request;
+    const res = createRes();
+    const next = jest.fn() as NextFunction;
+    const mw = auditLog({ action: 'x' });
+    await mw(req as any, res as any, next);
+    (res as any).json({ ok: true });
+    await new Promise((r) => setTimeout(r, 0));
+    const callArg = (AuditTrail.create as jest.Mock).mock.calls.at(-1)[0];
+    expect(callArg.metadata.body).toBeUndefined();
+  });
+});
+
