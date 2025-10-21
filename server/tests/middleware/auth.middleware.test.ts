@@ -41,6 +41,9 @@ describe('authenticate middleware (unit)', () => {
   });
 
   it('handles unexpected errors (outer catch)', async () => {
+    // Suppress console.error for this test since we're intentionally triggering an error
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+    
     const req: any = {};
     // Make accessing headers throw to trigger outer catch
     Object.defineProperty(req, 'headers', {
@@ -54,5 +57,8 @@ describe('authenticate middleware (unit)', () => {
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({ error: 'Internal server error' });
     expect(next).not.toHaveBeenCalled();
+    
+    // Restore console.error
+    consoleErrorSpy.mockRestore();
   });
 });

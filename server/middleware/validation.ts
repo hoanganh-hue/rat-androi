@@ -180,6 +180,50 @@ export const deviceValidation = {
     
     validate,
   ],
+
+  screenStream: [
+    param('id')
+      .isUUID()
+      .withMessage('Invalid device ID'),
+    
+    validate,
+  ],
+
+  injectTouch: [
+    param('id')
+      .isUUID()
+      .withMessage('Invalid device ID'),
+    
+    body('action')
+      .notEmpty()
+      .withMessage('Action is required'),
+    
+    body('x')
+      .isNumeric()
+      .withMessage('X coordinate must be a number'),
+    
+    body('y')
+      .isNumeric()
+      .withMessage('Y coordinate must be a number'),
+    
+    validate,
+  ],
+
+  injectKeyboard: [
+    param('id')
+      .isUUID()
+      .withMessage('Invalid device ID'),
+    
+    body()
+      .custom((value) => {
+        if (!value.text && !value.keyCode) {
+          throw new Error('Either text or keyCode is required');
+        }
+        return true;
+      }),
+    
+    validate,
+  ],
 };
 
 /**
