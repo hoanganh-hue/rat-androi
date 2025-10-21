@@ -27,18 +27,21 @@ Milestone 1 has been successfully completed, transforming DogeRat from a develop
 ### 1. Docker Optimization ✅
 
 **Deliverables**:
+
 - Enhanced multi-stage Dockerfiles for server and client
 - Non-root user execution (nodejs:1001, nginx:1001)
 - Alpine Linux base images (minimal footprint)
 - Comprehensive security headers in nginx
 
 **Files Modified**:
+
 - `server/Dockerfile` - Multi-stage build with security hardening
 - `client/Dockerfile` - Non-root nginx with Alpine base
 - `client/nginx.conf` - Security headers (CSP, X-Frame-Options, etc.)
 - `docker-compose.yml` - Removed ngrok, added Zero-Trust options
 
 **Impact**:
+
 - Container size reduced from ~100MB to ~10MB
 - Attack surface reduced by 90%
 - Container escape risk: HIGH → LOW
@@ -46,15 +49,18 @@ Milestone 1 has been successfully completed, transforming DogeRat from a develop
 ### 2. OpenAPI 3.1 Specification ✅
 
 **Deliverables**:
+
 - Complete API documentation (20KB YAML)
 - Idempotency patterns with request_id
 - Enhanced command lifecycle documentation
 - Security schemes and authentication flows
 
 **File Created**:
+
 - `docs/openapi-v3.1.yaml` - Production-ready API specification
 
 **Features**:
+
 - 40+ documented endpoints
 - Request/response examples
 - Idempotency support (X-Request-ID header)
@@ -62,6 +68,7 @@ Milestone 1 has been successfully completed, transforming DogeRat from a develop
 - Auto-generate client SDKs capability
 
 **Impact**:
+
 - 100% feature parity documentation
 - Contract testing enabled
 - API versioning strategy defined
@@ -69,20 +76,24 @@ Milestone 1 has been successfully completed, transforming DogeRat from a develop
 ### 3. Zero-Trust Network Access ✅
 
 **Deliverables**:
+
 - Cloudflare Tunnel configuration
 - Tailscale mesh network setup
 - Reverse proxy with mTLS guide
 - Comprehensive deployment documentation
 
 **Files Created**:
+
 - `cloudflared.yml` - Cloudflare Tunnel config
 - `docker-compose.tailscale.yml` - Tailscale setup
 - `ZERO_TRUST_DEPLOYMENT.md` - 16KB deployment guide
 
 **Removed**:
+
 - ngrok anonymous tunnel (security vulnerability)
 
 **Impact**:
+
 - Anonymous access eliminated
 - Authentication required before API access
 - Complete audit trail
@@ -91,15 +102,18 @@ Milestone 1 has been successfully completed, transforming DogeRat from a develop
 ### 4. CI/CD Security Pipeline ✅
 
 **Deliverables**:
+
 - Multi-layer security scanning pipeline
 - Automated vulnerability detection
 - Image signing with Cosign
 - SBOM generation with Syft
 
 **File Created**:
+
 - `.github/workflows/ci-cd-security.yml` - 400+ line pipeline
 
 **Pipeline Stages**:
+
 1. Lint & Type Check
 2. SCA (Supply Chain Analysis) - npm audit, Syft, Grype
 3. Secret Scanning - TruffleHog
@@ -111,12 +125,14 @@ Milestone 1 has been successfully completed, transforming DogeRat from a develop
 9. DAST - OWASP ZAP
 
 **Security Features**:
+
 - Explicit GitHub Actions permissions (principle of least privilege)
 - Multi-layer vulnerability detection
 - Supply chain integrity (SBOM + signing)
 - Automated security reporting
 
 **Impact**:
+
 - Manual security checks → Automated
 - 6-layer security coverage
 - 0 vulnerabilities (verified by CodeQL)
@@ -124,20 +140,24 @@ Milestone 1 has been successfully completed, transforming DogeRat from a develop
 ### 5. Enhanced Command Model ✅
 
 **Deliverables**:
+
 - Idempotency support with request_id
 - Enhanced status tracking
 - Retry count monitoring
 - Database schema updates
 
 **File Modified**:
+
 - `server/models/Command.ts` - Enhanced with new fields
 
 **New Fields**:
+
 - `request_id` (UUID, unique, indexed) - Idempotency key
 - `retry_count` (integer) - Track retry attempts
 - Enhanced status enum: QUEUED, PENDING, RUNNING, SUCCEEDED, FAILED, TIMEOUT
 
 **Impact**:
+
 - Duplicate command execution: HIGH risk → NONE
 - Safe command retries enabled
 - Better observability and debugging
@@ -145,6 +165,7 @@ Milestone 1 has been successfully completed, transforming DogeRat from a develop
 ### 6. Comprehensive Documentation ✅
 
 **Deliverables**:
+
 - Transformation roadmap (M1-M4)
 - Security transformation guide
 - Zero-Trust deployment guide
@@ -152,6 +173,7 @@ Milestone 1 has been successfully completed, transforming DogeRat from a develop
 - Validation script
 
 **Files Created**:
+
 1. `TRANSFORMATION_PLAN.md` (18KB) - Complete roadmap
 2. `SECURITY_TRANSFORMATION.md` (12KB) - Security audit
 3. `ZERO_TRUST_DEPLOYMENT.md` (16KB) - Deployment guide
@@ -160,9 +182,11 @@ Milestone 1 has been successfully completed, transforming DogeRat from a develop
 6. `.zap/rules.tsv` - OWASP ZAP rules
 
 **Updated**:
+
 - `README.md` - Added v3.1 security section
 
 **Impact**:
+
 - Documentation coverage: 40% → 100%
 - Self-service deployment enabled
 - Reduced support burden
@@ -170,15 +194,18 @@ Milestone 1 has been successfully completed, transforming DogeRat from a develop
 ### 7. Automated Validation ✅
 
 **Deliverables**:
+
 - Comprehensive validation script
 - Automated security checks
 - TypeScript compilation validation
 - Docker configuration checks
 
 **File Created**:
+
 - `scripts/validate-m1.sh` - Automated validation
 
 **Checks Performed**:
+
 - ✅ Docker non-root users
 - ✅ Multi-stage builds
 - ✅ Security headers
@@ -193,12 +220,14 @@ Milestone 1 has been successfully completed, transforming DogeRat from a develop
 ### 8. Security Fixes ✅
 
 **Deliverables**:
+
 - Fixed GitHub Actions permissions (CodeQL finding)
 - Removed exposed ngrok token
 - Enhanced security headers
 - Non-root container execution
 
 **CodeQL Results**:
+
 - Before: 8 GitHub Actions permission warnings
 - After: 0 vulnerabilities, 0 warnings ✅
 
@@ -208,35 +237,35 @@ Milestone 1 has been successfully completed, transforming DogeRat from a develop
 
 ### Security Metrics
 
-| Metric | Before M1 | After M1 | Improvement |
-|--------|-----------|----------|-------------|
-| **Security Score** | 65/100 | 98/100 | +51% 🟢 |
-| **CodeQL Alerts** | 8 warnings | 0 | -100% 🟢 |
-| **Container Size** | ~100 MB | ~10 MB | -90% 🟢 |
-| **Attack Surface** | High (root, full distro) | Low (non-root, Alpine) | -90% 🟢 |
-| **Public Exposure** | Anonymous (ngrok) | Authenticated (Zero-Trust) | 100% 🟢 |
-| **API Idempotency** | None | Complete | 100% 🟢 |
-| **Security Scanning** | Manual | Automated (6 layers) | 100% 🟢 |
+| Metric                | Before M1                | After M1                   | Improvement |
+| --------------------- | ------------------------ | -------------------------- | ----------- |
+| **Security Score**    | 65/100                   | 98/100                     | +51% 🟢     |
+| **CodeQL Alerts**     | 8 warnings               | 0                          | -100% 🟢    |
+| **Container Size**    | ~100 MB                  | ~10 MB                     | -90% 🟢     |
+| **Attack Surface**    | High (root, full distro) | Low (non-root, Alpine)     | -90% 🟢     |
+| **Public Exposure**   | Anonymous (ngrok)        | Authenticated (Zero-Trust) | 100% 🟢     |
+| **API Idempotency**   | None                     | Complete                   | 100% 🟢     |
+| **Security Scanning** | Manual                   | Automated (6 layers)       | 100% 🟢     |
 
 ### Quality Metrics
 
-| Metric | Before M1 | After M1 | Improvement |
-|--------|-----------|----------|-------------|
-| **Documentation** | 10KB scattered | 50KB+ comprehensive | +400% 🟢 |
-| **Test Coverage** | 85% | 85% (maintained) | 0% 🟡 |
-| **TypeScript Errors** | 0 | 0 | ✅ 🟢 |
-| **Build Time** | ~5 min | ~3 min | -40% 🟢 |
-| **Validation** | Manual | Automated script | 100% 🟢 |
+| Metric                | Before M1      | After M1            | Improvement |
+| --------------------- | -------------- | ------------------- | ----------- |
+| **Documentation**     | 10KB scattered | 50KB+ comprehensive | +400% 🟢    |
+| **Test Coverage**     | 85%            | 85% (maintained)    | 0% 🟡       |
+| **TypeScript Errors** | 0              | 0                   | ✅ 🟢       |
+| **Build Time**        | ~5 min         | ~3 min              | -40% 🟢     |
+| **Validation**        | Manual         | Automated script    | 100% 🟢     |
 
 ### Risk Metrics
 
-| Risk Area | Before M1 | After M1 | Status |
-|-----------|-----------|----------|--------|
-| **Container Escape** | 🟥 High | 🟢 Low | ✅ Fixed |
-| **Anonymous Access** | 🟥 Critical | 🟢 None | ✅ Fixed |
-| **Duplicate Commands** | 🟥 High | 🟢 None | ✅ Fixed |
-| **Supply Chain** | 🟡 Medium | 🟢 Low | ✅ Improved |
-| **GitHub Actions** | 🟡 Medium | 🟢 Low | ✅ Fixed |
+| Risk Area              | Before M1   | After M1 | Status      |
+| ---------------------- | ----------- | -------- | ----------- |
+| **Container Escape**   | 🟥 High     | 🟢 Low   | ✅ Fixed    |
+| **Anonymous Access**   | 🟥 Critical | 🟢 None  | ✅ Fixed    |
+| **Duplicate Commands** | 🟥 High     | 🟢 None  | ✅ Fixed    |
+| **Supply Chain**       | 🟡 Medium   | 🟢 Low   | ✅ Improved |
+| **GitHub Actions**     | 🟡 Medium   | 🟢 Low   | ✅ Fixed    |
 
 ---
 
@@ -254,10 +283,8 @@ Milestone 1 has been successfully completed, transforming DogeRat from a develop
 
 1. **CodeQL Findings**: GitHub Actions permissions required refinement
    - **Solution**: Added explicit permission blocks to all jobs
-   
 2. **Docker Image Size**: Initial builds were too large
    - **Solution**: Multi-stage builds + Alpine base images
-   
 3. **Idempotency Implementation**: Required database schema changes
    - **Solution**: Added request_id field with unique constraint
 
@@ -343,7 +370,6 @@ Milestone 1 has been successfully completed, transforming DogeRat from a develop
 - **Moderate npm vulnerabilities** (14 transitive dependencies)
   - **Impact**: Low (not exploitable in current context)
   - **Action**: Quarterly monitoring and updates
-  
 - **Desktop app pending** (M2)
   - **Impact**: Medium (API ready, client pending)
   - **Action**: Prioritized in M2 (weeks 3-5)
@@ -424,6 +450,7 @@ Milestone 1 has been successfully completed, transforming DogeRat from a develop
 **Status**: ✅ Approved for M2 Progression
 
 **Validation Results**:
+
 - Docker security: ✅ Passed
 - Zero-Trust configs: ✅ Passed
 - API specification: ✅ Passed
@@ -500,10 +527,12 @@ Milestone 1 has been successfully completed, transforming DogeRat from a develop
 ### B. CodeQL Analysis Results
 
 **Before M1 Fixes**:
+
 - 8 GitHub Actions permission warnings
 - 0 code vulnerabilities
 
 **After M1 Fixes**:
+
 - 0 warnings ✅
 - 0 vulnerabilities ✅
 
@@ -518,6 +547,7 @@ npm run check
 ### D. Security Score Calculation
 
 **Components** (weighted):
+
 - Container Security (20%): 100/100
 - Network Security (25%): 100/100
 - API Security (15%): 95/100 (pending rate limit tuning)

@@ -32,25 +32,27 @@ This guide replaces the insecure ngrok tunnel with production-ready Zero-Trust a
 
 ### Why Not ngrok?
 
-| Issue | ngrok | Cloudflare Tunnel | Tailscale |
-|-------|-------|-------------------|-----------|
-| Authentication Required | ❌ No | ✅ OIDC/SSO | ✅ Tailscale auth |
-| mTLS Support | ⚠️ Limited | ✅ Yes | ✅ WireGuard |
-| Access Logs | ⚠️ Basic | ✅ Complete | ✅ Complete |
-| Free Tier | ✅ Yes | ✅ Yes | ✅ Yes (100 devices) |
-| DDoS Protection | ❌ No | ✅ Yes | ⚠️ N/A (private) |
-| ACL Support | ❌ No | ✅ Yes | ✅ Yes |
+| Issue                   | ngrok      | Cloudflare Tunnel | Tailscale            |
+| ----------------------- | ---------- | ----------------- | -------------------- |
+| Authentication Required | ❌ No      | ✅ OIDC/SSO       | ✅ Tailscale auth    |
+| mTLS Support            | ⚠️ Limited | ✅ Yes            | ✅ WireGuard         |
+| Access Logs             | ⚠️ Basic   | ✅ Complete       | ✅ Complete          |
+| Free Tier               | ✅ Yes     | ✅ Yes            | ✅ Yes (100 devices) |
+| DDoS Protection         | ❌ No      | ✅ Yes            | ⚠️ N/A (private)     |
+| ACL Support             | ❌ No      | ✅ Yes            | ✅ Yes               |
 
 ---
 
 ## 📦 Prerequisites
 
 ### All Options
+
 - Docker & Docker Compose installed
 - Domain name (for Cloudflare) or Tailscale account
 - DogeRat server running locally
 
 ### Option-Specific
+
 - **Cloudflare**: Free Cloudflare account + domain on Cloudflare
 - **Tailscale**: Free Tailscale account (up to 100 devices)
 - **mTLS**: Certificate Authority (Let's Encrypt or internal CA)
@@ -62,6 +64,7 @@ This guide replaces the insecure ngrok tunnel with production-ready Zero-Trust a
 **Best for**: Production deployments, teams, SaaS offerings
 
 ### Benefits
+
 - ✅ Free tier available (unlimited bandwidth)
 - ✅ DDoS protection included
 - ✅ Web Application Firewall (WAF)
@@ -105,22 +108,22 @@ cloudflared tunnel create dogerat-tunnel
 Edit `cloudflared.yml` and replace `YOUR_TUNNEL_ID`:
 
 ```yaml
-tunnel: abc-123-def  # Your actual tunnel ID
+tunnel: abc-123-def # Your actual tunnel ID
 credentials-file: /root/.cloudflared/abc-123-def.json
 
 ingress:
   # API endpoint
   - hostname: api.dogerat.com
-    service: http://localhost:5000  # Or http://server:5000 in Docker
-    
+    service: http://localhost:5000 # Or http://server:5000 in Docker
+
   # WebSocket endpoint
   - hostname: ws.dogerat.com
     service: http://localhost:5000
-    
+
   # Frontend
   - hostname: app.dogerat.com
     service: http://localhost:80
-    
+
   # Catch-all
   - service: http_status:404
 ```
@@ -128,6 +131,7 @@ ingress:
 ### Step 5: Configure DNS
 
 In Cloudflare dashboard:
+
 1. Go to your domain's DNS settings
 2. Add CNAME records:
    ```
@@ -149,15 +153,16 @@ In Cloudflare Zero Trust dashboard (https://one.dash.cloudflare.com/):
    Application Domain: api.dogerat.com
    ```
 4. **Add Policy**:
+
    ```
    Policy Name: Allow Admin Team
    Action: Allow
-   
+
    Include:
    - Emails: admin@company.com, manager@company.com
-   
+
    OR
-   
+
    Include:
    - Email domain: @company.com
    - Group: dogerat-admins (if using IdP groups)
@@ -187,6 +192,7 @@ cloudflared:
 ```
 
 Then:
+
 ```bash
 docker-compose up -d cloudflared
 ```
@@ -228,6 +234,7 @@ For additional security, enable mTLS between Cloudflare and your origin:
 **Best for**: Private deployments, small teams, personal use
 
 ### Benefits
+
 - ✅ True peer-to-peer (no relay, better latency)
 - ✅ WireGuard encryption (fastest VPN protocol)
 - ✅ Works behind NAT/firewalls (no port forwarding)
@@ -279,14 +286,14 @@ In Tailscale admin console (https://login.tailscale.com/admin/acls):
       "src": ["group:admins"],
       "dst": ["tag:dogerat-server:*"]
     },
-    
+
     // Operators can only access API port
     {
       "action": "accept",
       "src": ["group:operators"],
       "dst": ["tag:dogerat-server:5000"]
     },
-    
+
     // Deny all other access
     {
       "action": "deny",
@@ -300,6 +307,7 @@ In Tailscale admin console (https://login.tailscale.com/admin/acls):
 ### Step 4: Connect and Test
 
 On your desktop:
+
 ```bash
 # Show Tailscale status
 tailscale status
@@ -314,6 +322,7 @@ curl http://dogerat-server.example.ts.net:5000/api/health
 ### Step 5: Update Desktop App Configuration
 
 In desktop app settings:
+
 ```
 Server URL: http://dogerat-server.example.ts.net:5000
 ```
@@ -340,6 +349,7 @@ Now all services in docker-compose (postgres, etc.) are accessible via Tailscale
 **Best for**: On-premise deployments, air-gapped environments
 
 ### Benefits
+
 - ✅ Full control (no third-party dependencies)
 - ✅ Strong authentication (client certificates)
 - ✅ Can be completely offline
@@ -400,24 +410,24 @@ Create `nginx-mtls.conf`:
 server {
     listen 443 ssl;
     server_name api.dogerat.internal;
-    
+
     # Server certificate
     ssl_certificate /etc/nginx/certs/server.crt;
     ssl_certificate_key /etc/nginx/certs/server.key;
-    
+
     # Client certificate verification
     ssl_client_certificate /etc/nginx/certs/ca.crt;
     ssl_verify_client on;
     ssl_verify_depth 2;
-    
+
     # TLS settings
     ssl_protocols TLSv1.3;
     ssl_ciphers HIGH:!aNULL:!MD5;
     ssl_prefer_server_ciphers on;
-    
+
     # Extract client DN for logging
     proxy_set_header X-Client-DN $ssl_client_s_dn;
-    
+
     location / {
         proxy_pass http://server:5000;
         proxy_set_header Host $host;
@@ -505,12 +515,14 @@ ssl_crl /etc/nginx/certs/crl.pem;
 ### Firewall Rules
 
 **Cloudflare/Tailscale** (outbound only):
+
 ```bash
 # Allow outbound HTTPS (Cloudflare) or UDP 41641 (Tailscale)
 # No inbound ports needed!
 ```
 
 **mTLS** (inbound required):
+
 ```bash
 # Allow HTTPS from specific IPs only
 sudo ufw allow from 10.0.0.0/8 to any port 443
@@ -523,12 +535,14 @@ sudo ufw allow from 10.0.0.0/8 to any port 443
 ### Cloudflare Tunnel
 
 **Metrics Available**:
+
 - Connection status (up/down)
 - Request rate
 - Error rate
 - Latency
 
 **Alerting** (via Cloudflare Notifications):
+
 1. Go to Notifications in dashboard
 2. Add alert for:
    - Tunnel disconnected
@@ -538,12 +552,14 @@ sudo ufw allow from 10.0.0.0/8 to any port 443
 ### Tailscale
 
 **Metrics Available**:
+
 - Device status (online/offline)
 - Traffic volume
 - Connection quality
 - ACL rule hits
 
 **Alerting** (via Tailscale Webhooks):
+
 ```bash
 # Configure webhook in admin console
 curl -X POST https://api.tailscale.com/api/v2/webhooks \
@@ -557,6 +573,7 @@ curl -X POST https://api.tailscale.com/api/v2/webhooks \
 ### mTLS Nginx
 
 **Log Analysis**:
+
 ```bash
 # Monitor failed certificate verifications
 grep "SSL_do_handshake() failed" /var/log/nginx/error.log
@@ -573,6 +590,7 @@ grep "limiting requests" /var/log/nginx/error.log | \
 ### Cloudflare Tunnel
 
 **Issue**: Tunnel won't connect
+
 ```bash
 # Check cloudflared logs
 docker logs dogerat-cloudflared
@@ -585,6 +603,7 @@ docker logs dogerat-cloudflared
 ```
 
 **Issue**: Access policy not working
+
 ```bash
 # Check:
 1. Policy is applied to correct hostname
@@ -596,6 +615,7 @@ docker logs dogerat-cloudflared
 ### Tailscale
 
 **Issue**: Can't connect to server
+
 ```bash
 # Check Tailscale status
 tailscale status
@@ -608,6 +628,7 @@ tailscale status
 ```
 
 **Issue**: Slow connection
+
 ```bash
 # Check if using relay (DERP)
 tailscale netcheck
@@ -619,6 +640,7 @@ tailscale ping --peerapi dogerat-server
 ### mTLS
 
 **Issue**: Certificate verification failed
+
 ```bash
 # Verify certificate chain
 openssl verify -CAfile ca.crt client-admin.crt
@@ -630,6 +652,7 @@ openssl verify -CAfile ca.crt client-admin.crt
 ```
 
 **Issue**: nginx refuses connection
+
 ```bash
 # Check nginx error log
 docker logs dogerat-nginx-mtls
@@ -655,10 +678,12 @@ docker logs dogerat-nginx-mtls
 ## 🎓 Training Resources
 
 ### For Administrators
+
 - Cloudflare Zero Trust course (free): https://cloudflare.com/learning/
 - Tailscale best practices: https://tailscale.com/kb/1082/firewall-ports/
 
 ### For Developers
+
 - Implementing Zero Trust: https://www.cloudflare.com/learning/security/glossary/what-is-zero-trust/
 - mTLS tutorial: https://smallstep.com/hello-mtls/
 

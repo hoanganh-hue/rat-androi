@@ -145,6 +145,7 @@ docker-compose up -d
 For production, use Zero-Trust alternatives instead of exposing ports:
 
 **Cloudflare Tunnel (Recommended)**:
+
 ```bash
 # Install cloudflared
 curl -L https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -o cloudflared
@@ -159,6 +160,7 @@ docker-compose up -d
 ```
 
 **Tailscale (Private Network)**:
+
 ```bash
 # Get auth key from https://login.tailscale.com/admin/settings/keys
 export TS_AUTHKEY="tskey-auth-xxxxx"
@@ -456,6 +458,7 @@ See [`.github/workflows/ci-cd-security.yml`](./.github/workflows/ci-cd-security.
 ### Security Features
 
 **Version 3.1 Enhancements**:
+
 - ✅ **Zero-Trust Network**: Cloudflare Tunnel or Tailscale (no anonymous access)
 - ✅ **Docker Security**: Non-root users, Alpine-based images, security headers
 - ✅ **API Idempotency**: Request deduplication prevents duplicate operations
@@ -464,6 +467,7 @@ See [`.github/workflows/ci-cd-security.yml`](./.github/workflows/ci-cd-security.
 - ✅ **Multi-layer Scanning**: SAST, SCA, DAST, container scanning, secret detection
 
 **Core Security**:
+
 - ✅ JWT authentication with expiry
 - ✅ Bcrypt password hashing (10 rounds)
 - ✅ Role-based access control (RBAC)
@@ -503,6 +507,7 @@ See [`.github/workflows/ci-cd-security.yml`](./.github/workflows/ci-cd-security.
 Please report security vulnerabilities to: **security@dogerat.com**
 
 We follow responsible disclosure:
+
 - **Acknowledgment**: Within 24 hours
 - **Assessment**: 7 days for criticality
 - **Fix**: 30 days for critical, 90 days for others

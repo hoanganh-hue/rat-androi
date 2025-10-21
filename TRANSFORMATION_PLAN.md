@@ -21,12 +21,12 @@ This document outlines the comprehensive transformation plan to convert DogeRat 
 
 ## 📋 Milestone Overview
 
-| Milestone | Duration | Status | Description |
-|-----------|----------|--------|-------------|
-| **M1** | 2 weeks | 🟡 In Progress | Foundation: Docker, OpenAPI, Zero-Trust, CI/CD |
-| **M2** | 3 weeks | ⚪ Planned | Command Model, Testing, Desktop Skeleton |
-| **M3** | 2 weeks | ⚪ Planned | Security Hardening, Observability, SBOM |
-| **M4** | 1-2 weeks | ⚪ Planned | Desktop App, Code Signing, Release |
+| Milestone | Duration  | Status         | Description                                    |
+| --------- | --------- | -------------- | ---------------------------------------------- |
+| **M1**    | 2 weeks   | 🟡 In Progress | Foundation: Docker, OpenAPI, Zero-Trust, CI/CD |
+| **M2**    | 3 weeks   | ⚪ Planned     | Command Model, Testing, Desktop Skeleton       |
+| **M3**    | 2 weeks   | ⚪ Planned     | Security Hardening, Observability, SBOM        |
+| **M4**    | 1-2 weeks | ⚪ Planned     | Desktop App, Code Signing, Release             |
 
 ---
 
@@ -47,11 +47,13 @@ This document outlines the comprehensive transformation plan to convert DogeRat 
 #### 1.1 Docker Optimization ✅
 
 **Files Modified**:
+
 - `server/Dockerfile` - Enhanced multi-stage build with non-root user
 - `client/Dockerfile` - Security-hardened nginx with non-root user
 - `client/nginx.conf` - Added comprehensive security headers
 
 **Improvements**:
+
 - Non-root user execution (nodejs:nodejs, nginx:nginx)
 - Minimal Alpine-based images
 - Security headers (CSP, X-Frame-Options, etc.)
@@ -59,6 +61,7 @@ This document outlines the comprehensive transformation plan to convert DogeRat 
 - Build-time dependencies separated from runtime
 
 **Security Benefits**:
+
 - Reduced attack surface (minimal base images)
 - Principle of least privilege (non-root)
 - Defense in depth (multiple security layers)
@@ -68,6 +71,7 @@ This document outlines the comprehensive transformation plan to convert DogeRat 
 **File Created**: `docs/openapi-v3.1.yaml`
 
 **Features**:
+
 - Complete API documentation for all endpoints
 - Idempotency support with `request_id`
 - Command status lifecycle (QUEUED → RUNNING → SUCCEEDED/FAILED)
@@ -77,6 +81,7 @@ This document outlines the comprehensive transformation plan to convert DogeRat 
 - RBAC documentation (Admin, Manager, Operator, Viewer)
 
 **Benefits**:
+
 - Auto-generate client SDKs (TypeScript, Rust, C#)
 - Contract testing to ensure feature parity
 - Clear API versioning strategy (/v1)
@@ -85,10 +90,12 @@ This document outlines the comprehensive transformation plan to convert DogeRat 
 #### 1.3 Zero-Trust Gateway Configuration ✅
 
 **Files Created**:
+
 - `cloudflared.yml` - Cloudflare Tunnel configuration
 - `docker-compose.tailscale.yml` - Tailscale mesh network setup
 
 **Cloudflare Tunnel Benefits**:
+
 - mTLS between tunnel and origin
 - OIDC/SSO authentication before API access
 - Access logs and fine-grained policies
@@ -96,6 +103,7 @@ This document outlines the comprehensive transformation plan to convert DogeRat 
 - WAF capabilities
 
 **Tailscale Benefits**:
+
 - WireGuard-based encrypted mesh
 - Direct peer-to-peer connections
 - MagicDNS for service discovery
@@ -107,8 +115,9 @@ This document outlines the comprehensive transformation plan to convert DogeRat 
 **File Created**: `.github/workflows/ci-cd-security.yml`
 
 **Pipeline Stages**:
+
 1. **Lint & Type Check**: TypeScript validation, Prettier formatting
-2. **SCA (Supply Chain Analysis)**: 
+2. **SCA (Supply Chain Analysis)**:
    - npm audit for vulnerable dependencies
    - Syft SBOM generation (SPDX format)
    - Grype vulnerability scanning
@@ -121,6 +130,7 @@ This document outlines the comprehensive transformation plan to convert DogeRat 
 9. **DAST (Dynamic Analysis)**: OWASP ZAP baseline scan
 
 **Security Coverage**:
+
 - ✅ Dependency vulnerabilities (SCA)
 - ✅ Secret leaks (Secret scanning)
 - ✅ Code vulnerabilities (SAST)
@@ -133,12 +143,14 @@ This document outlines the comprehensive transformation plan to convert DogeRat 
 **File Modified**: `server/models/Command.ts`
 
 **New Features**:
+
 - `request_id` field for idempotency (UUID, unique index)
 - Enhanced status enum: QUEUED, RUNNING, SUCCEEDED, FAILED
 - `retry_count` field for tracking retries
 - Proper indexing for performance
 
 **Idempotency Pattern**:
+
 ```typescript
 // Client sends request with ID
 POST /api/devices/123/command
@@ -158,18 +170,19 @@ X-Request-ID: 550e8400-e29b-41d4-a716-446655440000
 
 **Technology Decision**: Tauri vs Electron
 
-| Factor | Tauri | Electron |
-|--------|-------|----------|
-| Bundle Size | ~3-10 MB | ~100-150 MB |
-| Memory | ~50 MB | ~100-200 MB |
-| Security | Rust backend, no Node runtime | Node.js runtime risks |
-| Ecosystem | Smaller, newer | Mature, extensive |
-| Auto-update | Built-in | electron-updater |
-| Code Signing | tauri-action | electron-builder |
+| Factor       | Tauri                         | Electron              |
+| ------------ | ----------------------------- | --------------------- |
+| Bundle Size  | ~3-10 MB                      | ~100-150 MB           |
+| Memory       | ~50 MB                        | ~100-200 MB           |
+| Security     | Rust backend, no Node runtime | Node.js runtime risks |
+| Ecosystem    | Smaller, newer                | Mature, extensive     |
+| Auto-update  | Built-in                      | electron-updater      |
+| Code Signing | tauri-action                  | electron-builder      |
 
 **Recommendation**: Tauri for minimal footprint and security
 
 **Skeleton Features**:
+
 - Login screen with JWT authentication
 - Connection status indicator
 - Basic API client with retry logic
@@ -177,6 +190,7 @@ X-Request-ID: 550e8400-e29b-41d4-a716-446655440000
 - Auto-update mechanism (with signature verification)
 
 **File Structure**:
+
 ```
 desktop/
 ├── src-tauri/          # Rust backend
@@ -212,31 +226,33 @@ desktop/
 ### 2.1 Idempotent Command Execution
 
 **Server Implementation**:
+
 ```typescript
 // Middleware to check for duplicate request_id
 async function checkIdempotency(req, res, next) {
-  const requestId = req.headers['x-request-id'] || req.body.request_id;
-  
+  const requestId = req.headers["x-request-id"] || req.body.request_id;
+
   if (requestId) {
-    const existing = await Command.findOne({ 
-      where: { request_id: requestId } 
+    const existing = await Command.findOne({
+      where: { request_id: requestId },
     });
-    
+
     if (existing) {
       // Return cached response
       return res.status(409).json({
-        message: 'Duplicate request',
+        message: "Duplicate request",
         command: existing,
-        duplicate: true
+        duplicate: true,
       });
     }
   }
-  
+
   next();
 }
 ```
 
 **State Machine**:
+
 ```
 QUEUED ──> PENDING ──> RUNNING ──> SUCCEEDED
                 │          │
@@ -251,32 +267,33 @@ QUEUED ──> PENDING ──> RUNNING ──> SUCCEEDED
 
 ```typescript
 // Server
-app.get('/api/commands/stream', (req, res) => {
-  res.setHeader('Content-Type', 'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache');
-  res.setHeader('Connection', 'keep-alive');
-  
+app.get("/api/commands/stream", (req, res) => {
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+
   const listener = (command: Command) => {
     res.write(`event: command-update\n`);
     res.write(`data: ${JSON.stringify(command)}\n\n`);
   };
-  
-  eventEmitter.on('command:update', listener);
-  
-  req.on('close', () => {
-    eventEmitter.off('command:update', listener);
+
+  eventEmitter.on("command:update", listener);
+
+  req.on("close", () => {
+    eventEmitter.off("command:update", listener);
   });
 });
 ```
 
 **Desktop Client**:
+
 ```typescript
 // Auto-reconnecting SSE client
-const eventSource = new EventSource('/api/commands/stream', {
-  headers: { Authorization: `Bearer ${token}` }
+const eventSource = new EventSource("/api/commands/stream", {
+  headers: { Authorization: `Bearer ${token}` },
 });
 
-eventSource.addEventListener('command-update', (e) => {
+eventSource.addEventListener("command-update", (e) => {
   const command = JSON.parse(e.data);
   updateCommandStatus(command);
 });
@@ -285,6 +302,7 @@ eventSource.addEventListener('command-update', (e) => {
 ### 2.3 Command Center UI
 
 **Features**:
+
 - Command queue visualization (pending, running)
 - Live status updates with progress indicators
 - Command history with filters (date, device, status)
@@ -319,6 +337,7 @@ interactions:
 ### 2.5 E2E Test Coverage
 
 **Scenarios**:
+
 - User login → view devices → send command → view result
 - Command retry after network failure
 - Idempotency: duplicate request returns same result
@@ -364,11 +383,13 @@ POST /api/auth/request-elevation
 ### 3.2 Immutable Audit Logs
 
 **Implementation Options**:
+
 - **S3 Object Lock**: Write-Once-Read-Many (WORM)
 - **Blockchain**: Tamper-proof audit trail
 - **Append-only database**: PostgreSQL with triggers preventing updates/deletes
 
 **Log Structure**:
+
 ```json
 {
   "id": "uuid",
@@ -388,23 +409,25 @@ POST /api/auth/request-elevation
 ### 3.3 OpenTelemetry
 
 **Instrumentation**:
+
 ```typescript
-import { NodeSDK } from '@opentelemetry/sdk-node';
-import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
+import { NodeSDK } from "@opentelemetry/sdk-node";
+import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
 
 const sdk = new NodeSDK({
-  serviceName: 'dogerat-server',
+  serviceName: "dogerat-server",
   traceExporter: new OTLPTraceExporter(),
   metricReader: new PeriodicExportingMetricReader({
-    exporter: new OTLPMetricExporter()
+    exporter: new OTLPMetricExporter(),
   }),
-  instrumentations: [getNodeAutoInstrumentations()]
+  instrumentations: [getNodeAutoInstrumentations()],
 });
 
 sdk.start();
 ```
 
 **Metrics to Track**:
+
 - Request rate, latency, error rate (RED metrics)
 - Command queue depth
 - Device connection count
@@ -414,6 +437,7 @@ sdk.start();
 ### 3.4 Distroless Docker Images
 
 **Benefits**:
+
 - No shell, package manager, or unnecessary binaries
 - Minimal attack surface (~20 MB vs ~50 MB Alpine)
 - Only application dependencies
@@ -433,6 +457,7 @@ CMD ["/app/dist/index.js"]
 ### 3.5 SBOM Generation & Signing
 
 **Process**:
+
 1. Generate SBOM: `syft <image> -o spdx-json > sbom.json`
 2. Sign SBOM: `cosign sign-blob --key cosign.key sbom.json > sbom.sig`
 3. Attach to image: `cosign attach sbom --sbom sbom.json <image>`
@@ -455,6 +480,7 @@ CMD ["/app/dist/index.js"]
 ### 4.1 Desktop App Features
 
 **Core Capabilities** (100% API parity):
+
 - ✅ Device management (list, view details, delete)
 - ✅ Command execution (all 20+ command types)
 - ✅ Real-time status updates
@@ -464,6 +490,7 @@ CMD ["/app/dist/index.js"]
 - ✅ Settings (server URL, theme, notifications)
 
 **Safety Features**:
+
 - ⚠️ Confirmation dialogs for dangerous commands
 - 🔐 Re-authentication for admin operations
 - 📊 Command queue visibility
@@ -473,11 +500,13 @@ CMD ["/app/dist/index.js"]
 ### 4.2 Code Signing
 
 **EV Certificate** (Extended Validation):
+
 - Required for Windows SmartScreen reputation
 - Must be on hardware token (USB)
 - Issued by trusted CA (DigiCert, Sectigo)
 
 **Signing Process**:
+
 ```bash
 # Sign with SignTool (Windows SDK)
 signtool sign /f cert.pfx /p password /tr http://timestamp.digicert.com /td sha256 /fd sha256 installer.msi
@@ -492,6 +521,7 @@ with:
 ### 4.3 Auto-Update
 
 **Tauri Updater**:
+
 ```json
 // tauri.conf.json
 {
@@ -509,6 +539,7 @@ with:
 ```
 
 **Security**:
+
 - ✅ Signature verification (Ed25519)
 - ✅ HTTPS only
 - ✅ Rollback protection
@@ -517,21 +548,24 @@ with:
 ### 4.4 Installer Creation
 
 **MSIX** (Modern Windows):
+
 - Installed from Microsoft Store or sideloaded
 - Automatic updates via Store
 - Sandboxed execution
 
 **MSI** (Traditional):
+
 - Better compatibility (Windows 7+)
 - Group Policy deployment
 - Silent install support
 
 **WiX Toolset** example:
+
 ```xml
 <Product Id="*" Name="DogeRat Desktop" Version="1.0.0">
   <Package InstallerVersion="200" Compressed="yes" />
   <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
-  
+
   <Directory Id="TARGETDIR" Name="SourceDir">
     <Directory Id="ProgramFilesFolder">
       <Directory Id="INSTALLDIR" Name="DogeRat">
@@ -547,6 +581,7 @@ with:
 ### 4.5 Go-Live Checklist
 
 **Pre-Release**:
+
 - [ ] All tests passing (unit, integration, E2E)
 - [ ] Security scans clean (SAST, DAST, SCA)
 - [ ] Performance benchmarks met (API <200ms p95)
@@ -555,6 +590,7 @@ with:
 - [ ] Documentation complete (API, user manual, admin guide)
 
 **Security Validation**:
+
 - [ ] Penetration testing completed
 - [ ] Vulnerability disclosure policy published
 - [ ] Incident response plan documented
@@ -562,6 +598,7 @@ with:
 - [ ] GDPR/privacy policy if handling personal data
 
 **Operational Readiness**:
+
 - [ ] Monitoring dashboards configured (Grafana)
 - [ ] Alerting rules set (PagerDuty/Slack)
 - [ ] Log aggregation working (Loki/Elasticsearch)
@@ -569,6 +606,7 @@ with:
 - [ ] Runbooks documented (restart, rollback, scale)
 
 **Legal & Compliance**:
+
 - [ ] Terms of Service published
 - [ ] Privacy Policy published
 - [ ] Consent mechanism implemented
@@ -576,6 +614,7 @@ with:
 - [ ] Right to deletion implemented (GDPR)
 
 **Release**:
+
 - [ ] Beta testing with 5-10 users (2 weeks)
 - [ ] Release notes published
 - [ ] Migration guide (if upgrading from v2.0)
@@ -587,24 +626,28 @@ with:
 ## 📊 Success Metrics
 
 ### Security
+
 - **Zero critical vulnerabilities** in production
 - **100% audit coverage** for sensitive operations
 - **<5 minutes** to revoke access (kill-switch)
 - **100% TLS** for all communications
 
 ### Performance
+
 - **<200ms p95 latency** for API calls
 - **<1s** command delivery to device
 - **1000+ concurrent devices** supported
 - **99.9% uptime** SLA
 
 ### Quality
+
 - **85%+ test coverage** (maintained)
 - **Zero data loss** events
 - **<1 hour** mean time to recovery (MTTR)
 - **Weekly security scans** (automated)
 
 ### Compliance
+
 - **100% consent logs** for all managed devices
 - **Written authorization** on file for all deployments
 - **Audit trail retention** 90+ days
@@ -653,6 +696,7 @@ This software is licensed under the MIT License. **Use responsibly and legally**
 **⚠️ Legal Notice**: This tool must only be used on devices you own or have explicit written authorization to manage. Unauthorized access to devices is illegal. The developers assume no liability for misuse.
 
 **Privacy**: If managing devices with personal data, ensure GDPR/CCPA compliance:
+
 - Publish privacy policy
 - Obtain explicit consent
 - Implement right to deletion
