@@ -1,0 +1,100 @@
+2025-10-21 17:40:46 [error]: Failed to start server:
+SequelizeConnectionRefusedError: 
+    at Client._connectionCallback (/home/runner/work/rat-androi/rat-androi/node_modules/sequelize/src/dialects/postgres/connection-manager.js:184:24)
+    at Client._handleErrorWhileConnecting (/home/runner/work/rat-androi/rat-androi/node_modules/pg/lib/client.js:326:19)
+    at Client._handleErrorEvent (/home/runner/work/rat-androi/rat-androi/node_modules/pg/lib/client.js:336:19)
+    at Connection.emit (node:events:524:28)
+    at Socket.reportStreamError (/home/runner/work/rat-androi/rat-androi/node_modules/pg/lib/connection.js:57:12)
+    at Socket.emit (node:events:524:28)
+    at emitErrorNT (node:internal/streams/destroy:169:8)
+    at emitErrorCloseNT (node:internal/streams/destroy:128:3)
+    at processTicksAndRejections (node:internal/process/task_queues:82:21)
+2025-10-21 17:40:53 [error]: Failed to start server:
+SequelizeConnectionRefusedError: 
+    at Client._connectionCallback (/home/runner/work/rat-androi/rat-androi/node_modules/sequelize/src/dialects/postgres/connection-manager.js:184:24)
+    at Client._handleErrorWhileConnecting (/home/runner/work/rat-androi/rat-androi/node_modules/pg/lib/client.js:326:19)
+    at Client._handleErrorEvent (/home/runner/work/rat-androi/rat-androi/node_modules/pg/lib/client.js:336:19)
+    at Connection.emit (node:events:524:28)
+    at Socket.reportStreamError (/home/runner/work/rat-androi/rat-androi/node_modules/pg/lib/connection.js:57:12)
+    at Socket.emit (node:events:524:28)
+    at emitErrorNT (node:internal/streams/destroy:169:8)
+    at emitErrorCloseNT (node:internal/streams/destroy:128:3)
+    at processTicksAndRejections (node:internal/process/task_queues:82:21)
+2025-10-21 17:40:58 [error]: Failed to start server:
+SequelizeConnectionRefusedError: 
+    at Client._connectionCallback (/home/runner/work/rat-androi/rat-androi/node_modules/sequelize/src/dialects/postgres/connection-manager.js:184:24)
+    at Client._handleErrorWhileConnecting (/home/runner/work/rat-androi/rat-androi/node_modules/pg/lib/client.js:326:19)
+    at Client._handleErrorEvent (/home/runner/work/rat-androi/rat-androi/node_modules/pg/lib/client.js:336:19)
+    at Connection.emit (node:events:524:28)
+    at Socket.reportStreamError (/home/runner/work/rat-androi/rat-androi/node_modules/pg/lib/connection.js:57:12)
+    at Socket.emit (node:events:524:28)
+    at emitErrorNT (node:internal/streams/destroy:169:8)
+    at emitErrorCloseNT (node:internal/streams/destroy:128:3)
+    at processTicksAndRejections (node:internal/process/task_queues:82:21)
+2025-10-21 17:41:02 [error]: Failed to start server:
+SequelizeConnectionRefusedError: 
+    at Client._connectionCallback (/home/runner/work/rat-androi/rat-androi/node_modules/sequelize/src/dialects/postgres/connection-manager.js:184:24)
+    at Client._handleErrorWhileConnecting (/home/runner/work/rat-androi/rat-androi/node_modules/pg/lib/client.js:326:19)
+    at Client._handleErrorEvent (/home/runner/work/rat-androi/rat-androi/node_modules/pg/lib/client.js:336:19)
+    at Connection.emit (node:events:524:28)
+    at Socket.reportStreamError (/home/runner/work/rat-androi/rat-androi/node_modules/pg/lib/connection.js:57:12)
+    at Socket.emit (node:events:524:28)
+    at emitErrorNT (node:internal/streams/destroy:169:8)
+    at emitErrorCloseNT (node:internal/streams/destroy:128:3)
+    at processTicksAndRejections (node:internal/process/task_queues:82:21)
+2025-10-21 17:42:33 [error]: Failed to start server: database "dogerat_test" does not exist
+SequelizeConnectionError: database "dogerat_test" does not exist
+    at Client._connectionCallback (/home/runner/work/rat-androi/rat-androi/node_modules/sequelize/src/dialects/postgres/connection-manager.js:196:24)
+    at Client._handleErrorWhileConnecting (/home/runner/work/rat-androi/rat-androi/node_modules/pg/lib/client.js:326:19)
+    at Client._handleErrorMessage (/home/runner/work/rat-androi/rat-androi/node_modules/pg/lib/client.js:346:19)
+    at Connection.emit (node:events:524:28)
+    at /home/runner/work/rat-androi/rat-androi/node_modules/pg/lib/connection.js:116:12
+    at Parser.parse (/home/runner/work/rat-androi/rat-androi/node_modules/pg-protocol/src/parser.ts:103:9)
+    at Socket.<anonymous> (/home/runner/work/rat-androi/rat-androi/node_modules/pg-protocol/src/index.ts:7:48)
+    at Socket.emit (node:events:524:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Socket.Readable.push (node:internal/streams/readable:392:5)
+    at TCP.onStreamRead (node:internal/stream_base_commons:191:23)
+2025-10-21 17:42:37 [error]: Failed to start server: database "dogerat_test" does not exist
+SequelizeConnectionError: database "dogerat_test" does not exist
+    at Client._connectionCallback (/home/runner/work/rat-androi/rat-androi/node_modules/sequelize/src/dialects/postgres/connection-manager.js:196:24)
+    at Client._handleErrorWhileConnecting (/home/runner/work/rat-androi/rat-androi/node_modules/pg/lib/client.js:326:19)
+    at Client._handleErrorMessage (/home/runner/work/rat-androi/rat-androi/node_modules/pg/lib/client.js:346:19)
+    at Connection.emit (node:events:524:28)
+    at /home/runner/work/rat-androi/rat-androi/node_modules/pg/lib/connection.js:116:12
+    at Parser.parse (/home/runner/work/rat-androi/rat-androi/node_modules/pg-protocol/src/parser.ts:103:9)
+    at Socket.<anonymous> (/home/runner/work/rat-androi/rat-androi/node_modules/pg-protocol/src/index.ts:7:48)
+    at Socket.emit (node:events:524:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Socket.Readable.push (node:internal/streams/readable:392:5)
+    at TCP.onStreamRead (node:internal/stream_base_commons:191:23)
+2025-10-21 17:42:42 [error]: Failed to start server: database "dogerat_test" does not exist
+SequelizeConnectionError: database "dogerat_test" does not exist
+    at Client._connectionCallback (/home/runner/work/rat-androi/rat-androi/node_modules/sequelize/src/dialects/postgres/connection-manager.js:196:24)
+    at Client._handleErrorWhileConnecting (/home/runner/work/rat-androi/rat-androi/node_modules/pg/lib/client.js:326:19)
+    at Client._handleErrorMessage (/home/runner/work/rat-androi/rat-androi/node_modules/pg/lib/client.js:346:19)
+    at Connection.emit (node:events:524:28)
+    at /home/runner/work/rat-androi/rat-androi/node_modules/pg/lib/connection.js:116:12
+    at Parser.parse (/home/runner/work/rat-androi/rat-androi/node_modules/pg-protocol/src/parser.ts:103:9)
+    at Socket.<anonymous> (/home/runner/work/rat-androi/rat-androi/node_modules/pg-protocol/src/index.ts:7:48)
+    at Socket.emit (node:events:524:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Socket.Readable.push (node:internal/streams/readable:392:5)
+    at TCP.onStreamRead (node:internal/stream_base_commons:191:23)
+2025-10-21 17:42:46 [error]: Failed to start server: database "dogerat_test" does not exist
+SequelizeConnectionError: database "dogerat_test" does not exist
+    at Client._connectionCallback (/home/runner/work/rat-androi/rat-androi/node_modules/sequelize/src/dialects/postgres/connection-manager.js:196:24)
+    at Client._handleErrorWhileConnecting (/home/runner/work/rat-androi/rat-androi/node_modules/pg/lib/client.js:326:19)
+    at Client._handleErrorMessage (/home/runner/work/rat-androi/rat-androi/node_modules/pg/lib/client.js:346:19)
+    at Connection.emit (node:events:524:28)
+    at /home/runner/work/rat-androi/rat-androi/node_modules/pg/lib/connection.js:116:12
+    at Parser.parse (/home/runner/work/rat-androi/rat-androi/node_modules/pg-protocol/src/parser.ts:103:9)
+    at Socket.<anonymous> (/home/runner/work/rat-androi/rat-androi/node_modules/pg-protocol/src/index.ts:7:48)
+    at Socket.emit (node:events:524:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Socket.Readable.push (node:internal/streams/readable:392:5)
+    at TCP.onStreamRead (node:internal/stream_base_commons:191:23)
