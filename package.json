@@ -16,6 +16,8 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:all": "./scripts/run-all-tests.sh",
+    "validate": "./scripts/validate-deployment.sh",
+    "validate:full": "npm run test:all && npm run validate",
     "db:push": "drizzle-kit push",
     "db:migrate": "tsx server/scripts/migrate.ts",
     "db:migrate:force": "tsx server/scripts/migrate.ts --force",
