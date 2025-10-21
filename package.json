@@ -15,7 +15,6 @@
     "db:migrate": "tsx server/scripts/migrate.ts",
     "db:migrate:force": "tsx server/scripts/migrate.ts --force",
     "db:seed": "tsx server/scripts/seed-admin.ts",
-    "db:seed:demo": "tsx server/scripts/seed-demo-data.ts",
     "db:setup": "npm run db:migrate && npm run db:seed",
     "prepare": "husky install"
   },
