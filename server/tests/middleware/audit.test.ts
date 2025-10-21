@@ -2,10 +2,16 @@ import express from 'express';
 import request from 'supertest';
 import { auditLog } from '../../middleware/audit';
 import { authenticate, generateToken } from '../../middleware/auth';
-import { AuditTrail } from '../../models';
+import { AuditTrail, User } from '../../models';
 
 describe('auditLog middleware (real database)', () => {
   it('creates an audit record on success and redacts sensitive fields', async () => {
+    // Get the actual admin user with UUID
+    const adminUser = await User.findOne({ where: { username: process.env.ADMIN_USERNAME || 'testadmin' } as any });
+    if (!adminUser) {
+      throw new Error('Admin user not found in database');
+    }
+
     const app = express();
     app.use(express.json());
     app.post(
@@ -15,16 +21,22 @@ describe('auditLog middleware (real database)', () => {
       (_req, res) => res.json({ success: true, password: 'secret', token: 'abc' })
     );
 
-    const token = generateToken({ id: 1, username: 'admin', role: 'admin' });
+    const token = generateToken({ id: adminUser.id, username: adminUser.username, role: adminUser.role as any });
     const res = await request(app)
       .post('/ok')
       .set('Authorization', `Bearer ${token}`)
       .send({ some: 'payload', password: 'secret', token: 'abc' });
     expect(res.status).toBe(200);
 
-    // Give the async AuditTrail.create a tick
-    await new Promise((r) => setTimeout(r, 20));
-    const last = await AuditTrail.findOne({ order: [['created_at', 'DESC']] } as any);
+    // Give the async AuditTrail.create more time to complete
+    await new Promise((r) => setTimeout(r, 100));
+    
+    // Find the audit trail for this specific user
+    const last = await AuditTrail.findOne({ 
+      where: { user_id: adminUser.id } as any,
+      order: [['timestamp', 'DESC']] 
+    } as any);
+    
     expect(last).not.toBeNull();
     if (last) {
       expect((last as any).action).toBe('test.action');
