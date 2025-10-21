@@ -17,15 +17,10 @@ export function log(message: string, source = "express") {
 export function serveStatic(app: Express) {
   // Get the directory - use process.cwd() as fallback for test environment
   // In production, vite.ts is compiled to dist/server/vite.js
-  const currentDir = typeof __dirname !== 'undefined' ? __dirname : process.cwd();
-  
-  const distPath = path.resolve(
-    currentDir,
-    "..",
-    "client",
-    "dist",
-    "client",
-  );
+  const currentDir =
+    typeof __dirname !== "undefined" ? __dirname : process.cwd();
+
+  const distPath = path.resolve(currentDir, "..", "client", "dist", "client");
 
   if (!fs.existsSync(distPath)) {
     log(
@@ -42,4 +37,3 @@ export function serveStatic(app: Express) {
     res.sendFile(path.resolve(distPath, "index.html"));
   });
 }
-

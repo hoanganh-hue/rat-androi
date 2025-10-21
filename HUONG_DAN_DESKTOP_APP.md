@@ -5,6 +5,7 @@
 ### 1.1. Lựa chọn Framework
 
 **Option 1: Electron (Khuyến nghị)**
+
 - ✅ Phổ biến nhất, cộng đồng lớn
 - ✅ Dễ tích hợp với Angular
 - ✅ Cross-platform (Windows, macOS, Linux)
@@ -12,6 +13,7 @@
 - ❌ Kích thước app lớn (~150MB)
 
 **Option 2: Tauri**
+
 - ✅ Nhẹ hơn Electron (~10MB)
 - ✅ Bảo mật tốt hơn
 - ✅ Rust-based, hiệu năng cao
@@ -50,11 +52,7 @@
     "directories": {
       "output": "dist-electron"
     },
-    "files": [
-      "electron/**/*",
-      "client/dist/**/*",
-      "dist/**/*"
-    ],
+    "files": ["electron/**/*", "client/dist/**/*", "dist/**/*"],
     "win": {
       "target": ["nsis"],
       "icon": "assets/icon.ico"
@@ -76,16 +74,16 @@
 **File: `electron/main.js`**
 
 ```javascript
-const { app, BrowserWindow, ipcMain, Menu } = require('electron');
-const path = require('path');
-const url = require('url');
+const { app, BrowserWindow, ipcMain, Menu } = require("electron");
+const path = require("path");
+const url = require("url");
 
 let mainWindow;
 let serverProcess;
 
 // Environment configuration
-const isDev = process.env.NODE_ENV === 'development';
-const serverUrl = process.env.SERVER_URL || 'http://localhost:5000';
+const isDev = process.env.NODE_ENV === "development";
+const serverUrl = process.env.SERVER_URL || "http://localhost:5000";
 
 function createWindow() {
   // Create the browser window
@@ -94,33 +92,33 @@ function createWindow() {
     height: 900,
     minWidth: 1024,
     minHeight: 768,
-    icon: path.join(__dirname, '../assets/icon.png'),
+    icon: path.join(__dirname, "../assets/icon.png"),
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, "preload.js"),
     },
     show: false, // Don't show until ready
-    backgroundColor: '#1a1a2e' // Match dark theme
+    backgroundColor: "#1a1a2e", // Match dark theme
   });
 
   // Load the app
   if (isDev) {
     // Development: Load from Angular dev server
-    mainWindow.loadURL('http://localhost:4200');
+    mainWindow.loadURL("http://localhost:4200");
     mainWindow.webContents.openDevTools();
   } else {
     // Production: Load from built files
-    mainWindow.loadFile(path.join(__dirname, '../client/dist/index.html'));
+    mainWindow.loadFile(path.join(__dirname, "../client/dist/index.html"));
   }
 
   // Show window when ready
-  mainWindow.once('ready-to-show', () => {
+  mainWindow.once("ready-to-show", () => {
     mainWindow.show();
   });
 
   // Handle window closed
-  mainWindow.on('closed', () => {
+  mainWindow.on("closed", () => {
     mainWindow = null;
   });
 
@@ -131,68 +129,68 @@ function createWindow() {
 function createMenu() {
   const template = [
     {
-      label: 'File',
+      label: "File",
       submenu: [
         {
-          label: 'Settings',
+          label: "Settings",
           click: () => {
-            mainWindow.webContents.send('navigate', '/settings');
-          }
+            mainWindow.webContents.send("navigate", "/settings");
+          },
         },
-        { type: 'separator' },
+        { type: "separator" },
         {
-          label: 'Exit',
+          label: "Exit",
           click: () => {
             app.quit();
-          }
-        }
-      ]
+          },
+        },
+      ],
     },
     {
-      label: 'View',
+      label: "View",
       submenu: [
-        { role: 'reload' },
-        { role: 'forcereload' },
-        { type: 'separator' },
-        { role: 'toggledevtools' },
-        { type: 'separator' },
-        { role: 'togglefullscreen' }
-      ]
+        { role: "reload" },
+        { role: "forcereload" },
+        { type: "separator" },
+        { role: "toggledevtools" },
+        { type: "separator" },
+        { role: "togglefullscreen" },
+      ],
     },
     {
-      label: 'Devices',
+      label: "Devices",
       submenu: [
         {
-          label: 'Device List',
+          label: "Device List",
           click: () => {
-            mainWindow.webContents.send('navigate', '/devices');
-          }
+            mainWindow.webContents.send("navigate", "/devices");
+          },
         },
         {
-          label: 'Refresh',
+          label: "Refresh",
           click: () => {
-            mainWindow.webContents.send('refresh-devices');
-          }
-        }
-      ]
+            mainWindow.webContents.send("refresh-devices");
+          },
+        },
+      ],
     },
     {
-      label: 'Help',
+      label: "Help",
       submenu: [
         {
-          label: 'Documentation',
+          label: "Documentation",
           click: () => {
-            require('electron').shell.openExternal('https://docs.dogerat.com');
-          }
+            require("electron").shell.openExternal("https://docs.dogerat.com");
+          },
         },
         {
-          label: 'About',
+          label: "About",
           click: () => {
             showAboutDialog();
-          }
-        }
-      ]
-    }
+          },
+        },
+      ],
+    },
   ];
 
   const menu = Menu.buildFromTemplate(template);
@@ -200,38 +198,39 @@ function createMenu() {
 }
 
 function showAboutDialog() {
-  const { dialog } = require('electron');
+  const { dialog } = require("electron");
   dialog.showMessageBox(mainWindow, {
-    type: 'info',
-    title: 'About DogeRat Admin',
-    message: 'DogeRat Web Admin v2.0',
-    detail: 'Advanced Android Device Management Platform\n\n' +
-            'Version: 2.0.0\n' +
-            'License: Educational Use Only\n\n' +
-            '© 2025 DogeRat Team',
-    buttons: ['OK']
+    type: "info",
+    title: "About DogeRat Admin",
+    message: "DogeRat Web Admin v2.0",
+    detail:
+      "Advanced Android Device Management Platform\n\n" +
+      "Version: 2.0.0\n" +
+      "License: Educational Use Only\n\n" +
+      "© 2025 DogeRat Team",
+    buttons: ["OK"],
   });
 }
 
 // Start embedded server (optional)
 function startEmbeddedServer() {
   if (!isDev) {
-    const { spawn } = require('child_process');
-    const serverPath = path.join(__dirname, '../dist/index.js');
-    
-    serverProcess = spawn('node', [serverPath], {
+    const { spawn } = require("child_process");
+    const serverPath = path.join(__dirname, "../dist/index.js");
+
+    serverProcess = spawn("node", [serverPath], {
       env: {
         ...process.env,
-        NODE_ENV: 'production',
-        PORT: '5000'
-      }
+        NODE_ENV: "production",
+        PORT: "5000",
+      },
     });
 
-    serverProcess.stdout.on('data', (data) => {
+    serverProcess.stdout.on("data", (data) => {
       console.log(`Server: ${data}`);
     });
 
-    serverProcess.stderr.on('data', (data) => {
+    serverProcess.stderr.on("data", (data) => {
       console.error(`Server Error: ${data}`);
     });
   }
@@ -240,26 +239,29 @@ function startEmbeddedServer() {
 // App lifecycle
 app.whenReady().then(() => {
   startEmbeddedServer();
-  
-  // Wait for server to be ready
-  setTimeout(() => {
-    createWindow();
-  }, isDev ? 0 : 2000);
 
-  app.on('activate', () => {
+  // Wait for server to be ready
+  setTimeout(
+    () => {
+      createWindow();
+    },
+    isDev ? 0 : 2000,
+  );
+
+  app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow();
     }
   });
 });
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") {
     app.quit();
   }
 });
 
-app.on('before-quit', () => {
+app.on("before-quit", () => {
   // Stop server process
   if (serverProcess) {
     serverProcess.kill();
@@ -267,21 +269,21 @@ app.on('before-quit', () => {
 });
 
 // IPC Handlers
-ipcMain.handle('get-server-url', () => {
+ipcMain.handle("get-server-url", () => {
   return serverUrl;
 });
 
-ipcMain.handle('get-app-version', () => {
+ipcMain.handle("get-app-version", () => {
   return app.getVersion();
 });
 
-ipcMain.on('minimize-window', () => {
+ipcMain.on("minimize-window", () => {
   if (mainWindow) {
     mainWindow.minimize();
   }
 });
 
-ipcMain.on('maximize-window', () => {
+ipcMain.on("maximize-window", () => {
   if (mainWindow) {
     if (mainWindow.isMaximized()) {
       mainWindow.unmaximize();
@@ -291,7 +293,7 @@ ipcMain.on('maximize-window', () => {
   }
 });
 
-ipcMain.on('close-window', () => {
+ipcMain.on("close-window", () => {
   if (mainWindow) {
     mainWindow.close();
   }
@@ -303,28 +305,28 @@ ipcMain.on('close-window', () => {
 **File: `electron/preload.js`**
 
 ```javascript
-const { contextBridge, ipcRenderer } = require('electron');
+const { contextBridge, ipcRenderer } = require("electron");
 
 // Expose protected methods
-contextBridge.exposeInMainWorld('electronAPI', {
+contextBridge.exposeInMainWorld("electronAPI", {
   // App info
-  getServerUrl: () => ipcRenderer.invoke('get-server-url'),
-  getAppVersion: () => ipcRenderer.invoke('get-app-version'),
-  
+  getServerUrl: () => ipcRenderer.invoke("get-server-url"),
+  getAppVersion: () => ipcRenderer.invoke("get-app-version"),
+
   // Window controls
-  minimizeWindow: () => ipcRenderer.send('minimize-window'),
-  maximizeWindow: () => ipcRenderer.send('maximize-window'),
-  closeWindow: () => ipcRenderer.send('close-window'),
-  
+  minimizeWindow: () => ipcRenderer.send("minimize-window"),
+  maximizeWindow: () => ipcRenderer.send("maximize-window"),
+  closeWindow: () => ipcRenderer.send("close-window"),
+
   // Navigation
   onNavigate: (callback) => {
-    ipcRenderer.on('navigate', (event, route) => callback(route));
+    ipcRenderer.on("navigate", (event, route) => callback(route));
   },
-  
+
   // Device refresh
   onRefreshDevices: (callback) => {
-    ipcRenderer.on('refresh-devices', () => callback());
-  }
+    ipcRenderer.on("refresh-devices", () => callback());
+  },
 });
 ```
 
@@ -355,18 +357,18 @@ declare global {
 **File: `client/src/app/core/services/electron.service.ts`**
 
 ```typescript
-import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
+import { Injectable } from "@angular/core";
+import { Router } from "@angular/router";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class ElectronService {
   private isElectron = false;
 
   constructor(private router: Router) {
     this.isElectron = this.checkElectron();
-    
+
     if (this.isElectron) {
       this.setupElectronListeners();
     }
@@ -391,7 +393,7 @@ export class ElectronService {
     if (this.isElectron) {
       return await window.electronAPI.getAppVersion();
     }
-    return 'Web Version';
+    return "Web Version";
   }
 
   public minimizeWindow(): void {
@@ -421,7 +423,7 @@ export class ElectronService {
     // Handle device refresh
     window.electronAPI.onRefreshDevices(() => {
       // Emit event to refresh devices component
-      window.dispatchEvent(new CustomEvent('refresh-devices'));
+      window.dispatchEvent(new CustomEvent("refresh-devices"));
     });
   }
 }
@@ -432,19 +434,19 @@ export class ElectronService {
 **File: `client/src/app/core/services/api.service.ts`**
 
 ```typescript
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { ElectronService } from './electron.service';
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { ElectronService } from "./electron.service";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class ApiService {
-  private apiUrl = '';
+  private apiUrl = "";
 
   constructor(
     private http: HttpClient,
-    private electronService: ElectronService
+    private electronService: ElectronService,
   ) {
     this.initApiUrl();
   }
@@ -519,7 +521,7 @@ win:
       arch:
         - x64
   icon: assets/icon.ico
-  
+
 nsis:
   oneClick: false
   allowToChangeInstallationDirectory: true
@@ -551,36 +553,38 @@ publish:
 ### 4.1. Desktop-Specific Features
 
 **System Tray Integration:**
+
 ```javascript
-const { Tray } = require('electron');
+const { Tray } = require("electron");
 
 let tray = null;
 
 function createTray() {
-  tray = new Tray(path.join(__dirname, '../assets/tray-icon.png'));
-  
+  tray = new Tray(path.join(__dirname, "../assets/tray-icon.png"));
+
   const contextMenu = Menu.buildFromTemplate([
-    { label: 'Show', click: () => mainWindow.show() },
-    { label: 'Hide', click: () => mainWindow.hide() },
-    { type: 'separator' },
-    { label: 'Quit', click: () => app.quit() }
+    { label: "Show", click: () => mainWindow.show() },
+    { label: "Hide", click: () => mainWindow.hide() },
+    { type: "separator" },
+    { label: "Quit", click: () => app.quit() },
   ]);
-  
+
   tray.setContextMenu(contextMenu);
-  tray.setToolTip('DogeRat Admin');
+  tray.setToolTip("DogeRat Admin");
 }
 ```
 
 **Auto-Update:**
-```javascript
-const { autoUpdater } = require('electron-updater');
 
-autoUpdater.on('update-available', () => {
-  mainWindow.webContents.send('update-available');
+```javascript
+const { autoUpdater } = require("electron-updater");
+
+autoUpdater.on("update-available", () => {
+  mainWindow.webContents.send("update-available");
 });
 
-autoUpdater.on('update-downloaded', () => {
-  mainWindow.webContents.send('update-downloaded');
+autoUpdater.on("update-downloaded", () => {
+  mainWindow.webContents.send("update-downloaded");
 });
 
 // Check for updates on startup
@@ -590,14 +594,15 @@ app.whenReady().then(() => {
 ```
 
 **Notifications:**
+
 ```javascript
-const { Notification } = require('electron');
+const { Notification } = require("electron");
 
 function showNotification(title, body) {
   new Notification({
     title: title,
     body: body,
-    icon: path.join(__dirname, '../assets/icon.png')
+    icon: path.join(__dirname, "../assets/icon.png"),
   }).show();
 }
 ```
@@ -607,15 +612,15 @@ function showNotification(title, body) {
 Desktop app có thể sử dụng local file storage:
 
 ```javascript
-const Store = require('electron-store');
+const Store = require("electron-store");
 const store = new Store();
 
 // Save settings
-store.set('serverUrl', 'http://localhost:5000');
-store.set('autoConnect', true);
+store.set("serverUrl", "http://localhost:5000");
+store.set("autoConnect", true);
 
 // Get settings
-const serverUrl = store.get('serverUrl');
+const serverUrl = store.get("serverUrl");
 ```
 
 ---
@@ -662,12 +667,12 @@ npm run electron:build
 
 ```javascript
 // In main.js
-const { autoUpdater } = require('electron-updater');
+const { autoUpdater } = require("electron-updater");
 
 autoUpdater.setFeedURL({
-  provider: 'github',
-  owner: 'your-org',
-  repo: 'dogerat-admin'
+  provider: "github",
+  owner: "your-org",
+  repo: "dogerat-admin",
 });
 
 autoUpdater.checkForUpdatesAndNotify();
@@ -709,7 +714,7 @@ Add settings page in Angular for desktop-specific configuration:
 ```typescript
 // settings.component.ts
 export class SettingsComponent {
-  serverUrl = 'http://localhost:5000';
+  serverUrl = "http://localhost:5000";
   autoStart = false;
   minimizeToTray = true;
 
@@ -726,17 +731,17 @@ export class SettingsComponent {
 
 ## 📊 9. COMPARISON: WEB vs DESKTOP
 
-| Feature | Web App | Desktop App |
-|---------|---------|-------------|
-| Installation | None | Required |
-| Updates | Automatic | Auto-update or manual |
-| Performance | Browser-dependent | Native, faster |
-| System Access | Limited | Full access |
-| Offline Mode | Limited | Possible |
-| File System | Restricted | Full access |
-| Notifications | Browser-based | Native OS |
-| System Tray | No | Yes |
-| Auto-start | No | Yes |
+| Feature       | Web App           | Desktop App           |
+| ------------- | ----------------- | --------------------- |
+| Installation  | None              | Required              |
+| Updates       | Automatic         | Auto-update or manual |
+| Performance   | Browser-dependent | Native, faster        |
+| System Access | Limited           | Full access           |
+| Offline Mode  | Limited           | Possible              |
+| File System   | Restricted        | Full access           |
+| Notifications | Browser-based     | Native OS             |
+| System Tray   | No                | Yes                   |
+| Auto-start    | No                | Yes                   |
 
 ---
 

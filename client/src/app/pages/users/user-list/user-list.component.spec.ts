@@ -14,9 +14,7 @@ describe('UserListComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [UserListComponent, NoopAnimationsModule],
-      providers: [
-        { provide: ApiService, useClass: MockApiService },
-      ],
+      providers: [{ provide: ApiService, useClass: MockApiService }],
     }).compileComponents();
   });
 
@@ -34,4 +32,3 @@ describe('UserListComponent', () => {
     expect(compiled.querySelector('.empty-state')).toBeTruthy();
   });
 });
-

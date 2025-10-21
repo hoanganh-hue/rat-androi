@@ -15,17 +15,20 @@ Hướng dẫn này mô tả chi tiết cách chạy và thực hiện testing c
 ## 🛠️ Công cụ Testing
 
 ### Backend Testing
+
 - **Jest**: Test runner và assertion framework
 - **Supertest**: HTTP API testing
 - **PostgreSQL Test DB**: Database riêng cho testing
 - **Socket.IO Client**: Test real-time communication
 
-### Frontend Testing  
+### Frontend Testing
+
 - **Karma + Jasmine**: Angular testing framework
 - **Protractor/Playwright**: E2E testing
 - **Chrome Headless**: Browser automation
 
 ### CI/CD
+
 - **GitHub Actions**: Automated testing pipeline
 - **Docker**: Containerized test environment
 - **Codecov**: Coverage reporting
@@ -69,16 +72,19 @@ cd client && npm install
 ### Backend Tests
 
 #### Chạy tất cả tests
+
 ```bash
 npm test
 ```
 
 #### Chạy tests với coverage
+
 ```bash
 npm test -- --coverage
 ```
 
 #### Chạy tests cụ thể
+
 ```bash
 # Test authentication
 npm test -- auth.routes.test
@@ -91,6 +97,7 @@ npm test -- screen-streaming.test
 ```
 
 #### Watch mode (tự động chạy lại khi code thay đổi)
+
 ```bash
 npm run test:watch
 ```
@@ -131,6 +138,7 @@ open coverage/index.html
 ### Coverage Thresholds
 
 Dự án yêu cầu:
+
 - **Statements**: 80%
 - **Branches**: 75%
 - **Functions**: 80%
@@ -154,6 +162,7 @@ npm test -- integration
 ### Test Flow cụ thể
 
 #### 1. Authentication Flow
+
 ```bash
 npm test -- auth.routes.test
 
@@ -166,6 +175,7 @@ npm test -- auth.routes.test
 ```
 
 #### 2. Device Management Flow
+
 ```bash
 npm test -- devices.routes.test
 
@@ -178,6 +188,7 @@ npm test -- devices.routes.test
 ```
 
 #### 3. Screen Streaming Flow
+
 ```bash
 npm test -- screen-streaming.test
 
@@ -221,25 +232,25 @@ npx playwright test e2e/login.spec.ts
 
 ```typescript
 // e2e/login-to-dashboard.spec.ts
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('login and view dashboard', async ({ page }) => {
+test("login and view dashboard", async ({ page }) => {
   // Navigate to login
-  await page.goto('http://localhost:4200/login');
-  
+  await page.goto("http://localhost:4200/login");
+
   // Fill credentials
-  await page.fill('input[name="username"]', 'admin');
-  await page.fill('input[name="password"]', 'Admin@123456');
-  
+  await page.fill('input[name="username"]', "admin");
+  await page.fill('input[name="password"]', "Admin@123456");
+
   // Click login
   await page.click('button[type="submit"]');
-  
+
   // Verify redirect to dashboard
   await expect(page).toHaveURL(/.*dashboard/);
-  
+
   // Verify dashboard content
-  await expect(page.locator('h1')).toContainText('Dashboard');
-  await expect(page.locator('.device-stats')).toBeVisible();
+  await expect(page.locator("h1")).toContainText("Dashboard");
+  await expect(page.locator(".device-stats")).toBeVisible();
 });
 ```
 
@@ -426,10 +437,12 @@ ng test --browsers=Chrome
 ### GitHub Actions
 
 Workflow tự động chạy khi:
+
 - Push code lên main/develop
 - Tạo Pull Request
 
 Steps:
+
 1. **Lint & Type Check**: Kiểm tra code style và types
 2. **Backend Tests**: Chạy Jest tests với PostgreSQL
 3. **Frontend Tests**: Chạy Karma tests

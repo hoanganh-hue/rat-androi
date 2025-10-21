@@ -14,6 +14,7 @@ Before you begin, ensure you have:
 - ✅ Ports 80, 5000, 5432, 4040 available
 
 **Optional (for development)**:
+
 - Node.js 20+ and npm
 - PostgreSQL 15+ (if not using Docker)
 
@@ -39,6 +40,7 @@ nano .env  # or vim, code, etc.
 ```
 
 **Important settings to change**:
+
 ```bash
 # Change these for production:
 JWT_SECRET=your-very-long-random-secret-key-here
@@ -52,6 +54,7 @@ NGROK_AUTHTOKEN=your-ngrok-auth-token
 ```
 
 **Generate a strong JWT secret**:
+
 ```bash
 openssl rand -base64 64
 ```
@@ -68,6 +71,7 @@ docker-compose logs -f
 ```
 
 **Expected output**:
+
 ```
 ✅ Database migrations completed
 ✅ Admin user created
@@ -266,6 +270,7 @@ npm run test:e2e
 ### Problem: Containers won't start
 
 **Solution**:
+
 ```bash
 # Check if ports are already in use
 sudo lsof -i :80
@@ -283,6 +288,7 @@ docker-compose up -d
 ### Problem: Database connection failed
 
 **Solution**:
+
 ```bash
 # Check database container
 docker-compose logs postgres
@@ -297,6 +303,7 @@ docker-compose ps postgres
 ### Problem: Can't login
 
 **Solution**:
+
 ```bash
 # Reset admin user
 docker-compose exec server npm run db:seed
@@ -309,6 +316,7 @@ docker-compose exec server npm run db:seed
 ### Problem: Device not connecting
 
 **Solution**:
+
 ```bash
 # Check server logs
 docker-compose logs -f server
@@ -324,6 +332,7 @@ sudo ufw allow 5000
 ### Problem: Ngrok not working
 
 **Solution**:
+
 ```bash
 # Check Ngrok container
 docker-compose logs ngrok
@@ -451,6 +460,7 @@ docker-compose exec server npm run db:migrate
 You now have DogeRat Web Admin up and running!
 
 **What's working**:
+
 - ✅ Web interface at http://localhost
 - ✅ API backend with documentation
 - ✅ Database with admin user
@@ -458,6 +468,7 @@ You now have DogeRat Web Admin up and running!
 - ✅ Remote access via Ngrok (optional)
 
 **Next steps**:
+
 1. Change admin password
 2. Create additional users if needed
 3. Connect Android devices

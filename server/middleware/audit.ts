@@ -1,7 +1,7 @@
 // Audit Middleware - Ghi log mọi hành động
-import { Response, NextFunction } from 'express';
-import { AuthRequest } from './auth';
-import { AuditTrail } from '../models';
+import { Response, NextFunction } from "express";
+import { AuthRequest } from "./auth";
+import { AuditTrail } from "../models";
 
 export interface AuditOptions {
   action: string;
@@ -13,7 +13,11 @@ export interface AuditOptions {
  * Automatically logs user actions to audit_trail table
  */
 export const auditLog = (options: AuditOptions) => {
-  return async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
+  return async (
+    req: AuthRequest,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> => {
     try {
       // Store original res.json
       const originalJson = res.json.bind(res);
@@ -37,9 +41,9 @@ export const auditLog = (options: AuditOptions) => {
               statusCode: res.statusCode,
             },
             ip_address: req.ip || req.socket.remoteAddress || null,
-            user_agent: req.get('user-agent') || null,
-          }).catch(error => {
-            console.error('Failed to create audit log:', error);
+            user_agent: req.get("user-agent") || null,
+          }).catch((error) => {
+            console.error("Failed to create audit log:", error);
           });
         }
 
@@ -48,7 +52,7 @@ export const auditLog = (options: AuditOptions) => {
 
       next();
     } catch (error) {
-      console.error('Audit middleware error:', error);
+      console.error("Audit middleware error:", error);
       next();
     }
   };
@@ -57,16 +61,16 @@ export const auditLog = (options: AuditOptions) => {
 // Remove sensitive data from audit logs
 function sanitizeBody(body: any): any {
   if (!body) return body;
-  
+
   const sanitized = { ...body };
-  const sensitiveFields = ['password', 'password_hash', 'token', 'secret'];
-  
+  const sensitiveFields = ["password", "password_hash", "token", "secret"];
+
   for (const field of sensitiveFields) {
     if (sanitized[field]) {
-      sanitized[field] = '[REDACTED]';
+      sanitized[field] = "[REDACTED]";
     }
   }
-  
+
   return sanitized;
 }
 

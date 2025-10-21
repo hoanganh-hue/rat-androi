@@ -27,7 +27,7 @@ interface DeviceDetailResponse {
     MatButtonModule,
     MatSnackBarModule,
     MatDividerModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
   ],
   template: `
     <div class="detail-container">
@@ -49,9 +49,16 @@ interface DeviceDetailResponse {
           <div class="section-header">
             <div class="title">
               <mat-icon>{{ device()!.isOnline ? 'check_circle' : 'cancel' }}</mat-icon>
-              <h2>{{ device()!.model }} <small class="muted">({{ shortId(device()!.device_id) }})</small></h2>
+              <h2>
+                {{ device()!.model }}
+                <small class="muted">({{ shortId(device()!.device_id) }})</small>
+              </h2>
             </div>
-            <span class="badge" [class.online]="device()!.isOnline" [class.offline]="!device()!.isOnline">
+            <span
+              class="badge"
+              [class.online]="device()!.isOnline"
+              [class.offline]="!device()!.isOnline"
+            >
               {{ device()!.isOnline ? 'Online' : 'Offline' }}
             </span>
           </div>
@@ -71,7 +78,7 @@ interface DeviceDetailResponse {
             </div>
             <div>
               <label>Last Seen</label>
-              <span>{{ device()!.last_seen_at | date:'short' }}</span>
+              <span>{{ device()!.last_seen_at | date: 'short' }}</span>
             </div>
           </div>
         </mat-card>
@@ -87,7 +94,7 @@ interface DeviceDetailResponse {
               @for (log of logs(); track log.id) {
                 <li>
                   <span>{{ log.type || 'log' }}</span>
-                  <small class="muted">{{ log.created_at | date:'short' }}</small>
+                  <small class="muted">{{ log.created_at | date: 'short' }}</small>
                 </li>
               }
             </ul>
@@ -105,7 +112,9 @@ interface DeviceDetailResponse {
               @for (cmd of commands(); track cmd.id) {
                 <li>
                   <span>{{ cmd.command }}</span>
-                  <small class="muted">{{ cmd.status }} • {{ cmd.created_at | date:'short' }}</small>
+                  <small class="muted"
+                    >{{ cmd.status }} • {{ cmd.created_at | date: 'short' }}</small
+                  >
                 </li>
               }
             </ul>
@@ -116,27 +125,102 @@ interface DeviceDetailResponse {
       }
     </div>
   `,
-  styles: [`
-    .detail-container { padding: var(--spacing-lg); }
-    .page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom: var(--spacing-xl); }
-    .page-header h1 { margin: 0; }
-    .loading { display:flex; justify-content:center; padding: var(--spacing-xl); }
-    .section-card { margin-bottom: var(--spacing-lg); padding: var(--spacing-lg); }
-    .section-header { display:flex; align-items:center; justify-content:space-between; margin-bottom: var(--spacing-md); }
-    .title { display:flex; align-items:center; gap: var(--spacing-md); }
-    .title mat-icon { color: var(--text-secondary); }
-    .badge { padding: 4px 10px; border-radius: 999px; font-size: 12px; }
-    .badge.online { background: rgba(76,175,80,0.15); color: var(--accent-success); }
-    .badge.offline { background: rgba(158,158,158,0.15); color: var(--text-secondary); }
-    .grid { display:grid; gap: var(--spacing-md); grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); margin-top: var(--spacing-md); }
-    label { display:block; font-size:12px; color: var(--text-secondary); margin-bottom: 4px; }
-    code { background: var(--bg-tertiary); padding: 2px 6px; border-radius: var(--radius-sm); font-size: 12px; }
-    .list { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap: 8px; }
-    .list li { display:flex; align-items:center; justify-content:space-between; padding: 8px 0; border-bottom: 1px solid var(--border-primary); }
-    .list li:last-child { border-bottom: 0; }
-    .muted { color: var(--text-secondary); }
-    .empty { text-align:center; color: var(--text-secondary); padding: var(--spacing-lg); }
-  `]
+  styles: [
+    `
+      .detail-container {
+        padding: var(--spacing-lg);
+      }
+      .page-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: var(--spacing-xl);
+      }
+      .page-header h1 {
+        margin: 0;
+      }
+      .loading {
+        display: flex;
+        justify-content: center;
+        padding: var(--spacing-xl);
+      }
+      .section-card {
+        margin-bottom: var(--spacing-lg);
+        padding: var(--spacing-lg);
+      }
+      .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: var(--spacing-md);
+      }
+      .title {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-md);
+      }
+      .title mat-icon {
+        color: var(--text-secondary);
+      }
+      .badge {
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+      }
+      .badge.online {
+        background: rgba(76, 175, 80, 0.15);
+        color: var(--accent-success);
+      }
+      .badge.offline {
+        background: rgba(158, 158, 158, 0.15);
+        color: var(--text-secondary);
+      }
+      .grid {
+        display: grid;
+        gap: var(--spacing-md);
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        margin-top: var(--spacing-md);
+      }
+      label {
+        display: block;
+        font-size: 12px;
+        color: var(--text-secondary);
+        margin-bottom: 4px;
+      }
+      code {
+        background: var(--bg-tertiary);
+        padding: 2px 6px;
+        border-radius: var(--radius-sm);
+        font-size: 12px;
+      }
+      .list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .list li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border-primary);
+      }
+      .list li:last-child {
+        border-bottom: 0;
+      }
+      .muted {
+        color: var(--text-secondary);
+      }
+      .empty {
+        text-align: center;
+        color: var(--text-secondary);
+        padding: var(--spacing-lg);
+      }
+    `,
+  ],
 })
 export class DeviceDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
@@ -167,7 +251,7 @@ export class DeviceDetailComponent implements OnInit {
         console.error('Failed to load device detail', err);
         this.snackBar.open('Failed to load device detail', 'Close', { duration: 3000 });
         this.loading.set(false);
-      }
+      },
     });
   }
 
@@ -179,4 +263,3 @@ export class DeviceDetailComponent implements OnInit {
     return id?.substring(0, 8) + '…';
   }
 }
-

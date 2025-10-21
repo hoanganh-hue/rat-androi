@@ -4,12 +4,14 @@
 
 **Selected Framework:** Angular Material Design System
 **Justification:** Given the Angular frontend requirement and the application's nature as a security-focused, data-intensive admin panel, Angular Material provides:
+
 - Native Angular integration with excellent performance
 - Comprehensive component library for complex data displays
 - Strong accessibility and security patterns
 - Professional, enterprise-grade aesthetic appropriate for security tools
 
 **Design Principles:**
+
 1. **Clarity Over Decoration** - Every element serves a functional purpose
 2. **Information Hierarchy** - Critical device status and security alerts take precedence
 3. **Efficient Workflows** - Minimize clicks for common operations
@@ -18,6 +20,7 @@
 ## Color Palette
 
 **Dark Mode Primary (Default):**
+
 - Primary Brand: 220 85% 55% (Professional blue - trustworthy, security-focused)
 - Primary Variant: 220 90% 45% (Darker blue for depth)
 - Accent/Action: 150 70% 50% (Green - success, connected devices)
@@ -31,6 +34,7 @@
 - Border/Divider: 220 10% 25%
 
 **Light Mode:**
+
 - Background Primary: 0 0% 98%
 - Background Secondary: 0 0% 100%
 - Background Tertiary: 220 20% 97%
@@ -39,6 +43,7 @@
 - Border: 220 15% 85%
 
 **Status Colors:**
+
 - Online/Connected: 150 70% 50%
 - Offline: 0 0% 50%
 - Pending Command: 45 95% 60%
@@ -47,10 +52,12 @@
 ## Typography
 
 **Font Families:**
+
 - Primary: 'Inter', system-ui, -apple-system, sans-serif (UI text, data displays)
 - Monospace: 'JetBrains Mono', 'Fira Code', Consolas, monospace (device IDs, logs, code)
 
 **Scale & Usage:**
+
 - H1 (32px, 700): Page titles, "Device Management", "Dashboard"
 - H2 (24px, 600): Section headers, "Connected Devices", "Recent Commands"
 - H3 (20px, 600): Card titles, modal headers
@@ -62,12 +69,14 @@
 ## Layout System
 
 **Spacing Primitives:** Use Tailwind units of 2, 4, 6, 8, 12, 16, 20, 24
+
 - Micro spacing (2-4): Icon-to-text gaps, form field internal padding
 - Component spacing (6-8): Button padding, card internal margins
 - Section spacing (12-16): Between form fields, list items
 - Major spacing (20-24): Between distinct sections, page margins
 
 **Grid Structure:**
+
 - Main Layout: Fixed sidebar (280px) + flexible content area
 - Dashboard Grid: 12-column responsive grid for stat cards and charts
 - Device Tables: Full-width with fixed column widths for consistency
@@ -76,6 +85,7 @@
 ## Component Library
 
 ### Navigation
+
 - **Top Bar:** Fixed, 64px height, contains user profile, notifications, global search
 - **Sidebar:** 280px wide, collapsible to 64px (icon-only), contains:
   - Dashboard
@@ -88,6 +98,7 @@
 - Active state: Accent color background with 4px left border indicator
 
 ### Dashboard Components
+
 - **Stat Cards:** 4-column grid on desktop, stacked on mobile
   - Total Devices, Online Devices, Active Commands, Recent Actions
   - Large number (32px), label below, trend indicator (↑/↓)
@@ -96,6 +107,7 @@
 - **Quick Actions Panel:** Frequently used commands for selected devices
 
 ### Device Management
+
 - **Device Table:** Material Data Table with:
   - Columns: Status indicator (dot), Device Model, IP, Last Seen, Version, Actions
   - Row selection (checkboxes) for bulk operations
@@ -108,6 +120,7 @@
   - Action buttons grouped by category (Data, Control, Advanced)
 
 ### Action Modals
+
 - **Standard Modal:** 500px width, centered
   - Header with icon and title
   - Form fields with clear labels and validation
@@ -118,6 +131,7 @@
   - Action toolbar (upload, download, delete)
 
 ### Data Display
+
 - **Contact/SMS/Call Lists:** Scrollable tables within device detail
   - Compact rows (40px height)
   - Icons for contact type
@@ -131,6 +145,7 @@
   - Download individual or bulk
 
 ### Forms
+
 - **Input Fields:** Material outline style
   - 48px height for touch targets
   - Clear error states with red underline and error text
@@ -145,6 +160,7 @@
   - Role selector: Single-select dropdown with icons
 
 ### Overlays
+
 - **Notifications:** Toast-style, top-right corner
   - Success: Green left border
   - Error: Red left border
@@ -156,6 +172,7 @@
   - Prominent Cancel button
 
 ### User Management
+
 - **User Table:** Similar to device table
   - Columns: Avatar, Username, Email, Role, Last Login, Status, Actions
   - Inline role switcher for admins
@@ -166,6 +183,7 @@
   - Audit: User's action history
 
 ### Audit Trail
+
 - **Activity Log:** Full-width table
   - Columns: Timestamp, User, Action, Target (device), Details, Status
   - Advanced filters: Date range, user, action type
@@ -175,6 +193,7 @@
 ## Animations
 
 **Minimal and Purposeful Only:**
+
 - Page transitions: Subtle fade (150ms) when changing routes
 - Modal/drawer entry: Slide + fade (200ms ease-out)
 - Toast notifications: Slide in from right (200ms)
@@ -183,8 +202,9 @@
 - Charts: Initial load animation (500ms) only
 
 **No Animations for:**
+
 - Hover states
-- Focus states  
+- Focus states
 - Scrolling effects
 - Parallax or decorative motion
 
@@ -193,15 +213,18 @@
 **No hero images.** This is a utility application focused on functionality.
 
 **Icon Usage:**
+
 - Material Icons via CDN for all UI icons
 - Consistent 24px size for inline icons
 - 40px for feature icons in empty states
 
 **Device Representations:**
+
 - Use Material Icons: phone_android, tablet, devices
 - Status indicators: colored dots (8px diameter) rather than images
 
 **Empty States:**
+
 - Large icon (64px) in secondary color
 - Helpful text explaining how to populate
 - Primary action button below
@@ -209,6 +232,7 @@
 ---
 
 **Critical Implementation Notes:**
+
 - All form inputs and text fields must maintain dark mode consistency
 - Tables must support virtual scrolling for 1000+ devices
 - Real-time updates via Socket.IO should show visual indicators (pulse animation on status dots)

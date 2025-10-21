@@ -5,12 +5,14 @@
 ### 1.1. Yêu cầu hệ thống
 
 **Phần mềm cần cài đặt:**
+
 - Docker Engine 20.x+
 - Docker Compose 2.x+
 - Git
 - (Optional) Node.js 18+ cho development
 
 **Tài nguyên tối thiểu:**
+
 - CPU: 2 cores
 - RAM: 4GB
 - Disk: 10GB free space
@@ -63,6 +65,7 @@ CORS_ORIGIN=https://evelina-duchesslike-solely.ngrok-free.dev
 ```
 
 **⚠️ LƯU Ý BẢO MẬT:**
+
 1. Thay đổi `JWT_SECRET` bằng chuỗi random mạnh
 2. Thay đổi `ADMIN_PASSWORD` ngay sau lần đăng nhập đầu tiên
 3. Sử dụng password mạnh cho database
@@ -125,11 +128,13 @@ docker-compose exec postgres psql -U dogerat -d dogerat -c "\dt"
 ### 3.4. Verify Deployment
 
 **Check services status:**
+
 ```bash
 docker-compose ps
 ```
 
 **Expected output:**
+
 ```
 NAME               STATUS      PORTS
 dogerat-db         Up         5432/tcp
@@ -139,6 +144,7 @@ dogerat-ngrok      Up         0.0.0.0:4040->4040/tcp
 ```
 
 **Health checks:**
+
 ```bash
 # Backend health
 curl http://localhost:5000/api/health
@@ -157,11 +163,13 @@ curl http://localhost:4040/api/tunnels
 ### 4.1. Ngrok Dashboard
 
 Truy cập ngrok web interface:
+
 ```
 http://localhost:4040
 ```
 
 Bạn sẽ thấy:
+
 - Tunnel URL: `https://evelina-duchesslike-solely.ngrok-free.dev`
 - Request logs
 - Traffic statistics
@@ -183,6 +191,7 @@ curl https://evelina-duchesslike-solely.ngrok-free.dev/api/health
 ### 4.3. Configure Android Client
 
 **Trong Android app, set server URL:**
+
 ```
 https://evelina-duchesslike-solely.ngrok-free.dev
 ```
@@ -198,6 +207,7 @@ ngrok:
 ```
 
 **Available regions:**
+
 - `us` - United States (default)
 - `eu` - Europe
 - `ap` - Asia/Pacific
@@ -213,16 +223,19 @@ ngrok:
 ### 5.1. Local Access
 
 **Web Admin:**
+
 ```
 http://localhost
 ```
 
 **Backend API:**
+
 ```
 http://localhost:5000
 ```
 
 **API Documentation:**
+
 ```
 http://localhost:5000/api-docs
 ```
@@ -230,11 +243,13 @@ http://localhost:5000/api-docs
 ### 5.2. Remote Access (qua Ngrok)
 
 **Web Admin & API:**
+
 ```
 https://evelina-duchesslike-solely.ngrok-free.dev
 ```
 
 **API Documentation:**
+
 ```
 https://evelina-duchesslike-solely.ngrok-free.dev/api-docs
 ```
@@ -334,6 +349,7 @@ docker-compose down --rmi all
 ### 7.1. Firewall Configuration
 
 **Allow only necessary ports:**
+
 ```bash
 # Ubuntu/Debian
 sudo ufw allow 80/tcp
@@ -364,6 +380,7 @@ sudo certbot renew --dry-run
 ### 7.3. Security Headers
 
 Đã được cấu hình trong Helmet middleware:
+
 - X-Content-Type-Options
 - X-Frame-Options
 - X-XSS-Protection
@@ -372,6 +389,7 @@ sudo certbot renew --dry-run
 ### 7.4. Rate Limiting
 
 Đã được cấu hình:
+
 - 100 requests / 15 minutes per IP
 - Áp dụng cho tất cả `/api/*` endpoints
 
@@ -385,7 +403,13 @@ Docker Compose đã cấu hình health checks tự động:
 
 ```yaml
 healthcheck:
-  test: ["CMD", "node", "-e", "require('http').get('http://localhost:5000/api/health', ...)"]
+  test:
+    [
+      "CMD",
+      "node",
+      "-e",
+      "require('http').get('http://localhost:5000/api/health', ...)",
+    ]
   interval: 30s
   timeout: 10s
   retries: 3
@@ -407,12 +431,14 @@ docker system df
 ### 8.3. Application Logs
 
 **Log files location:**
+
 ```
 ./logs/server.log
 ./logs/server-error.log
 ```
 
 **View logs:**
+
 ```bash
 tail -f logs/server.log
 ```

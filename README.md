@@ -26,7 +26,7 @@
 ✅ **Security Verified** - CodeQL analysis passed with 0 vulnerabilities  
 ✅ **Comprehensive Testing** - 85%+ test coverage with CI/CD pipeline  
 ✅ **Full Documentation** - 50,700+ lines of guides and documentation  
-✅ **Real Data Only** - 100% real data, no mock/demo/simulated data  
+✅ **Real Data Only** - 100% real data, no mock/demo/simulated data
 
 See [PROJECT_COMPLETION_STATUS.md](./PROJECT_COMPLETION_STATUS.md) for detailed completion report.
 
@@ -62,29 +62,34 @@ DogeRat Web Admin is a powerful, secure, and scalable platform for remotely mana
 ## ✨ Features
 
 ### Device Management
+
 - ✅ Real-time device status (online/offline)
 - ✅ Device list with filtering and search
 - ✅ Detailed device information and logs
 - ✅ Bulk device operations
 
 ### Remote Commands
+
 - 📱 **Data Collection**: Contacts, SMS, call logs, location, clipboard
 - 📷 **Media**: Camera (main/selfie), screenshots, gallery, microphone
 - 🔧 **Actions**: Toast messages, vibration, audio playback, open URLs
 - 🔐 **Advanced**: Keylogger, phishing pages, file explorer, encryption
 
 ### User Management (Admin Only)
+
 - 👥 Create, edit, and delete users
 - 🎭 Role-based access control (Admin, Manager, Operator, Viewer)
 - 📝 User activity tracking
 
 ### Audit & Security
+
 - 📊 Complete audit trail of all actions
 - 🔍 Filter logs by user, action, date range
 - 📥 Export audit logs to CSV
 - 🛡️ Input validation, rate limiting, CORS
 
 ### Dashboard
+
 - 📈 Device statistics (total, online, offline)
 - 📊 Charts and visualizations
 - ⏱️ Recent activity timeline
@@ -169,6 +174,7 @@ npm start
 See [ENV_VARIABLES.md](ENV_VARIABLES.md) for detailed configuration options.
 
 **Essential Variables:**
+
 ```env
 # Database
 DATABASE_URL=postgresql://user:password@localhost:5432/dogerat
@@ -193,6 +199,7 @@ ADMIN_PASSWORD=ChangeMe123!
 See [docs/database-schema.md](docs/database-schema.md) for complete schema documentation.
 
 **Main Tables:**
+
 - `users` - User accounts with RBAC
 - `devices` - Connected Android devices
 - `device_logs` - Data collected from devices
@@ -206,6 +213,7 @@ Interactive API documentation available at `/api-docs` when server is running.
 OpenAPI spec: `docs/api-spec.yaml`
 
 **Main Endpoints:**
+
 - `POST /api/auth/login` - User authentication
 - `GET /api/devices` - List all devices
 - `POST /api/devices/:id/command` - Send command to device
@@ -218,12 +226,12 @@ Full API specification: [docs/api-spec.yaml](docs/api-spec.yaml)
 
 ## 🎭 User Roles & Permissions
 
-| Role | Permissions |
-|------|------------|
-| **Admin** | Full access: user management, audit logs, all device operations |
-| **Manager** | View devices, read-only commands, view audit logs |
-| **Operator** | Execute device commands, view device list |
-| **Viewer** | Read-only access to device list and status |
+| Role         | Permissions                                                     |
+| ------------ | --------------------------------------------------------------- |
+| **Admin**    | Full access: user management, audit logs, all device operations |
+| **Manager**  | View devices, read-only commands, view audit logs               |
+| **Operator** | Execute device commands, view device list                       |
+| **Viewer**   | Read-only access to device list and status                      |
 
 ---
 
@@ -251,6 +259,7 @@ docker-compose down -v
 ### Health Checks
 
 All services include health checks:
+
 - **Database**: `pg_isready` check every 10s
 - **Backend**: HTTP `/api/health` check every 30s
 - **Frontend**: nginx health check every 30s
@@ -296,6 +305,7 @@ dogerat-web-admin/
 ### Available Scripts
 
 **Backend:**
+
 ```bash
 npm run dev              # Start development server
 npm run build            # Build for production
@@ -315,6 +325,7 @@ npm run db:setup         # Migrate + seed
 ```
 
 **Frontend:**
+
 ```bash
 cd client
 npm start                # Start dev server (http://localhost:4200)
@@ -338,12 +349,12 @@ DogeRat Web Admin has comprehensive testing infrastructure with **85%+ test cove
 
 ### Test Coverage
 
-| Component | Coverage | Status |
-|-----------|----------|--------|
-| Backend APIs | 85%+ | ✅ Passing |
-| Frontend Components | 80%+ | ✅ Passing |
-| Integration Tests | 100% | ✅ Passing |
-| E2E Tests | 100% | ✅ Passing |
+| Component           | Coverage | Status     |
+| ------------------- | -------- | ---------- |
+| Backend APIs        | 85%+     | ✅ Passing |
+| Frontend Components | 80%+     | ✅ Passing |
+| Integration Tests   | 100%     | ✅ Passing |
+| E2E Tests           | 100%     | ✅ Passing |
 
 ### Running Tests
 
@@ -372,6 +383,7 @@ npm run validate
 ### CI/CD Pipeline
 
 GitHub Actions automatically runs:
+
 - ✅ Lint and type checking
 - ✅ Backend tests with PostgreSQL
 - ✅ Frontend tests with Chrome
@@ -392,7 +404,7 @@ See [`.github/workflows/ci.yml`](./.github/workflows/ci.yml) for details.
 ✅ **OWASP Top 10**: All covered  
 ✅ **npm audit**: 0 vulnerabilities  
 ✅ **Security Headers**: Properly configured  
-✅ **Audit Logging**: Complete trail  
+✅ **Audit Logging**: Complete trail
 
 ### Security Features
 
@@ -429,6 +441,7 @@ See [`.github/workflows/ci.yml`](./.github/workflows/ci.yml) for details.
 Please report security vulnerabilities to: security@dogerat.com
 
 Additional docs:
+
 - Deployment guide: `docs/deployment.md`
 - Security guide: `docs/security.md`
 - Architecture overview: `docs/architecture.md`
@@ -459,7 +472,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **For Educational and Internal Use Only**
 
-This software is provided for educational purposes and internal system administration. The developers provide no warranty and will not be responsible for any direct or indirect damage caused by the usage of this tool. 
+This software is provided for educational purposes and internal system administration. The developers provide no warranty and will not be responsible for any direct or indirect damage caused by the usage of this tool.
 
 **Do not use for illegal activities.** Users assume full responsibility for any misuse.
 

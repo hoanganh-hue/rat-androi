@@ -23,7 +23,7 @@
 ```
 
 Key Flows
+
 - JWT Auth for API, Socket.IO uses token for real-time
 - RBAC enforced at route-level middleware
 - Audit middleware logs actions and redacts secrets
-

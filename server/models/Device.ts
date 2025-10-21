@@ -1,7 +1,17 @@
 // Device Model - Lưu thông tin thiết bị Android kết nối
-import { Table, Column, Model, DataType, PrimaryKey, Default, AllowNull, ForeignKey, BelongsTo } from 'sequelize-typescript';
-import { Optional } from 'sequelize';
-import { User } from './User';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  PrimaryKey,
+  Default,
+  AllowNull,
+  ForeignKey,
+  BelongsTo,
+} from "sequelize-typescript";
+import { Optional } from "sequelize";
+import { User } from "./User";
 
 export interface DeviceAttributes {
   id: number;
@@ -17,13 +27,22 @@ export interface DeviceAttributes {
   updated_at: Date;
 }
 
-export interface DeviceCreationAttributes extends Optional<DeviceAttributes, 'id' | 'created_at' | 'updated_at' | 'user_agent' | 'last_seen_at' | 'owner_user_id'> {}
+export interface DeviceCreationAttributes
+  extends Optional<
+    DeviceAttributes,
+    | "id"
+    | "created_at"
+    | "updated_at"
+    | "user_agent"
+    | "last_seen_at"
+    | "owner_user_id"
+  > {}
 
 @Table({
-  tableName: 'devices',
+  tableName: "devices",
   timestamps: true,
-  createdAt: 'created_at',
-  updatedAt: 'updated_at',
+  createdAt: "created_at",
+  updatedAt: "updated_at",
 })
 export class Device extends Model<DeviceAttributes, DeviceCreationAttributes> {
   @PrimaryKey

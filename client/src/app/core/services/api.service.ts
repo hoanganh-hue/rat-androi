@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ApiService {
   private http = inject(HttpClient);
@@ -53,9 +53,9 @@ export class ApiService {
   uploadFile<T>(endpoint: string, file: File, additionalData?: any): Observable<T> {
     const formData = new FormData();
     formData.append('file', file);
-    
+
     if (additionalData) {
-      Object.keys(additionalData).forEach(key => {
+      Object.keys(additionalData).forEach((key) => {
         formData.append(key, additionalData[key]);
       });
     }
@@ -68,7 +68,7 @@ export class ApiService {
    */
   downloadFile(endpoint: string): Observable<Blob> {
     return this.http.get(`${this.apiUrl}${endpoint}`, {
-      responseType: 'blob'
+      responseType: 'blob',
     });
   }
 
@@ -77,16 +77,15 @@ export class ApiService {
    */
   private buildParams(params?: any): HttpParams {
     let httpParams = new HttpParams();
-    
+
     if (params) {
-      Object.keys(params).forEach(key => {
+      Object.keys(params).forEach((key) => {
         if (params[key] !== null && params[key] !== undefined) {
           httpParams = httpParams.set(key, params[key].toString());
         }
       });
     }
-    
+
     return httpParams;
   }
 }
-

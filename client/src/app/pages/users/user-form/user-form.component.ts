@@ -22,7 +22,7 @@ import { User } from '../../../core/models';
     MatInputModule,
     MatSelectModule,
     MatButtonModule,
-    MatSnackBarModule
+    MatSnackBarModule,
   ],
   template: `
     <h2 mat-dialog-title>{{ isEditMode ? 'Edit User' : 'Create User' }}</h2>
@@ -31,7 +31,7 @@ import { User } from '../../../core/models';
       <form [formGroup]="userForm" class="user-form">
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Username</mat-label>
-          <input matInput formControlName="username" placeholder="Enter username">
+          <input matInput formControlName="username" placeholder="Enter username" />
           @if (userForm.get('username')?.hasError('required')) {
             <mat-error>Username is required</mat-error>
           }
@@ -39,7 +39,7 @@ import { User } from '../../../core/models';
 
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Email</mat-label>
-          <input matInput type="email" formControlName="email" placeholder="user@example.com">
+          <input matInput type="email" formControlName="email" placeholder="user@example.com" />
           @if (userForm.get('email')?.hasError('email')) {
             <mat-error>Please enter a valid email</mat-error>
           }
@@ -48,7 +48,12 @@ import { User } from '../../../core/models';
         @if (!isEditMode) {
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Password</mat-label>
-            <input matInput type="password" formControlName="password" placeholder="Enter password">
+            <input
+              matInput
+              type="password"
+              formControlName="password"
+              placeholder="Enter password"
+            />
             @if (userForm.get('password')?.hasError('required')) {
               <mat-error>Password is required</mat-error>
             }
@@ -79,23 +84,26 @@ import { User } from '../../../core/models';
         mat-raised-button
         color="primary"
         (click)="save()"
-        [disabled]="userForm.invalid || saving">
+        [disabled]="userForm.invalid || saving"
+      >
         {{ saving ? 'Saving...' : 'Save' }}
       </button>
     </mat-dialog-actions>
   `,
-  styles: [`
-    .user-form {
-      display: flex;
-      flex-direction: column;
-      gap: var(--spacing-md);
-      padding: var(--spacing-md) 0;
-    }
+  styles: [
+    `
+      .user-form {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-md);
+        padding: var(--spacing-md) 0;
+      }
 
-    .full-width {
-      width: 100%;
-    }
-  `]
+      .full-width {
+        width: 100%;
+      }
+    `,
+  ],
 })
 export class UserFormComponent {
   private fb = inject(FormBuilder);
@@ -110,7 +118,7 @@ export class UserFormComponent {
     username: ['', Validators.required],
     email: ['', [Validators.email]],
     password: ['', []],
-    role: ['viewer', Validators.required]
+    role: ['viewer', Validators.required],
   });
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: User | null) {
@@ -119,7 +127,7 @@ export class UserFormComponent {
       this.userForm.patchValue({
         username: data.username,
         email: data.email || '',
-        role: data.role
+        role: data.role,
       });
       // Don't require password for edit
       this.userForm.get('password')?.clearValidators();
@@ -147,7 +155,7 @@ export class UserFormComponent {
         this.snackBar.open(
           `User ${this.isEditMode ? 'updated' : 'created'} successfully`,
           'Close',
-          { duration: 2000 }
+          { duration: 2000 },
         );
         this.dialogRef.close(true);
       },
@@ -156,9 +164,9 @@ export class UserFormComponent {
         this.snackBar.open(
           error.error?.error || `Failed to ${this.isEditMode ? 'update' : 'create'} user`,
           'Close',
-          { duration: 3000 }
+          { duration: 3000 },
         );
-      }
+      },
     });
   }
 
@@ -166,4 +174,3 @@ export class UserFormComponent {
     this.dialogRef.close(false);
   }
 }
-

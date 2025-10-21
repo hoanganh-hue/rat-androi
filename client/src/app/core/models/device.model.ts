@@ -39,7 +39,7 @@ export enum CommandType {
   APPS = 'apps',
   FILE_EXPLORER = 'file-explorer',
   ALL_SMS = 'all-sms',
-  POP_NOTIFICATION = 'popNotification'
+  POP_NOTIFICATION = 'popNotification',
 }
 
 export enum CommandStatus {
@@ -47,7 +47,7 @@ export enum CommandStatus {
   SENT = 'sent',
   OK = 'ok',
   ERROR = 'error',
-  TIMEOUT = 'timeout'
+  TIMEOUT = 'timeout',
 }
 
 export interface Command {
@@ -89,7 +89,7 @@ export enum LogType {
   APPS = 'apps',
   FILE = 'file',
   MESSAGE = 'message',
-  OTHER = 'other'
+  OTHER = 'other',
 }
 
 export interface DeviceLog {
@@ -100,4 +100,3 @@ export interface DeviceLog {
   file_path?: string;
   created_at: string;
 }
-

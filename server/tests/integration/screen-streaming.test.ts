@@ -1,9 +1,9 @@
 // Tests for Screen Streaming and Remote Control endpoints
-import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
-import request from 'supertest';
-import bcrypt from 'bcrypt';
-import { app, server } from '../../index';
-import { initializeDatabase, User, Device, UserRole } from '../../models';
+import { describe, it, expect, beforeAll, afterAll } from "@jest/globals";
+import request from "supertest";
+import bcrypt from "bcrypt";
+import { app, server } from "../../index";
+import { initializeDatabase, User, Device, UserRole } from "../../models";
 
 let authToken: string;
 let deviceId: string;
@@ -13,23 +13,21 @@ beforeAll(async () => {
   await initializeDatabase();
 
   // Create test user with properly hashed password
-  const password = 'Test@123';
+  const password = "Test@123";
   const password_hash = await bcrypt.hash(password, 10);
-  
+
   const testUser = await User.create({
-    username: 'testoperator',
-    email: 'test@operator.com',
+    username: "testoperator",
+    email: "test@operator.com",
     password_hash,
     role: UserRole.OPERATOR,
   });
 
   // Login to get token
-  const loginRes = await request(app)
-    .post('/api/auth/login')
-    .send({
-      username: 'testoperator',
-      password,
-    });
+  const loginRes = await request(app).post("/api/auth/login").send({
+    username: "testoperator",
+    password,
+  });
 
   if (loginRes.body.token) {
     authToken = loginRes.body.token;
@@ -37,11 +35,11 @@ beforeAll(async () => {
 
   // Create test device
   const device = await Device.create({
-    socket_id: 'test-socket-stream',
-    device_id: 'test-device-stream-001',
-    model: 'Test Stream Device',
-    version: 'Android 12',
-    ip: '127.0.0.1',
+    socket_id: "test-socket-stream",
+    device_id: "test-device-stream-001",
+    model: "Test Stream Device",
+    version: "Android 12",
+    ip: "127.0.0.1",
     last_seen_at: new Date(),
   });
 
@@ -50,18 +48,18 @@ beforeAll(async () => {
 
 afterAll(async () => {
   // Cleanup
-  await Device.destroy({ where: { device_id: 'test-device-stream-001' } });
-  await User.destroy({ where: { username: 'testoperator' } });
+  await Device.destroy({ where: { device_id: "test-device-stream-001" } });
+  await User.destroy({ where: { username: "testoperator" } });
   server.close();
 });
 
-describe('Screen Streaming Endpoints', () => {
-  it('should start screen stream', async () => {
+describe("Screen Streaming Endpoints", () => {
+  it("should start screen stream", async () => {
     const response = await request(app)
       .post(`/api/devices/${deviceId}/start-screen-stream`)
-      .set('Authorization', `Bearer ${authToken}`)
+      .set("Authorization", `Bearer ${authToken}`)
       .send({
-        quality: 'medium',
+        quality: "medium",
         fps: 10,
       });
 
@@ -70,34 +68,36 @@ describe('Screen Streaming Endpoints', () => {
     expect([200, 503]).toContain(response.status);
   });
 
-  it('should stop screen stream', async () => {
+  it("should stop screen stream", async () => {
     const response = await request(app)
       .post(`/api/devices/${deviceId}/stop-screen-stream`)
-      .set('Authorization', `Bearer ${authToken}`);
+      .set("Authorization", `Bearer ${authToken}`);
 
     expect([200, 500]).toContain(response.status);
   });
 
-  it('should return 404 for non-existent device', async () => {
+  it("should return 404 for non-existent device", async () => {
     // Use a valid UUID format that doesn't exist in the database
     const response = await request(app)
-      .post('/api/devices/00000000-0000-0000-0000-000000000000/start-screen-stream')
-      .set('Authorization', `Bearer ${authToken}`)
+      .post(
+        "/api/devices/00000000-0000-0000-0000-000000000000/start-screen-stream",
+      )
+      .set("Authorization", `Bearer ${authToken}`)
       .send({
-        quality: 'medium',
+        quality: "medium",
       });
 
     expect(response.status).toBe(404);
   });
 });
 
-describe('Remote Control Endpoints', () => {
-  it('should inject touch event', async () => {
+describe("Remote Control Endpoints", () => {
+  it("should inject touch event", async () => {
     const response = await request(app)
       .post(`/api/devices/${deviceId}/inject-touch`)
-      .set('Authorization', `Bearer ${authToken}`)
+      .set("Authorization", `Bearer ${authToken}`)
       .send({
-        action: 'down',
+        action: "down",
         x: 100,
         y: 200,
       });
@@ -105,34 +105,34 @@ describe('Remote Control Endpoints', () => {
     expect([200, 500]).toContain(response.status);
   });
 
-  it('should inject keyboard event', async () => {
+  it("should inject keyboard event", async () => {
     const response = await request(app)
       .post(`/api/devices/${deviceId}/inject-keyboard`)
-      .set('Authorization', `Bearer ${authToken}`)
+      .set("Authorization", `Bearer ${authToken}`)
       .send({
-        text: 'Hello',
+        text: "Hello",
         keyCode: 72,
       });
 
     expect([200, 500]).toContain(response.status);
   });
 
-  it('should reject invalid touch event', async () => {
+  it("should reject invalid touch event", async () => {
     const response = await request(app)
       .post(`/api/devices/${deviceId}/inject-touch`)
-      .set('Authorization', `Bearer ${authToken}`)
+      .set("Authorization", `Bearer ${authToken}`)
       .send({
-        action: 'down',
+        action: "down",
         // Missing x and y
       });
 
     expect(response.status).toBe(400);
   });
 
-  it('should reject invalid keyboard event', async () => {
+  it("should reject invalid keyboard event", async () => {
     const response = await request(app)
       .post(`/api/devices/${deviceId}/inject-keyboard`)
-      .set('Authorization', `Bearer ${authToken}`)
+      .set("Authorization", `Bearer ${authToken}`)
       .send({
         // Missing both text and keyCode
       });
@@ -140,11 +140,11 @@ describe('Remote Control Endpoints', () => {
     expect(response.status).toBe(400);
   });
 
-  it('should require authentication', async () => {
+  it("should require authentication", async () => {
     const response = await request(app)
       .post(`/api/devices/${deviceId}/inject-touch`)
       .send({
-        action: 'down',
+        action: "down",
         x: 100,
         y: 200,
       });
@@ -153,15 +153,15 @@ describe('Remote Control Endpoints', () => {
   });
 });
 
-describe('Socket.IO Events', () => {
-  it('should handle screen-frame events', (done) => {
+describe("Socket.IO Events", () => {
+  it("should handle screen-frame events", (done) => {
     // This would require a Socket.IO client to properly test
     // For now, this is a placeholder test
     expect(true).toBe(true);
     done();
   });
 
-  it('should handle remote-control-event', (done) => {
+  it("should handle remote-control-event", (done) => {
     // This would require a Socket.IO client to properly test
     // For now, this is a placeholder test
     expect(true).toBe(true);

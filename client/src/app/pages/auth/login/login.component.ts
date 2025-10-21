@@ -22,7 +22,7 @@ import { AuthService } from '../../../core/services/auth.service';
     MatInputModule,
     MatButtonModule,
     MatProgressSpinnerModule,
-    MatIconModule
+    MatIconModule,
   ],
   template: `
     <div class="login-container">
@@ -108,108 +108,110 @@ import { AuthService } from '../../../core/services/auth.service';
       </div>
     </div>
   `,
-  styles: [`
-    .login-container {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
-      padding: var(--spacing-lg);
-    }
-
-    .login-card {
-      width: 100%;
-      max-width: 450px;
-      padding: var(--spacing-xl);
-    }
-
-    .login-header {
-      text-align: center;
-      margin-bottom: var(--spacing-lg);
-    }
-
-    .logo-icon {
-      font-size: 48px;
-      width: 48px;
-      height: 48px;
-      color: var(--primary-brand);
-      margin-bottom: var(--spacing-sm);
-    }
-
-    .login-header h1 {
-      margin: var(--spacing-sm) 0;
-      color: var(--text-primary);
-    }
-
-    .subtitle {
-      color: var(--text-secondary);
-      margin: 0;
-    }
-
-    .full-width {
-      width: 100%;
-    }
-
-    mat-form-field {
-      margin-bottom: var(--spacing-md);
-    }
-
-    .login-button {
-      height: 48px;
-      font-size: 16px;
-      font-weight: 500;
-      margin-top: var(--spacing-md);
-    }
-
-    .button-spinner {
-      display: inline-block;
-      margin-right: var(--spacing-sm);
-    }
-
-    .error-message {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-sm);
-      padding: var(--spacing-md);
-      background-color: rgba(244, 67, 54, 0.1);
-      border-left: 4px solid var(--accent-error);
-      border-radius: var(--radius-sm);
-      margin-bottom: var(--spacing-md);
-      color: var(--accent-error);
-    }
-
-    .error-message mat-icon {
-      font-size: 20px;
-      width: 20px;
-      height: 20px;
-    }
-
-    .login-footer {
-      margin-top: var(--spacing-lg);
-      text-align: center;
-    }
-
-    .login-footer code {
-      background-color: var(--bg-tertiary);
-      padding: 2px 6px;
-      border-radius: var(--radius-sm);
-      font-size: 12px;
-    }
-
-    .version-info {
-      margin-top: var(--spacing-lg);
-      text-align: center;
-      color: var(--text-secondary);
-    }
-
-    @media (max-width: 600px) {
-      .login-card {
+  styles: [
+    `
+      .login-container {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
         padding: var(--spacing-lg);
       }
-    }
-  `]
+
+      .login-card {
+        width: 100%;
+        max-width: 450px;
+        padding: var(--spacing-xl);
+      }
+
+      .login-header {
+        text-align: center;
+        margin-bottom: var(--spacing-lg);
+      }
+
+      .logo-icon {
+        font-size: 48px;
+        width: 48px;
+        height: 48px;
+        color: var(--primary-brand);
+        margin-bottom: var(--spacing-sm);
+      }
+
+      .login-header h1 {
+        margin: var(--spacing-sm) 0;
+        color: var(--text-primary);
+      }
+
+      .subtitle {
+        color: var(--text-secondary);
+        margin: 0;
+      }
+
+      .full-width {
+        width: 100%;
+      }
+
+      mat-form-field {
+        margin-bottom: var(--spacing-md);
+      }
+
+      .login-button {
+        height: 48px;
+        font-size: 16px;
+        font-weight: 500;
+        margin-top: var(--spacing-md);
+      }
+
+      .button-spinner {
+        display: inline-block;
+        margin-right: var(--spacing-sm);
+      }
+
+      .error-message {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+        padding: var(--spacing-md);
+        background-color: rgba(244, 67, 54, 0.1);
+        border-left: 4px solid var(--accent-error);
+        border-radius: var(--radius-sm);
+        margin-bottom: var(--spacing-md);
+        color: var(--accent-error);
+      }
+
+      .error-message mat-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+      }
+
+      .login-footer {
+        margin-top: var(--spacing-lg);
+        text-align: center;
+      }
+
+      .login-footer code {
+        background-color: var(--bg-tertiary);
+        padding: 2px 6px;
+        border-radius: var(--radius-sm);
+        font-size: 12px;
+      }
+
+      .version-info {
+        margin-top: var(--spacing-lg);
+        text-align: center;
+        color: var(--text-secondary);
+      }
+
+      @media (max-width: 600px) {
+        .login-card {
+          padding: var(--spacing-lg);
+        }
+      }
+    `,
+  ],
 })
 export class LoginComponent {
   private fb = inject(FormBuilder);
@@ -222,7 +224,7 @@ export class LoginComponent {
 
   loginForm = this.fb.group({
     username: ['', Validators.required],
-    password: ['', Validators.required]
+    password: ['', Validators.required],
   });
 
   onSubmit() {
@@ -235,7 +237,7 @@ export class LoginComponent {
 
     const credentials = {
       username: this.loginForm.value.username!,
-      password: this.loginForm.value.password!
+      password: this.loginForm.value.password!,
     };
 
     this.authService.login(credentials).subscribe({
@@ -245,11 +247,8 @@ export class LoginComponent {
       },
       error: (error) => {
         this.loading.set(false);
-        this.errorMessage.set(
-          error.error?.error || 'Login failed. Please check your credentials.'
-        );
-      }
+        this.errorMessage.set(error.error?.error || 'Login failed. Please check your credentials.');
+      },
     });
   }
 }
-
