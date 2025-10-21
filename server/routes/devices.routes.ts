@@ -190,4 +190,200 @@ router.delete(
   }
 );
 
+/**
+ * POST /api/devices/:id/start-screen-stream
+ * Start screen streaming from device
+ * @swagger
+ * /api/devices/{id}/start-screen-stream:
+ *   post:
+ *     summary: Start screen streaming from device
+ *     tags: [Devices]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Device ID
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               quality:
+ *                 type: string
+ *                 enum: [low, medium, high]
+ *                 default: medium
+ *               fps:
+ *                 type: number
+ *                 default: 10
+ *     responses:
+ *       200:
+ *         description: Stream started successfully
+ *       404:
+ *         description: Device not found
+ *       503:
+ *         description: Device is offline
+ */
+router.post(
+  '/:id/start-screen-stream',
+  canControlDevices,
+  auditLog({ action: 'devices.startScreenStream', targetType: 'device' }),
+  async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+      const device = await Device.findByPk(req.params.id);
+
+      if (!device) {
+        res.status(404).json({ error: 'Device not found' });
+        return;
+      }
+
+      if (!isDeviceOnline(device.device_id)) {
+        res.status(503).json({ error: 'Device is offline' });
+        return;
+      }
+
+      // Send start stream command to device
+      const sent = emitToDevice(device.device_id, 'start-screen-stream', {
+        quality: req.body.quality || 'medium', // low, medium, high
+        fps: req.body.fps || 10,
+      });
+
+      if (sent) {
+        logger.info(`📺 Screen stream started for device ${device.device_id}`);
+        res.json({ 
+          message: 'Screen stream started', 
+          deviceId: device.device_id 
+        });
+      } else {
+        res.status(500).json({ error: 'Failed to start stream' });
+      }
+    } catch (error) {
+      logger.error('Start screen stream error:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+);
+
+/**
+ * POST /api/devices/:id/stop-screen-stream
+ * Stop screen streaming from device
+ */
+router.post(
+  '/:id/stop-screen-stream',
+  canControlDevices,
+  auditLog({ action: 'devices.stopScreenStream', targetType: 'device' }),
+  async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+      const device = await Device.findByPk(req.params.id);
+
+      if (!device) {
+        res.status(404).json({ error: 'Device not found' });
+        return;
+      }
+
+      // Send stop stream command to device
+      const sent = emitToDevice(device.device_id, 'stop-screen-stream', {});
+
+      if (sent) {
+        logger.info(`📺 Screen stream stopped for device ${device.device_id}`);
+        res.json({ message: 'Screen stream stopped' });
+      } else {
+        res.status(500).json({ error: 'Failed to stop stream' });
+      }
+    } catch (error) {
+      logger.error('Stop screen stream error:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+);
+
+/**
+ * POST /api/devices/:id/inject-touch
+ * Inject touch event to device
+ */
+router.post(
+  '/:id/inject-touch',
+  canControlDevices,
+  auditLog({ action: 'devices.injectTouch', targetType: 'device' }),
+  async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+      const device = await Device.findByPk(req.params.id);
+
+      if (!device) {
+        res.status(404).json({ error: 'Device not found' });
+        return;
+      }
+
+      const { action, x, y } = req.body; // action: down, up, move
+
+      if (!action || x === undefined || y === undefined) {
+        res.status(400).json({ error: 'Invalid touch event parameters' });
+        return;
+      }
+
+      const sent = emitToDevice(device.device_id, 'touch-event', {
+        action,
+        x,
+        y,
+        timestamp: Date.now(),
+      });
+
+      if (sent) {
+        res.json({ message: 'Touch event sent' });
+      } else {
+        res.status(500).json({ error: 'Failed to send touch event' });
+      }
+    } catch (error) {
+      logger.error('Inject touch error:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+);
+
+/**
+ * POST /api/devices/:id/inject-keyboard
+ * Inject keyboard input to device
+ */
+router.post(
+  '/:id/inject-keyboard',
+  canControlDevices,
+  auditLog({ action: 'devices.injectKeyboard', targetType: 'device' }),
+  async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+      const device = await Device.findByPk(req.params.id);
+
+      if (!device) {
+        res.status(404).json({ error: 'Device not found' });
+        return;
+      }
+
+      const { text, keyCode } = req.body;
+
+      if (!text && !keyCode) {
+        res.status(400).json({ error: 'Invalid keyboard event parameters' });
+        return;
+      }
+
+      const sent = emitToDevice(device.device_id, 'keyboard-event', {
+        text,
+        keyCode,
+        timestamp: Date.now(),
+      });
+
+      if (sent) {
+        res.json({ message: 'Keyboard event sent' });
+      } else {
+        res.status(500).json({ error: 'Failed to send keyboard event' });
+      }
+    } catch (error) {
+      logger.error('Inject keyboard error:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+);
+
 export default router;
