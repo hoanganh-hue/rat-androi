@@ -1,0 +1,73 @@
+# Tailscale Configuration for Zero-Trust Mesh Network
+# Alternative to ngrok - provides secure WireGuard-based mesh network
+#
+# Setup Instructions:
+# 1. Sign up at https://tailscale.com
+# 2. Install tailscale on server: curl -fsSL https://tailscale.com/install.sh | sh
+# 3. Authenticate: sudo tailscale up
+# 4. Configure ACLs in Tailscale admin console
+#
+# Benefits:
+# - Direct peer-to-peer encrypted connections
+# - No central relay (better performance)
+# - Fine-grained ACLs
+# - MagicDNS for easy service discovery
+# - Works behind NAT/firewalls
+
+version: "3.8"
+
+services:
+  # Tailscale sidecar for DogeRat server
+  tailscale-server:
+    image: tailscale/tailscale:latest
+    container_name: dogerat-tailscale-server
+    hostname: dogerat-server
+    environment:
+      - TS_AUTHKEY=${TS_AUTHKEY}  # Get from Tailscale admin console
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_USERSPACE=false
+      - TS_ACCEPT_DNS=true
+      - TS_EXTRA_ARGS=--advertise-tags=tag:dogerat-server
+    volumes:
+      - tailscale-server-state:/var/lib/tailscale
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    networks:
+      - dogerat-network
+    restart: unless-stopped
+
+  # Server remains the same, but accessed via Tailscale network
+  server:
+    # ... existing server config ...
+    depends_on:
+      - postgres
+      - tailscale-server
+    # Server will be accessible at: http://dogerat-server.your-tailnet.ts.net:5000
+
+volumes:
+  tailscale-server-state:
+    driver: local
+
+networks:
+  dogerat-network:
+    driver: bridge
+
+# Recommended Tailscale ACLs (add in Tailscale admin console):
+# {
+#   "groups": {
+#     "group:admins": ["user1@example.com"],
+#     "group:operators": ["user2@example.com"]
+#   },
+#   "tagOwners": {
+#     "tag:dogerat-server": ["group:admins"]
+#   },
+#   "acls": [
+#     {
+#       "action": "accept",
+#       "src": ["group:admins", "group:operators"],
+#       "dst": ["tag:dogerat-server:5000"]
+#     }
+#   ]
+# }

@@ -1,5 +1,5 @@
 # DogeRat Web Admin - Frontend Dockerfile
-# Multi-stage build for production
+# Multi-stage build for production with security hardening
 
 # Build stage
 FROM node:20-alpine AS builder
@@ -13,29 +13,44 @@ COPY tsconfig.json ./
 COPY tsconfig.app.json ./
 
 # Install dependencies
-RUN npm ci
+RUN npm ci && \
+    npm cache clean --force
 
 # Copy source code
 COPY src/ ./src/
 COPY public/ ./public/
 
-# Build for production
+# Build for production with optimization
 RUN npm run build
 
-# Production stage with nginx
-FROM nginx:alpine
+# Production stage with nginx - minimal and secure
+FROM nginx:1.25-alpine
 
-# Copy custom nginx config
+# Add non-root user
+RUN addgroup -g 1001 -S nginx && \
+    adduser -S nginx -u 1001 -G nginx
+
+# Copy custom nginx config with security headers
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copy built application
 COPY --from=builder /app/dist/client/browser /usr/share/nginx/html
 
+# Set proper permissions
+RUN chown -R nginx:nginx /usr/share/nginx/html && \
+    chown -R nginx:nginx /var/cache/nginx && \
+    chown -R nginx:nginx /var/log/nginx && \
+    touch /var/run/nginx.pid && \
+    chown -R nginx:nginx /var/run/nginx.pid
+
+# Switch to non-root user
+USER nginx
+
 # Expose port
 EXPOSE 80
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
   CMD wget --quiet --tries=1 --spider http://localhost/ || exit 1
 
 # Start nginx

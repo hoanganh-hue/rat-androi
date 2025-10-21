@@ -1,0 +1,13 @@
+# ZAP Scanning Rules
+# Format: rule_id	WARN|IGNORE	URL_pattern	description
+#
+# Rule IDs reference: https://www.zaproxy.org/docs/alerts/
+
+# Ignore false positives
+10202	IGNORE	http://localhost:5000/api-docs	Content Security Policy (CSP) Header Not Set - expected for Swagger UI
+10096	IGNORE	http://localhost:5000/socket.io	Timestamp Disclosure - Socket.IO version in URL is expected
+10015	IGNORE	http://localhost:5000/uploads	Re-examine Cache-control Directives - file downloads need caching
+
+# Warnings to review but not fail
+10055	WARN	http://localhost:5000	CSP: Wildcard Directive
+10063	WARN	http://localhost:5000	Feature Policy Header Not Set
