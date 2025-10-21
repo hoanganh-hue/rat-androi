@@ -2,7 +2,7 @@
 import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
 import request from 'supertest';
 import { app, server } from '../../index';
-import { initializeDatabase, User, Device } from '../../models';
+import { initializeDatabase, User, Device, UserRole } from '../../models';
 
 let authToken: string;
 let deviceId: string;
@@ -16,7 +16,7 @@ beforeAll(async () => {
     username: 'testoperator',
     email: 'test@operator.com',
     password_hash: '$2b$10$abcdefghijklmnopqrstuvwxyz', // dummy hash
-    role: 'operator',
+    role: UserRole.OPERATOR,
   });
 
   // Login to get token
