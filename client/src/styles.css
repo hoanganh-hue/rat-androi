@@ -4,10 +4,12 @@
 @import './theme.scss';
 
 /* Import Inter Font Family */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+/* Note: Font URLs commented out due to network restrictions in build environment */
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap'); */
 
 /* Import Material Icons */
-@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+/* Note: Material Icons URL commented out - using local fallback */
+/* @import url('https://fonts.googleapis.com/icon?family=Material+Icons'); */
 
 /* Global Reset & Base Styles */
 * {
