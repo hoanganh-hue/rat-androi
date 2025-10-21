@@ -19,6 +19,8 @@ jobs:
   lint:
     name: Lint and Type Check
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
       
@@ -41,6 +43,9 @@ jobs:
   sca-scan:
     name: Supply Chain Analysis (SCA)
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
     steps:
       - uses: actions/checkout@v4
       
@@ -81,6 +86,8 @@ jobs:
   secret-scan:
     name: Secret Scanning
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
         with:
@@ -127,6 +134,8 @@ jobs:
   test:
     name: Backend Tests
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     
     services:
       postgres:
@@ -175,6 +184,8 @@ jobs:
     name: E2E Tests
     runs-on: ubuntu-latest
     needs: [lint, test]
+    permissions:
+      contents: read
     
     services:
       postgres:
@@ -342,6 +353,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [docker-build-scan]
     if: github.event_name == 'push'
+    permissions:
+      contents: read
     
     steps:
       - uses: actions/checkout@v4
@@ -368,6 +381,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [docker-sign-push]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
     
     steps:
       - uses: actions/checkout@v4
@@ -383,6 +398,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [sca-scan, secret-scan, sast-codeql, docker-build-scan]
     if: always()
+    permissions:
+      contents: read
     
     steps:
       - name: Generate security summary
