@@ -53,7 +53,7 @@ export class AuthService {
       this.setAuthState(user, token);
       
       // Initialize Socket.IO connection
-      this.socketService.connect(token);
+      this.socketService.connect();
       
       // Verify token with backend
       this.verifyToken().subscribe({
@@ -77,7 +77,7 @@ export class AuthService {
         this.setAuthState(response.user, response.token);
         
         // Initialize Socket.IO connection after successful login
-        this.socketService.connect(response.token);
+        this.socketService.connect();
         
         this.router.navigate(['/dashboard']);
       })

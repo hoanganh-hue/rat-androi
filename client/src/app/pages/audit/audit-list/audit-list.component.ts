@@ -368,7 +368,7 @@ export class AuditListComponent implements OnInit {
   }
 
   uniqueUsers(): string[] {
-    return [...new Set(this.audits().map(a => a.user_username))];
+    return [...new Set(this.audits().map(a => a.user_username).filter((u): u is string => u !== undefined))];
   }
 
   uniqueActions(): string[] {

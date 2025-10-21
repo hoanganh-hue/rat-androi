@@ -15,6 +15,10 @@ export interface AuditTrail {
     username: string;
     role: string;
   };
+  // Additional properties used in audit-list component
+  user_username?: string;
+  resource_type?: string;
+  details?: string;
 }
 
 export interface AuditQuery {
