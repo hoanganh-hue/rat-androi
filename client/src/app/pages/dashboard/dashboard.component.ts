@@ -9,7 +9,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Subscription } from 'rxjs';
 import { ApiService } from '../../core/services/api.service';
 import { AuthService } from '../../core/services/auth.service';
-import { SocketService } from '../../core/services/socket.service';
+import { SocketService, DeviceStatusUpdate } from '../../core/services/socket.service';
 import { Device } from '../../core/models';
 
 interface DashboardStats {
@@ -289,7 +289,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   setupRealtimeUpdates() {
     // Listen to device status updates
-    const statusSub = this.socketService.deviceStatusUpdates.subscribe(update => {
+    const statusSub = this.socketService.deviceStatusUpdates.subscribe((update: DeviceStatusUpdate) => {
       const deviceList = this.devices();
       const deviceIndex = deviceList.findIndex(d => d.device_id === update.device_id);
       

@@ -8,6 +8,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDividerModule } from '@angular/material/divider';
 import { ApiService } from '../../../core/services/api.service';
 import { User } from '../../../core/models';
 import { UserFormComponent } from '../user-form/user-form.component';
@@ -23,7 +24,8 @@ import { UserFormComponent } from '../user-form/user-form.component';
     MatChipsModule,
     MatMenuModule,
     MatDialogModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatDividerModule
   ],
   template: `
     <div class="users-container">

@@ -10,6 +10,12 @@ export interface SocketEvent {
   data: any;
 }
 
+export interface DeviceStatusUpdate {
+  device_id: string;
+  isOnline: boolean;
+  last_seen_at: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -19,9 +25,11 @@ export class SocketService {
   private socket: Socket | null = null;
   private connected = new BehaviorSubject<boolean>(false);
   private eventSubject = new Subject<SocketEvent>();
+  private deviceStatusSubject = new Subject<DeviceStatusUpdate>();
 
   public connected$ = this.connected.asObservable();
   public events$ = this.eventSubject.asObservable();
+  public deviceStatusUpdates = this.deviceStatusSubject.asObservable();
 
   /**
    * Connect to Socket.IO server
@@ -53,10 +61,12 @@ export class SocketService {
     // Listen for device events
     this.socket.on('device-connected', (data) => {
       this.eventSubject.next({ type: 'device-connected', data });
+      this.deviceStatusSubject.next({ device_id: data.device_id, isOnline: true, last_seen_at: new Date().toISOString() });
     });
 
     this.socket.on('device-disconnected', (data) => {
       this.eventSubject.next({ type: 'device-disconnected', data });
+      this.deviceStatusSubject.next({ device_id: data.device_id, isOnline: false, last_seen_at: new Date().toISOString() });
     });
 
     this.socket.on('device-message', (data) => {

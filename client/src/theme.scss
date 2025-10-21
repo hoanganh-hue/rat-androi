@@ -82,18 +82,18 @@ $dogerat-warn: (
   ),
 );
 
-// Create the theme object (Dark Mode)
-$dogerat-primary: mat.define-palette($dogerat-blue, 500, 700, 900);
-$dogerat-accent: mat.define-palette($dogerat-green, 500, 600, 800);
-$dogerat-warn: mat.define-palette($dogerat-warn, 500);
+// Create the theme object (Dark Mode) - Using M2 compatibility mode
+$dogerat-primary: mat.m2-define-palette($dogerat-blue, 500, 700, 900);
+$dogerat-accent: mat.m2-define-palette($dogerat-green, 500, 600, 800);
+$dogerat-warn: mat.m2-define-palette($dogerat-warn, 500);
 
-$dogerat-dark-theme: mat.define-dark-theme((
+$dogerat-dark-theme: mat.m2-define-dark-theme((
   color: (
     primary: $dogerat-primary,
     accent: $dogerat-accent,
     warn: $dogerat-warn,
   ),
-  typography: mat.define-typography-config(
+  typography: mat.m2-define-typography-config(
     $font-family: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
   ),
   density: 0,
