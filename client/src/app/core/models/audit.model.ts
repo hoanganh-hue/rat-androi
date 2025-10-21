@@ -28,4 +28,3 @@ export interface AuditQuery {
   endDate?: string;
   limit?: number;
 }
-

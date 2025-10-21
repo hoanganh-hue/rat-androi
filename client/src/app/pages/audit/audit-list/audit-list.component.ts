@@ -32,7 +32,7 @@ import { AuditTrail } from '../../../core/models';
     MatChipsModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatSnackBarModule
+    MatSnackBarModule,
   ],
   template: `
     <div class="audit-container">
@@ -75,7 +75,8 @@ import { AuditTrail } from '../../../core/models';
             matInput
             [matDatepicker]="startPicker"
             [(ngModel)]="filters.startDate"
-            (ngModelChange)="applyFilters()">
+            (ngModelChange)="applyFilters()"
+          />
           <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
           <mat-datepicker #startPicker></mat-datepicker>
         </mat-form-field>
@@ -86,7 +87,8 @@ import { AuditTrail } from '../../../core/models';
             matInput
             [matDatepicker]="endPicker"
             [(ngModel)]="filters.endDate"
-            (ngModelChange)="applyFilters()">
+            (ngModelChange)="applyFilters()"
+          />
           <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
           <mat-datepicker #endPicker></mat-datepicker>
         </mat-form-field>
@@ -104,7 +106,7 @@ import { AuditTrail } from '../../../core/models';
           <ng-container matColumnDef="timestamp">
             <th mat-header-cell *matHeaderCellDef>Timestamp</th>
             <td mat-cell *matCellDef="let audit">
-              {{ audit.timestamp | date:'short' }}
+              {{ audit.timestamp | date: 'short' }}
             </td>
           </ng-container>
 
@@ -123,8 +125,7 @@ import { AuditTrail } from '../../../core/models';
           <ng-container matColumnDef="action">
             <th mat-header-cell *matHeaderCellDef>Action</th>
             <td mat-cell *matCellDef="let audit">
-              <mat-chip
-                [class]="getActionClass(audit.action)">
+              <mat-chip [class]="getActionClass(audit.action)">
                 {{ audit.action }}
               </mat-chip>
             </td>
@@ -155,7 +156,7 @@ import { AuditTrail } from '../../../core/models';
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
         </table>
 
         @if (filteredAudits().length === 0) {
@@ -172,136 +173,139 @@ import { AuditTrail } from '../../../core/models';
         [length]="filteredAudits().length"
         [pageSize]="25"
         [pageSizeOptions]="[25, 50, 100]"
-        showFirstLastButtons>
+        showFirstLastButtons
+      >
       </mat-paginator>
     </div>
   `,
-  styles: [`
-    .audit-container {
-      padding: var(--spacing-lg);
-    }
+  styles: [
+    `
+      .audit-container {
+        padding: var(--spacing-lg);
+      }
 
-    .page-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: var(--spacing-xl);
-    }
-
-    .page-header h1 {
-      margin: 0;
-    }
-
-    .page-header button {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-sm);
-    }
-
-    .filters-section {
-      display: flex;
-      flex-wrap: wrap;
-      gap: var(--spacing-md);
-      margin-bottom: var(--spacing-lg);
-      padding: var(--spacing-lg);
-      background-color: var(--bg-secondary);
-      border-radius: var(--radius-md);
-    }
-
-    .filters-section mat-form-field {
-      min-width: 200px;
-    }
-
-    .table-container {
-      background-color: var(--bg-secondary);
-      border-radius: var(--radius-md);
-      overflow: hidden;
-      margin-bottom: var(--spacing-md);
-    }
-
-    .audit-table {
-      width: 100%;
-    }
-
-    .user-cell {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-sm);
-    }
-
-    .user-cell mat-icon {
-      color: var(--text-secondary);
-      font-size: 18px;
-      width: 18px;
-      height: 18px;
-    }
-
-    mat-chip {
-      font-size: 11px;
-      text-transform: uppercase;
-    }
-
-    mat-chip.create {
-      background-color: rgba(76, 175, 80, 0.15);
-      color: var(--accent-success);
-    }
-
-    mat-chip.update {
-      background-color: rgba(33, 150, 243, 0.15);
-      color: var(--primary-brand);
-    }
-
-    mat-chip.delete {
-      background-color: rgba(244, 67, 54, 0.15);
-      color: var(--accent-error);
-    }
-
-    mat-chip.login {
-      background-color: rgba(156, 39, 176, 0.15);
-      color: #9c27b0;
-    }
-
-    .details-code {
-      font-family: 'Courier New', monospace;
-      font-size: 12px;
-      max-width: 300px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      display: inline-block;
-    }
-
-    code {
-      font-family: 'Courier New', monospace;
-      font-size: 12px;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: var(--spacing-xl);
-      color: var(--text-secondary);
-    }
-
-    .empty-state mat-icon {
-      font-size: 64px;
-      width: 64px;
-      height: 64px;
-      opacity: 0.5;
-      margin-bottom: var(--spacing-md);
-    }
-
-    @media (max-width: 768px) {
       .page-header {
-        flex-direction: column;
-        align-items: flex-start;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--spacing-xl);
+      }
+
+      .page-header h1 {
+        margin: 0;
+      }
+
+      .page-header button {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+      }
+
+      .filters-section {
+        display: flex;
+        flex-wrap: wrap;
         gap: var(--spacing-md);
+        margin-bottom: var(--spacing-lg);
+        padding: var(--spacing-lg);
+        background-color: var(--bg-secondary);
+        border-radius: var(--radius-md);
       }
 
       .filters-section mat-form-field {
-        min-width: 100%;
+        min-width: 200px;
       }
-    }
-  `]
+
+      .table-container {
+        background-color: var(--bg-secondary);
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        margin-bottom: var(--spacing-md);
+      }
+
+      .audit-table {
+        width: 100%;
+      }
+
+      .user-cell {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+      }
+
+      .user-cell mat-icon {
+        color: var(--text-secondary);
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+      }
+
+      mat-chip {
+        font-size: 11px;
+        text-transform: uppercase;
+      }
+
+      mat-chip.create {
+        background-color: rgba(76, 175, 80, 0.15);
+        color: var(--accent-success);
+      }
+
+      mat-chip.update {
+        background-color: rgba(33, 150, 243, 0.15);
+        color: var(--primary-brand);
+      }
+
+      mat-chip.delete {
+        background-color: rgba(244, 67, 54, 0.15);
+        color: var(--accent-error);
+      }
+
+      mat-chip.login {
+        background-color: rgba(156, 39, 176, 0.15);
+        color: #9c27b0;
+      }
+
+      .details-code {
+        font-family: 'Courier New', monospace;
+        font-size: 12px;
+        max-width: 300px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: inline-block;
+      }
+
+      code {
+        font-family: 'Courier New', monospace;
+        font-size: 12px;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: var(--spacing-xl);
+        color: var(--text-secondary);
+      }
+
+      .empty-state mat-icon {
+        font-size: 64px;
+        width: 64px;
+        height: 64px;
+        opacity: 0.5;
+        margin-bottom: var(--spacing-md);
+      }
+
+      @media (max-width: 768px) {
+        .page-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: var(--spacing-md);
+        }
+
+        .filters-section mat-form-field {
+          min-width: 100%;
+        }
+      }
+    `,
+  ],
 })
 export class AuditListComponent implements OnInit {
   private api = inject(ApiService);
@@ -315,7 +319,7 @@ export class AuditListComponent implements OnInit {
     userId: null as string | null,
     action: null as string | null,
     startDate: null as Date | null,
-    endDate: null as Date | null
+    endDate: null as Date | null,
   };
 
   ngOnInit() {
@@ -331,7 +335,7 @@ export class AuditListComponent implements OnInit {
       error: (error) => {
         console.error('Failed to load audits:', error);
         this.snackBar.open('Failed to load audit logs', 'Close', { duration: 3000 });
-      }
+      },
     });
   }
 
@@ -339,19 +343,19 @@ export class AuditListComponent implements OnInit {
     let filtered = this.audits();
 
     if (this.filters.userId) {
-      filtered = filtered.filter(a => a.user_username === this.filters.userId);
+      filtered = filtered.filter((a) => a.user_username === this.filters.userId);
     }
 
     if (this.filters.action) {
-      filtered = filtered.filter(a => a.action === this.filters.action);
+      filtered = filtered.filter((a) => a.action === this.filters.action);
     }
 
     if (this.filters.startDate) {
-      filtered = filtered.filter(a => new Date(a.timestamp) >= this.filters.startDate!);
+      filtered = filtered.filter((a) => new Date(a.timestamp) >= this.filters.startDate!);
     }
 
     if (this.filters.endDate) {
-      filtered = filtered.filter(a => new Date(a.timestamp) <= this.filters.endDate!);
+      filtered = filtered.filter((a) => new Date(a.timestamp) <= this.filters.endDate!);
     }
 
     this.filteredAudits.set(filtered);
@@ -362,17 +366,23 @@ export class AuditListComponent implements OnInit {
       userId: null,
       action: null,
       startDate: null,
-      endDate: null
+      endDate: null,
     };
     this.applyFilters();
   }
 
   uniqueUsers(): string[] {
-    return [...new Set(this.audits().map(a => a.user_username).filter((u): u is string => u !== undefined))];
+    return [
+      ...new Set(
+        this.audits()
+          .map((a) => a.user_username)
+          .filter((u): u is string => u !== undefined),
+      ),
+    ];
   }
 
   uniqueActions(): string[] {
-    return [...new Set(this.audits().map(a => a.action))];
+    return [...new Set(this.audits().map((a) => a.action))];
   }
 
   getActionClass(action: string): string {
@@ -398,19 +408,17 @@ export class AuditListComponent implements OnInit {
 
   private convertToCSV(audits: AuditTrail[]): string {
     const headers = ['Timestamp', 'User', 'Action', 'Resource', 'Details', 'IP Address'];
-    const rows = audits.map(a => [
+    const rows = audits.map((a) => [
       new Date(a.timestamp).toISOString(),
       a.user_username,
       a.action,
       a.resource_type,
       a.details || '',
-      a.ip_address
+      a.ip_address,
     ]);
 
-    return [
-      headers.join(','),
-      ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
-    ].join('\n');
+    return [headers.join(','), ...rows.map((row) => row.map((cell) => `"${cell}"`).join(','))].join(
+      '\n',
+    );
   }
 }
-

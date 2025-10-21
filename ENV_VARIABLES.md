@@ -53,33 +53,35 @@ DISABLE_TELEGRAM=true
 
 ### Server Configuration
 
-| Variable | Type | Default | Description |
-|----------|------|---------|-------------|
+| Variable   | Type   | Default       | Description                                                   |
+| ---------- | ------ | ------------- | ------------------------------------------------------------- |
 | `NODE_ENV` | string | `development` | Application environment (`development`, `production`, `test`) |
-| `PORT` | number | `5000` | Port number for the server to listen on |
-| `HOST` | string | `0.0.0.0` | Host address to bind the server to |
+| `PORT`     | number | `5000`        | Port number for the server to listen on                       |
+| `HOST`     | string | `0.0.0.0`     | Host address to bind the server to                            |
 
 ### Frontend & CORS
 
-| Variable | Type | Default | Description |
-|----------|------|---------|-------------|
-| `FRONTEND_URL` | string | `http://localhost:4200` | URL of the Angular frontend application |
-| `CORS_ORIGIN` | string | `*` | Allowed CORS origin(s). Use specific URL in production |
+| Variable       | Type   | Default                 | Description                                            |
+| -------------- | ------ | ----------------------- | ------------------------------------------------------ |
+| `FRONTEND_URL` | string | `http://localhost:4200` | URL of the Angular frontend application                |
+| `CORS_ORIGIN`  | string | `*`                     | Allowed CORS origin(s). Use specific URL in production |
 
 ### Database
 
-| Variable | Type | Default | Description |
-|----------|------|---------|-------------|
+| Variable       | Type   | Default      | Description                                           |
+| -------------- | ------ | ------------ | ----------------------------------------------------- |
 | `DATABASE_URL` | string | **Required** | Full database connection string (PostgreSQL or MySQL) |
-| `DB_TYPE` | string | `postgres` | Database type: `postgres` or `mysql` |
-| `MYSQL_URL` | string | Optional | Alternative MySQL connection string |
+| `DB_TYPE`      | string | `postgres`   | Database type: `postgres` or `mysql`                  |
+| `MYSQL_URL`    | string | Optional     | Alternative MySQL connection string                   |
 
 **PostgreSQL Example**:
+
 ```
 DATABASE_URL=postgresql://username:password@localhost:5432/dogerat
 ```
 
 **MySQL Example**:
+
 ```
 DATABASE_URL=mysql://username:password@localhost:3306/dogerat
 DB_TYPE=mysql
@@ -87,50 +89,50 @@ DB_TYPE=mysql
 
 ### Authentication & Security
 
-| Variable | Type | Default | Description |
-|----------|------|---------|-------------|
-| `JWT_SECRET` | string | **Required** | Secret key for signing JWT tokens. **Must be changed in production!** |
-| `JWT_EXPIRY` | string | `24h` | JWT token expiration time (e.g., `1h`, `7d`, `30d`) |
-| `RATE_LIMIT_WINDOW_MS` | number | `900000` | Rate limit window in milliseconds (15 minutes default) |
-| `RATE_LIMIT_MAX_REQUESTS` | number | `100` | Maximum number of requests per window per IP |
+| Variable                  | Type   | Default      | Description                                                           |
+| ------------------------- | ------ | ------------ | --------------------------------------------------------------------- |
+| `JWT_SECRET`              | string | **Required** | Secret key for signing JWT tokens. **Must be changed in production!** |
+| `JWT_EXPIRY`              | string | `24h`        | JWT token expiration time (e.g., `1h`, `7d`, `30d`)                   |
+| `RATE_LIMIT_WINDOW_MS`    | number | `900000`     | Rate limit window in milliseconds (15 minutes default)                |
+| `RATE_LIMIT_MAX_REQUESTS` | number | `100`        | Maximum number of requests per window per IP                          |
 
 **⚠️ Security Warning**: Never commit the actual `.env` file to version control. Always use a strong, randomly generated `JWT_SECRET` in production.
 
 ### File Upload
 
-| Variable | Type | Default | Description |
-|----------|------|---------|-------------|
-| `MAX_FILE_SIZE` | number | `52428800` | Maximum upload file size in bytes (50MB default) |
-| `UPLOAD_DIR` | string | `./uploads` | Directory path for storing uploaded files |
+| Variable        | Type   | Default     | Description                                      |
+| --------------- | ------ | ----------- | ------------------------------------------------ |
+| `MAX_FILE_SIZE` | number | `52428800`  | Maximum upload file size in bytes (50MB default) |
+| `UPLOAD_DIR`    | string | `./uploads` | Directory path for storing uploaded files        |
 
 ### Logging
 
-| Variable | Type | Default | Description |
-|----------|------|---------|-------------|
-| `LOG_LEVEL` | string | `info` | Logging level: `error`, `warn`, `info`, `verbose`, `debug`, `silly` |
-| `LOG_FILE` | string | `./logs/server.log` | Path to the log file |
+| Variable    | Type   | Default             | Description                                                         |
+| ----------- | ------ | ------------------- | ------------------------------------------------------------------- |
+| `LOG_LEVEL` | string | `info`              | Logging level: `error`, `warn`, `info`, `verbose`, `debug`, `silly` |
+| `LOG_FILE`  | string | `./logs/server.log` | Path to the log file                                                |
 
 ### Socket.IO
 
-| Variable | Type | Default | Description |
-|----------|------|---------|-------------|
+| Variable               | Type   | Default | Description                                                |
+| ---------------------- | ------ | ------- | ---------------------------------------------------------- |
 | `SOCKET_PING_INTERVAL` | number | `30000` | Interval (ms) between heartbeat pings to connected devices |
-| `SOCKET_PING_TIMEOUT` | number | `60000` | Timeout (ms) before considering a device disconnected |
+| `SOCKET_PING_TIMEOUT`  | number | `60000` | Timeout (ms) before considering a device disconnected      |
 
 ### Initial Admin Setup
 
-| Variable | Type | Default | Description |
-|----------|------|---------|-------------|
-| `ADMIN_USERNAME` | string | `admin` | Default admin username (first user only) |
-| `ADMIN_EMAIL` | string | `admin@dogerat.local` | Default admin email |
-| `ADMIN_PASSWORD` | string | `changeme` | Default admin password. **Change immediately!** |
+| Variable         | Type   | Default               | Description                                     |
+| ---------------- | ------ | --------------------- | ----------------------------------------------- |
+| `ADMIN_USERNAME` | string | `admin`               | Default admin username (first user only)        |
+| `ADMIN_EMAIL`    | string | `admin@dogerat.local` | Default admin email                             |
+| `ADMIN_PASSWORD` | string | `changeme`            | Default admin password. **Change immediately!** |
 
 ### Legacy Support
 
-| Variable | Type | Default | Description |
-|----------|------|---------|-------------|
-| `DISABLE_TELEGRAM` | boolean | `true` | Disable legacy Telegram bot integration |
-| `TELEGRAM_BOT_TOKEN` | string | Optional | Telegram bot token (if legacy support needed) |
+| Variable             | Type    | Default  | Description                                   |
+| -------------------- | ------- | -------- | --------------------------------------------- |
+| `DISABLE_TELEGRAM`   | boolean | `true`   | Disable legacy Telegram bot integration       |
+| `TELEGRAM_BOT_TOKEN` | string  | Optional | Telegram bot token (if legacy support needed) |
 
 ## Production Configuration
 
@@ -170,4 +172,3 @@ The application loads environment variables in the following order:
 3. Default values in code
 
 Variables defined earlier in this list take precedence over later ones.
-

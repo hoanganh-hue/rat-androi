@@ -1,6 +1,6 @@
 // Socket.IO Bridge - Gửi lệnh đến thiết bị Android
-import { Server as SocketIOServer, Socket } from 'socket.io';
-import { CommandType } from '../models';
+import { Server as SocketIOServer, Socket } from "socket.io";
+import { CommandType } from "../models";
 
 let io: SocketIOServer | null = null;
 
@@ -12,7 +12,7 @@ const deviceSockets = new Map<string, string>();
  */
 export function initSocketBridge(ioServer: SocketIOServer): void {
   io = ioServer;
-  console.log('✅ Socket.IO bridge initialized');
+  console.log("✅ Socket.IO bridge initialized");
 }
 
 /**
@@ -51,10 +51,10 @@ export function getConnectedDevices(): string[] {
 export function emitToDevice(
   deviceId: string,
   command: CommandType,
-  params: Record<string, any> = {}
+  params: Record<string, any> = {},
 ): boolean {
   if (!io) {
-    console.error('❌ Socket.IO not initialized');
+    console.error("❌ Socket.IO not initialized");
     return false;
   }
 
@@ -70,7 +70,7 @@ export function emitToDevice(
     value: String(value),
   }));
 
-  io.to(socketId).emit('commend', {
+  io.to(socketId).emit("commend", {
     request: command,
     extras,
   });
@@ -84,10 +84,10 @@ export function emitToDevice(
  */
 export function emitToAll(
   command: CommandType,
-  params: Record<string, any> = {}
+  params: Record<string, any> = {},
 ): void {
   if (!io) {
-    console.error('❌ Socket.IO not initialized');
+    console.error("❌ Socket.IO not initialized");
     return;
   }
 
@@ -96,7 +96,7 @@ export function emitToAll(
     value: String(value),
   }));
 
-  io.emit('commend', {
+  io.emit("commend", {
     request: command,
     extras,
   });

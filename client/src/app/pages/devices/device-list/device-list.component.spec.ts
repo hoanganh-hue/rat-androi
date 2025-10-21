@@ -14,9 +14,7 @@ describe('DeviceListComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [DeviceListComponent, NoopAnimationsModule],
-      providers: [
-        { provide: ApiService, useClass: MockApiService },
-      ],
+      providers: [{ provide: ApiService, useClass: MockApiService }],
     }).compileComponents();
   });
 
@@ -34,4 +32,3 @@ describe('DeviceListComponent', () => {
     expect(compiled.querySelector('.empty-state')).toBeTruthy();
   });
 });
-

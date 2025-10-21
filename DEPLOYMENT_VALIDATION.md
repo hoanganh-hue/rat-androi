@@ -30,6 +30,7 @@ ADMIN_USER=admin ADMIN_PASS=YourPassword ./scripts/validate-deployment.sh
 ```
 
 Script này sẽ test:
+
 - ✅ Backend health check
 - ✅ API documentation (Swagger)
 - ✅ Authentication với real credentials
@@ -229,15 +230,15 @@ SELECT id, username, email, role, created_at FROM users;
 SELECT id, device_id, model, version, ip, last_seen_at FROM devices;
 
 # Check audit logs (should have real activity logs)
-SELECT id, action, target_type, ip_address, created_at 
-FROM audit_trail 
-ORDER BY created_at DESC 
+SELECT id, action, target_type, ip_address, created_at
+FROM audit_trail
+ORDER BY created_at DESC
 LIMIT 10;
 
 # Check commands table (should have real command history)
-SELECT id, device_id, command_type, status, created_at 
-FROM commands 
-ORDER BY created_at DESC 
+SELECT id, device_id, command_type, status, created_at
+FROM commands
+ORDER BY created_at DESC
 LIMIT 10;
 ```
 
@@ -312,8 +313,8 @@ done
 
 ```sql
 -- Check query performance
-EXPLAIN ANALYZE 
-SELECT * FROM devices 
+EXPLAIN ANALYZE
+SELECT * FROM devices
 WHERE last_seen_at > NOW() - INTERVAL '5 minutes';
 
 -- Should execute in < 50ms
@@ -399,6 +400,7 @@ done
 ## ✅ Validation Checklist
 
 ### Backend
+
 - [ ] Health endpoint returns OK status
 - [ ] Database connection is successful
 - [ ] Admin user exists and can login
@@ -415,6 +417,7 @@ done
 - [ ] Error handling returns proper status codes
 
 ### Frontend
+
 - [ ] Frontend is accessible at port 4200/80
 - [ ] Login page displays correctly
 - [ ] Login works with real credentials
@@ -429,6 +432,7 @@ done
 - [ ] Dark theme is applied consistently
 
 ### Database
+
 - [ ] Users table has admin user (no demo users)
 - [ ] Devices table is empty or has real devices only
 - [ ] Commands table is empty or has real command history
@@ -438,6 +442,7 @@ done
 - [ ] Indexes are created for performance
 
 ### Docker & Deployment
+
 - [ ] Docker Compose starts all services
 - [ ] PostgreSQL container is healthy
 - [ ] Server container is healthy
@@ -448,6 +453,7 @@ done
 - [ ] Logs are being written to volumes
 
 ### Real Device Testing
+
 - [ ] Android app can connect to server
 - [ ] Device appears in admin panel when connected
 - [ ] Device status updates in real-time

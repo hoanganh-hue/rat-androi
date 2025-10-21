@@ -17,11 +17,11 @@ export interface DeviceStatusUpdate {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SocketService {
   private authService = inject(AuthService);
-  
+
   private socket: Socket | null = null;
   private connected = new BehaviorSubject<boolean>(false);
   private eventSubject = new Subject<SocketEvent>();
@@ -40,12 +40,12 @@ export class SocketService {
     }
 
     const token = this.authService.getToken();
-    
+
     this.socket = io(environment.socketUrl, {
       auth: {
-        token
+        token,
       },
-      transports: ['websocket', 'polling']
+      transports: ['websocket', 'polling'],
     });
 
     this.socket.on('connect', () => {
@@ -61,12 +61,20 @@ export class SocketService {
     // Listen for device events
     this.socket.on('device-connected', (data) => {
       this.eventSubject.next({ type: 'device-connected', data });
-      this.deviceStatusSubject.next({ device_id: data.device_id, isOnline: true, last_seen_at: new Date().toISOString() });
+      this.deviceStatusSubject.next({
+        device_id: data.device_id,
+        isOnline: true,
+        last_seen_at: new Date().toISOString(),
+      });
     });
 
     this.socket.on('device-disconnected', (data) => {
       this.eventSubject.next({ type: 'device-disconnected', data });
-      this.deviceStatusSubject.next({ device_id: data.device_id, isOnline: false, last_seen_at: new Date().toISOString() });
+      this.deviceStatusSubject.next({
+        device_id: data.device_id,
+        isOnline: false,
+        last_seen_at: new Date().toISOString(),
+      });
     });
 
     this.socket.on('device-message', (data) => {
@@ -109,7 +117,7 @@ export class SocketService {
    * Listen for specific event
    */
   on(event: string): Observable<any> {
-    return new Observable(observer => {
+    return new Observable((observer) => {
       if (this.socket) {
         this.socket.on(event, (data: any) => {
           observer.next(data);
@@ -131,4 +139,3 @@ export class SocketService {
     return this.connected.value;
   }
 }
-

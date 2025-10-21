@@ -1,7 +1,17 @@
 // AuditTrail Model - Ghi lại mọi hành động của người dùng
-import { Table, Column, Model, DataType, PrimaryKey, Default, AllowNull, ForeignKey, BelongsTo } from 'sequelize-typescript';
-import { Optional } from 'sequelize';
-import { User } from './User';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  PrimaryKey,
+  Default,
+  AllowNull,
+  ForeignKey,
+  BelongsTo,
+} from "sequelize-typescript";
+import { Optional } from "sequelize";
+import { User } from "./User";
 
 export interface AuditTrailAttributes {
   id: number;
@@ -15,14 +25,26 @@ export interface AuditTrailAttributes {
   timestamp: Date;
 }
 
-export interface AuditTrailCreationAttributes extends Optional<AuditTrailAttributes, 'id' | 'timestamp' | 'target_id' | 'target_type' | 'ip_address' | 'user_agent'> {}
+export interface AuditTrailCreationAttributes
+  extends Optional<
+    AuditTrailAttributes,
+    | "id"
+    | "timestamp"
+    | "target_id"
+    | "target_type"
+    | "ip_address"
+    | "user_agent"
+  > {}
 
 @Table({
-  tableName: 'audit_trail',
+  tableName: "audit_trail",
   timestamps: false,
-  createdAt: 'timestamp',
+  createdAt: "timestamp",
 })
-export class AuditTrail extends Model<AuditTrailAttributes, AuditTrailCreationAttributes> {
+export class AuditTrail extends Model<
+  AuditTrailAttributes,
+  AuditTrailCreationAttributes
+> {
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column(DataType.UUID)

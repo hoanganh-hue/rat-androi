@@ -4,6 +4,5 @@ export const environment = {
   apiUrl: 'http://localhost:5000/api',
   socketUrl: 'http://localhost:5000',
   appName: 'DogeRat Web Admin',
-  version: '2.0.0'
+  version: '2.0.0',
 };
-

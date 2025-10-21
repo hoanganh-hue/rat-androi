@@ -30,30 +30,29 @@ export interface ConfirmationDialogData {
       <button mat-button (click)="onCancel()">
         {{ data.cancelText || 'Cancel' }}
       </button>
-      <button
-        mat-raised-button
-        [color]="data.confirmColor || 'primary'"
-        (click)="onConfirm()">
+      <button mat-raised-button [color]="data.confirmColor || 'primary'" (click)="onConfirm()">
         {{ data.confirmText || 'Confirm' }}
       </button>
     </mat-dialog-actions>
   `,
-  styles: [`
-    h2 {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-sm);
-    }
+  styles: [
+    `
+      h2 {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+      }
 
-    mat-icon {
-      color: var(--primary-brand);
-    }
-  `]
+      mat-icon {
+        color: var(--primary-brand);
+      }
+    `,
+  ],
 })
 export class ConfirmationDialogComponent {
   constructor(
     public dialogRef: MatDialogRef<ConfirmationDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: ConfirmationDialogData
+    @Inject(MAT_DIALOG_DATA) public data: ConfirmationDialogData,
   ) {}
 
   getIcon(): string {
@@ -69,4 +68,3 @@ export class ConfirmationDialogComponent {
     this.dialogRef.close(false);
   }
 }
-

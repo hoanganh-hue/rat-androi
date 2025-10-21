@@ -1,7 +1,7 @@
 // Seed script to create initial admin user
-import bcrypt from 'bcrypt';
-import { sequelize, User, UserRole, initializeDatabase } from '../models';
-import logger from '../utils/logger';
+import bcrypt from "bcrypt";
+import { sequelize, User, UserRole, initializeDatabase } from "../models";
+import logger from "../utils/logger";
 
 /**
  * Create initial admin user if no users exist
@@ -15,15 +15,15 @@ async function seedAdminUser(): Promise<void> {
     const userCount = await User.count();
 
     if (userCount > 0) {
-      logger.info('Users already exist. Skipping admin seed.');
-      console.log('✅ Users already exist. Skipping admin seed.');
+      logger.info("Users already exist. Skipping admin seed.");
+      console.log("✅ Users already exist. Skipping admin seed.");
       return;
     }
 
     // Get admin credentials from environment or use defaults
-    const username = process.env.ADMIN_USERNAME || 'admin';
-    const email = process.env.ADMIN_EMAIL || 'admin@dogerat.local';
-    const password = process.env.ADMIN_PASSWORD || 'Admin@123456';
+    const username = process.env.ADMIN_USERNAME || "admin";
+    const email = process.env.ADMIN_EMAIL || "admin@dogerat.local";
+    const password = process.env.ADMIN_PASSWORD || "Admin@123456";
 
     // Hash password
     const password_hash = await bcrypt.hash(password, 10);
@@ -49,8 +49,8 @@ Credentials:
 ⚠️  IMPORTANT: Change the admin password immediately after first login!
 `);
   } catch (error) {
-    logger.error('Error seeding admin user:', error);
-    console.error('❌ Error seeding admin user:', error);
+    logger.error("Error seeding admin user:", error);
+    console.error("❌ Error seeding admin user:", error);
     throw error;
   } finally {
     await sequelize.close();
@@ -68,4 +68,3 @@ if (require.main === module) {
 }
 
 export default seedAdminUser;
-

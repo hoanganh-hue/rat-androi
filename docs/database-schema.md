@@ -64,22 +64,24 @@ DogeRat Web Admin uses a relational database (PostgreSQL or MySQL) to store user
 
 Stores user accounts with role-based access control (RBAC).
 
-| Column | Type | Nullable | Default | Description |
-|--------|------|----------|---------|-------------|
-| `id` | UUID | NO | `gen_random_uuid()` | Primary key |
-| `username` | VARCHAR(100) | NO | - | Unique username |
-| `email` | VARCHAR(255) | NO | - | Unique email address |
-| `password_hash` | VARCHAR(255) | NO | - | Bcrypt hashed password (12 rounds) |
-| `role` | ENUM | NO | `viewer` | User role: `admin`, `manager`, `operator`, `viewer` |
-| `last_login_at` | TIMESTAMP | YES | NULL | Last login timestamp |
-| `created_at` | TIMESTAMP | NO | NOW() | Record creation time |
-| `updated_at` | TIMESTAMP | NO | NOW() | Last update time |
+| Column          | Type         | Nullable | Default             | Description                                         |
+| --------------- | ------------ | -------- | ------------------- | --------------------------------------------------- |
+| `id`            | UUID         | NO       | `gen_random_uuid()` | Primary key                                         |
+| `username`      | VARCHAR(100) | NO       | -                   | Unique username                                     |
+| `email`         | VARCHAR(255) | NO       | -                   | Unique email address                                |
+| `password_hash` | VARCHAR(255) | NO       | -                   | Bcrypt hashed password (12 rounds)                  |
+| `role`          | ENUM         | NO       | `viewer`            | User role: `admin`, `manager`, `operator`, `viewer` |
+| `last_login_at` | TIMESTAMP    | YES      | NULL                | Last login timestamp                                |
+| `created_at`    | TIMESTAMP    | NO       | NOW()               | Record creation time                                |
+| `updated_at`    | TIMESTAMP    | NO       | NOW()               | Last update time                                    |
 
 **Indexes:**
+
 - PRIMARY KEY: `id`
 - UNIQUE: `username`, `email`
 
 **Roles:**
+
 - `admin`: Full system access, user management, audit logs
 - `manager`: View devices, read-only commands, view audit logs
 - `operator`: Execute device commands, view devices
@@ -91,25 +93,27 @@ Stores user accounts with role-based access control (RBAC).
 
 Stores Android devices connected to the system.
 
-| Column | Type | Nullable | Default | Description |
-|--------|------|----------|---------|-------------|
-| `id` | UUID | NO | `gen_random_uuid()` | Primary key |
-| `socket_id` | VARCHAR(255) | NO | - | Current Socket.IO connection ID |
-| `device_id` | VARCHAR(255) | NO | - | Unique device identifier (from Android) |
-| `model` | VARCHAR(255) | NO | - | Device model name |
-| `version` | VARCHAR(100) | NO | - | Android version |
-| `ip` | VARCHAR(45) | NO | - | Device IP address (IPv4/IPv6) |
-| `user_agent` | VARCHAR(500) | YES | NULL | HTTP user agent string |
-| `last_seen_at` | TIMESTAMP | YES | NULL | Last heartbeat/activity timestamp |
-| `owner_user_id` | UUID | YES | NULL | Foreign key to `users.id` |
-| `created_at` | TIMESTAMP | NO | NOW() | First connection time |
-| `updated_at` | TIMESTAMP | NO | NOW() | Last update time |
+| Column          | Type         | Nullable | Default             | Description                             |
+| --------------- | ------------ | -------- | ------------------- | --------------------------------------- |
+| `id`            | UUID         | NO       | `gen_random_uuid()` | Primary key                             |
+| `socket_id`     | VARCHAR(255) | NO       | -                   | Current Socket.IO connection ID         |
+| `device_id`     | VARCHAR(255) | NO       | -                   | Unique device identifier (from Android) |
+| `model`         | VARCHAR(255) | NO       | -                   | Device model name                       |
+| `version`       | VARCHAR(100) | NO       | -                   | Android version                         |
+| `ip`            | VARCHAR(45)  | NO       | -                   | Device IP address (IPv4/IPv6)           |
+| `user_agent`    | VARCHAR(500) | YES      | NULL                | HTTP user agent string                  |
+| `last_seen_at`  | TIMESTAMP    | YES      | NULL                | Last heartbeat/activity timestamp       |
+| `owner_user_id` | UUID         | YES      | NULL                | Foreign key to `users.id`               |
+| `created_at`    | TIMESTAMP    | NO       | NOW()               | First connection time                   |
+| `updated_at`    | TIMESTAMP    | NO       | NOW()               | Last update time                        |
 
 **Indexes:**
+
 - PRIMARY KEY: `id`
 - FOREIGN KEY: `owner_user_id` → `users.id`
 
 **Virtual Fields:**
+
 - `isOnline`: Computed boolean (true if `last_seen_at` within 15 seconds)
 
 ---
@@ -118,21 +122,23 @@ Stores Android devices connected to the system.
 
 Stores data collected from devices (contacts, SMS, screenshots, etc.).
 
-| Column | Type | Nullable | Default | Description |
-|--------|------|----------|---------|-------------|
-| `id` | UUID | NO | `gen_random_uuid()` | Primary key |
-| `device_id` | UUID | NO | - | Foreign key to `devices.id` |
-| `type` | ENUM | NO | - | Log type (see below) |
-| `payload` | JSON | NO | - | Log data (structured JSON) |
-| `file_path` | VARCHAR(500) | YES | NULL | Path to uploaded file (if applicable) |
-| `created_at` | TIMESTAMP | NO | NOW() | Log creation time |
+| Column       | Type         | Nullable | Default             | Description                           |
+| ------------ | ------------ | -------- | ------------------- | ------------------------------------- |
+| `id`         | UUID         | NO       | `gen_random_uuid()` | Primary key                           |
+| `device_id`  | UUID         | NO       | -                   | Foreign key to `devices.id`           |
+| `type`       | ENUM         | NO       | -                   | Log type (see below)                  |
+| `payload`    | JSON         | NO       | -                   | Log data (structured JSON)            |
+| `file_path`  | VARCHAR(500) | YES      | NULL                | Path to uploaded file (if applicable) |
+| `created_at` | TIMESTAMP    | NO       | NOW()               | Log creation time                     |
 
 **Indexes:**
+
 - PRIMARY KEY: `id`
 - FOREIGN KEY: `device_id` → `devices.id`
 - INDEX: `device_id`, `created_at`
 
 **Log Types (ENUM):**
+
 - `contacts`: Contact list
 - `sms`: SMS messages
 - `calls`: Call logs
@@ -154,27 +160,29 @@ Stores data collected from devices (contacts, SMS, screenshots, etc.).
 
 Tracks commands sent to devices and their execution status.
 
-| Column | Type | Nullable | Default | Description |
-|--------|------|----------|---------|-------------|
-| `id` | UUID | NO | `gen_random_uuid()` | Primary key |
-| `device_id` | UUID | NO | - | Foreign key to `devices.id` |
-| `command` | VARCHAR(100) | NO | - | Command type (see below) |
-| `params` | JSON | NO | `{}` | Command parameters |
-| `status` | ENUM | NO | `pending` | Execution status (see below) |
-| `response` | JSON | YES | NULL | Device response data |
-| `error_message` | TEXT | YES | NULL | Error message (if failed) |
-| `created_by` | UUID | NO | - | Foreign key to `users.id` (who sent the command) |
-| `created_at` | TIMESTAMP | NO | NOW() | Command creation time |
-| `updated_at` | TIMESTAMP | NO | NOW() | Last status update |
-| `executed_at` | TIMESTAMP | YES | NULL | When the command was executed |
+| Column          | Type         | Nullable | Default             | Description                                      |
+| --------------- | ------------ | -------- | ------------------- | ------------------------------------------------ |
+| `id`            | UUID         | NO       | `gen_random_uuid()` | Primary key                                      |
+| `device_id`     | UUID         | NO       | -                   | Foreign key to `devices.id`                      |
+| `command`       | VARCHAR(100) | NO       | -                   | Command type (see below)                         |
+| `params`        | JSON         | NO       | `{}`                | Command parameters                               |
+| `status`        | ENUM         | NO       | `pending`           | Execution status (see below)                     |
+| `response`      | JSON         | YES      | NULL                | Device response data                             |
+| `error_message` | TEXT         | YES      | NULL                | Error message (if failed)                        |
+| `created_by`    | UUID         | NO       | -                   | Foreign key to `users.id` (who sent the command) |
+| `created_at`    | TIMESTAMP    | NO       | NOW()               | Command creation time                            |
+| `updated_at`    | TIMESTAMP    | NO       | NOW()               | Last status update                               |
+| `executed_at`   | TIMESTAMP    | YES      | NULL                | When the command was executed                    |
 
 **Indexes:**
+
 - PRIMARY KEY: `id`
 - FOREIGN KEY: `device_id` → `devices.id`
 - FOREIGN KEY: `created_by` → `users.id`
 - INDEX: `device_id`, `created_at`
 
 **Command Types:**
+
 - Data collection: `contacts`, `sms`, `calls`, `gallery`, `clipboard`, `apps`, `all-sms`
 - Camera: `main-camera`, `selfie-camera`, `screenshot`
 - Audio: `microphone`, `play-audio`, `stop-audio`
@@ -183,6 +191,7 @@ Tracks commands sent to devices and their execution status.
 - Advanced: `keylogger-on`, `keylogger-off`, `phishing`, `encrypt`, `decrypt`, `file-explorer`
 
 **Status Values (ENUM):**
+
 - `pending`: Command created, not yet sent
 - `sent`: Command sent to device via Socket.IO
 - `ok`: Command executed successfully
@@ -195,25 +204,27 @@ Tracks commands sent to devices and their execution status.
 
 Audit log of all user actions for security and compliance.
 
-| Column | Type | Nullable | Default | Description |
-|--------|------|----------|---------|-------------|
-| `id` | UUID | NO | `gen_random_uuid()` | Primary key |
-| `user_id` | UUID | NO | - | Foreign key to `users.id` |
-| `action` | VARCHAR(255) | NO | - | Action identifier (e.g., `devices.sendCommand`) |
-| `target_id` | VARCHAR(255) | YES | NULL | ID of affected resource |
-| `target_type` | VARCHAR(100) | YES | NULL | Type of affected resource (`device`, `user`) |
-| `metadata` | JSON | NO | `{}` | Additional action context |
-| `ip_address` | VARCHAR(45) | YES | NULL | User's IP address |
-| `user_agent` | VARCHAR(500) | YES | NULL | User's browser user agent |
-| `timestamp` | TIMESTAMP | NO | NOW() | When the action occurred |
+| Column        | Type         | Nullable | Default             | Description                                     |
+| ------------- | ------------ | -------- | ------------------- | ----------------------------------------------- |
+| `id`          | UUID         | NO       | `gen_random_uuid()` | Primary key                                     |
+| `user_id`     | UUID         | NO       | -                   | Foreign key to `users.id`                       |
+| `action`      | VARCHAR(255) | NO       | -                   | Action identifier (e.g., `devices.sendCommand`) |
+| `target_id`   | VARCHAR(255) | YES      | NULL                | ID of affected resource                         |
+| `target_type` | VARCHAR(100) | YES      | NULL                | Type of affected resource (`device`, `user`)    |
+| `metadata`    | JSON         | NO       | `{}`                | Additional action context                       |
+| `ip_address`  | VARCHAR(45)  | YES      | NULL                | User's IP address                               |
+| `user_agent`  | VARCHAR(500) | YES      | NULL                | User's browser user agent                       |
+| `timestamp`   | TIMESTAMP    | NO       | NOW()               | When the action occurred                        |
 
 **Indexes:**
+
 - PRIMARY KEY: `id`
 - FOREIGN KEY: `user_id` → `users.id`
 - INDEX: `user_id`, `timestamp`
 - INDEX: `action`, `timestamp`
 
 **Common Actions:**
+
 - Authentication: `auth.login`, `auth.register`
 - Users: `users.list`, `users.view`, `users.create`, `users.update`, `users.delete`
 - Devices: `devices.list`, `devices.view`, `devices.sendCommand`, `devices.delete`
@@ -250,4 +261,3 @@ Audit log of all user actions for security and compliance.
 - Run `npm run db:migrate` to initialize the database
 - Run `npm run db:seed` to create initial admin user
 - Run `npm run db:seed:demo` for demo data (development only)
-

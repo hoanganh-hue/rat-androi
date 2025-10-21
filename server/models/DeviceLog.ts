@@ -1,24 +1,34 @@
 // DeviceLog Model - Lưu dữ liệu thu thập từ thiết bị (contacts, sms, files, etc.)
-import { Table, Column, Model, DataType, PrimaryKey, Default, AllowNull, ForeignKey, BelongsTo } from 'sequelize-typescript';
-import { Optional } from 'sequelize';
-import { Device } from './Device';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  PrimaryKey,
+  Default,
+  AllowNull,
+  ForeignKey,
+  BelongsTo,
+} from "sequelize-typescript";
+import { Optional } from "sequelize";
+import { Device } from "./Device";
 
 // Log types
 export enum LogType {
-  CONTACTS = 'contacts',
-  SMS = 'sms',
-  CALLS = 'calls',
-  LOCATION = 'location',
-  CLIPBOARD = 'clipboard',
-  SCREENSHOT = 'screenshot',
-  CAMERA = 'camera',
-  AUDIO = 'audio',
-  GALLERY = 'gallery',
-  KEYLOGGER = 'keylogger',
-  APPS = 'apps',
-  FILE = 'file',
-  MESSAGE = 'message',
-  OTHER = 'other'
+  CONTACTS = "contacts",
+  SMS = "sms",
+  CALLS = "calls",
+  LOCATION = "location",
+  CLIPBOARD = "clipboard",
+  SCREENSHOT = "screenshot",
+  CAMERA = "camera",
+  AUDIO = "audio",
+  GALLERY = "gallery",
+  KEYLOGGER = "keylogger",
+  APPS = "apps",
+  FILE = "file",
+  MESSAGE = "message",
+  OTHER = "other",
 }
 
 export interface DeviceLogAttributes {
@@ -30,15 +40,19 @@ export interface DeviceLogAttributes {
   created_at: Date;
 }
 
-export interface DeviceLogCreationAttributes extends Optional<DeviceLogAttributes, 'id' | 'created_at' | 'file_path'> {}
+export interface DeviceLogCreationAttributes
+  extends Optional<DeviceLogAttributes, "id" | "created_at" | "file_path"> {}
 
 @Table({
-  tableName: 'device_logs',
+  tableName: "device_logs",
   timestamps: false,
-  createdAt: 'created_at',
+  createdAt: "created_at",
   updatedAt: false,
 })
-export class DeviceLog extends Model<DeviceLogAttributes, DeviceLogCreationAttributes> {
+export class DeviceLog extends Model<
+  DeviceLogAttributes,
+  DeviceLogCreationAttributes
+> {
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column(DataType.UUID)

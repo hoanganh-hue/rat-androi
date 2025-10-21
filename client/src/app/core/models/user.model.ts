@@ -4,7 +4,7 @@ export enum UserRole {
   ADMIN = 'admin',
   MANAGER = 'manager',
   OPERATOR = 'operator',
-  VIEWER = 'viewer'
+  VIEWER = 'viewer',
 }
 
 export interface User {
@@ -40,4 +40,3 @@ export interface AuthState {
   user: User | null;
   token: string | null;
 }
-

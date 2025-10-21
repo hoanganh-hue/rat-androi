@@ -27,5 +27,8 @@ export const roleGuard = (allowedRoles: UserRole[]): CanActivateFn => {
 // Predefined role guards
 export const adminOnly: CanActivateFn = roleGuard([UserRole.ADMIN]);
 export const adminOrManager: CanActivateFn = roleGuard([UserRole.ADMIN, UserRole.MANAGER]);
-export const canControlDevices: CanActivateFn = roleGuard([UserRole.ADMIN, UserRole.MANAGER, UserRole.OPERATOR]);
-
+export const canControlDevices: CanActivateFn = roleGuard([
+  UserRole.ADMIN,
+  UserRole.MANAGER,
+  UserRole.OPERATOR,
+]);

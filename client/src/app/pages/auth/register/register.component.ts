@@ -24,7 +24,7 @@ import { AuthService } from '../../../core/services/auth.service';
     MatButtonModule,
     MatProgressSpinnerModule,
     MatIconModule,
-    MatSelectModule
+    MatSelectModule,
   ],
   template: `
     <div class="register-container">
@@ -41,7 +41,7 @@ import { AuthService } from '../../../core/services/auth.service';
           <form [formGroup]="form" (ngSubmit)="onSubmit()">
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Username</mat-label>
-              <input matInput formControlName="username" placeholder="Enter username">
+              <input matInput formControlName="username" placeholder="Enter username" />
               @if (form.get('username')?.hasError('required') && form.get('username')?.touched) {
                 <mat-error>Username is required</mat-error>
               }
@@ -49,7 +49,7 @@ import { AuthService } from '../../../core/services/auth.service';
 
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Email</mat-label>
-              <input matInput type="email" formControlName="email" placeholder="user@example.com">
+              <input matInput type="email" formControlName="email" placeholder="user@example.com" />
               @if (form.get('email')?.hasError('email') && form.get('email')?.touched) {
                 <mat-error>Please enter a valid email</mat-error>
               }
@@ -57,7 +57,12 @@ import { AuthService } from '../../../core/services/auth.service';
 
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Password</mat-label>
-              <input matInput type="password" formControlName="password" placeholder="Enter password">
+              <input
+                matInput
+                type="password"
+                formControlName="password"
+                placeholder="Enter password"
+              />
               @if (form.get('password')?.hasError('required') && form.get('password')?.touched) {
                 <mat-error>Password is required</mat-error>
               }
@@ -84,25 +89,74 @@ import { AuthService } from '../../../core/services/auth.service';
               </div>
             }
 
-            <button mat-raised-button color="primary" type="submit" class="full-width" [disabled]="loading() || form.invalid">
-              @if (loading()) { <mat-spinner diameter="20" class="button-spinner"></mat-spinner> Creating... } @else { Create Account }
+            <button
+              mat-raised-button
+              color="primary"
+              type="submit"
+              class="full-width"
+              [disabled]="loading() || form.invalid"
+            >
+              @if (loading()) {
+                <mat-spinner diameter="20" class="button-spinner"></mat-spinner> Creating...
+              } @else {
+                Create Account
+              }
             </button>
           </form>
         </mat-card-content>
       </mat-card>
     </div>
   `,
-  styles: [`
-    .register-container { min-height: 100vh; display:flex; align-items:center; justify-content:center; padding: var(--spacing-lg); }
-    .register-card { width: 100%; max-width: 520px; padding: var(--spacing-xl); }
-    .register-header { text-align:center; margin-bottom: var(--spacing-lg); }
-    .logo-icon { font-size: 48px; width: 48px; height:48px; color: var(--primary-brand); }
-    .subtitle { color: var(--text-secondary); margin: 0; }
-    .full-width { width: 100%; }
-    mat-form-field { margin-bottom: var(--spacing-md); }
-    .error-message { display:flex; align-items:center; gap: var(--spacing-sm); padding: var(--spacing-md); background: rgba(244,67,54,0.1); color: var(--accent-error); border-left: 4px solid var(--accent-error); border-radius: var(--radius-sm); margin-bottom: var(--spacing-md); }
-    .button-spinner { margin-right: var(--spacing-sm); }
-  `]
+  styles: [
+    `
+      .register-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: var(--spacing-lg);
+      }
+      .register-card {
+        width: 100%;
+        max-width: 520px;
+        padding: var(--spacing-xl);
+      }
+      .register-header {
+        text-align: center;
+        margin-bottom: var(--spacing-lg);
+      }
+      .logo-icon {
+        font-size: 48px;
+        width: 48px;
+        height: 48px;
+        color: var(--primary-brand);
+      }
+      .subtitle {
+        color: var(--text-secondary);
+        margin: 0;
+      }
+      .full-width {
+        width: 100%;
+      }
+      mat-form-field {
+        margin-bottom: var(--spacing-md);
+      }
+      .error-message {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+        padding: var(--spacing-md);
+        background: rgba(244, 67, 54, 0.1);
+        color: var(--accent-error);
+        border-left: 4px solid var(--accent-error);
+        border-radius: var(--radius-sm);
+        margin-bottom: var(--spacing-md);
+      }
+      .button-spinner {
+        margin-right: var(--spacing-sm);
+      }
+    `,
+  ],
 })
 export class RegisterComponent {
   private fb = inject(FormBuilder);
@@ -116,7 +170,7 @@ export class RegisterComponent {
     username: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(8)]],
-    role: ['']
+    role: [''],
   });
 
   onSubmit() {
@@ -133,8 +187,7 @@ export class RegisterComponent {
       error: (err) => {
         this.loading.set(false);
         this.errorMessage.set(err.error?.error || 'Registration failed');
-      }
+      },
     });
   }
 }
-

@@ -1,12 +1,12 @@
 // User Management Routes - CRUD operations (Admin only)
-import express, { Response } from 'express';
-import bcrypt from 'bcrypt';
-import { User, UserRole } from '../models';
-import { authenticate, AuthRequest } from '../middleware/auth';
-import { adminOnly } from '../middleware/authorize';
-import { auditLog } from '../middleware/audit';
-import { userValidation } from '../middleware/validation';
-import logger from '../utils/logger';
+import express, { Response } from "express";
+import bcrypt from "bcrypt";
+import { User, UserRole } from "../models";
+import { authenticate, AuthRequest } from "../middleware/auth";
+import { adminOnly } from "../middleware/authorize";
+import { auditLog } from "../middleware/audit";
+import { userValidation } from "../middleware/validation";
+import logger from "../utils/logger";
 
 const router = express.Router();
 
@@ -18,22 +18,29 @@ router.use(authenticate);
  * Get all users (Admin only)
  */
 router.get(
-  '/',
+  "/",
   adminOnly,
-  auditLog({ action: 'users.list' }),
+  auditLog({ action: "users.list" }),
   async (req: AuthRequest, res: Response): Promise<void> => {
     try {
       const users = await User.findAll({
-        attributes: ['id', 'username', 'email', 'role', 'created_at', 'last_login_at'],
-        order: [['created_at', 'DESC']],
+        attributes: [
+          "id",
+          "username",
+          "email",
+          "role",
+          "created_at",
+          "last_login_at",
+        ],
+        order: [["created_at", "DESC"]],
       });
 
       res.json({ users });
     } catch (error) {
-      logger.error('Get users error:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      logger.error("Get users error:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
-  }
+  },
 );
 
 /**
@@ -41,27 +48,34 @@ router.get(
  * Get user by ID (Admin only)
  */
 router.get(
-  '/:id',
+  "/:id",
   adminOnly,
   userValidation.delete, // Reuse delete validation for ID check
-  auditLog({ action: 'users.view', targetType: 'user' }),
+  auditLog({ action: "users.view", targetType: "user" }),
   async (req: AuthRequest, res: Response): Promise<void> => {
     try {
       const user = await User.findByPk(req.params.id, {
-        attributes: ['id', 'username', 'email', 'role', 'created_at', 'last_login_at'],
+        attributes: [
+          "id",
+          "username",
+          "email",
+          "role",
+          "created_at",
+          "last_login_at",
+        ],
       });
 
       if (!user) {
-        res.status(404).json({ error: 'User not found' });
+        res.status(404).json({ error: "User not found" });
         return;
       }
 
       res.json(user);
     } catch (error) {
-      logger.error('Get user error:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      logger.error("Get user error:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
-  }
+  },
 );
 
 /**
@@ -69,16 +83,18 @@ router.get(
  * Create new user (Admin only)
  */
 router.post(
-  '/',
+  "/",
   adminOnly,
   userValidation.create,
-  auditLog({ action: 'users.create' }),
+  auditLog({ action: "users.create" }),
   async (req: AuthRequest, res: Response): Promise<void> => {
     try {
       const { username, email, password, role } = req.body;
 
       if (!username || !email || !password) {
-        res.status(400).json({ error: 'Username, email, and password are required' });
+        res
+          .status(400)
+          .json({ error: "Username, email, and password are required" });
         return;
       }
 
@@ -95,7 +111,7 @@ router.post(
       logger.info(`User created by admin: ${username}`);
 
       res.status(201).json({
-        message: 'User created successfully',
+        message: "User created successfully",
         user: {
           id: user.id,
           username: user.username,
@@ -104,10 +120,10 @@ router.post(
         },
       });
     } catch (error) {
-      logger.error('Create user error:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      logger.error("Create user error:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
-  }
+  },
 );
 
 /**
@@ -115,16 +131,16 @@ router.post(
  * Update user (Admin only)
  */
 router.patch(
-  '/:id',
+  "/:id",
   adminOnly,
   userValidation.update,
-  auditLog({ action: 'users.update', targetType: 'user' }),
+  auditLog({ action: "users.update", targetType: "user" }),
   async (req: AuthRequest, res: Response): Promise<void> => {
     try {
       const user = await User.findByPk(req.params.id);
 
       if (!user) {
-        res.status(404).json({ error: 'User not found' });
+        res.status(404).json({ error: "User not found" });
         return;
       }
 
@@ -141,7 +157,7 @@ router.patch(
       logger.info(`User updated: ${user.username}`);
 
       res.json({
-        message: 'User updated successfully',
+        message: "User updated successfully",
         user: {
           id: user.id,
           username: user.username,
@@ -150,10 +166,10 @@ router.patch(
         },
       });
     } catch (error) {
-      logger.error('Update user error:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      logger.error("Update user error:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
-  }
+  },
 );
 
 /**
@@ -161,22 +177,22 @@ router.patch(
  * Delete user (Admin only)
  */
 router.delete(
-  '/:id',
+  "/:id",
   adminOnly,
   userValidation.delete,
-  auditLog({ action: 'users.delete', targetType: 'user' }),
+  auditLog({ action: "users.delete", targetType: "user" }),
   async (req: AuthRequest, res: Response): Promise<void> => {
     try {
       // Prevent self-deletion
       if (req.params.id === String(req.user!.id)) {
-        res.status(400).json({ error: 'Cannot delete your own account' });
+        res.status(400).json({ error: "Cannot delete your own account" });
         return;
       }
 
       const user = await User.findByPk(req.params.id);
 
       if (!user) {
-        res.status(404).json({ error: 'User not found' });
+        res.status(404).json({ error: "User not found" });
         return;
       }
 
@@ -184,12 +200,12 @@ router.delete(
 
       logger.info(`User deleted: ${user.username}`);
 
-      res.json({ message: 'User deleted successfully' });
+      res.json({ message: "User deleted successfully" });
     } catch (error) {
-      logger.error('Delete user error:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      logger.error("Delete user error:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
-  }
+  },
 );
 
 export default router;

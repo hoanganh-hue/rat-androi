@@ -7,7 +7,9 @@ import type { Device } from '../../../core/models/device.model';
 
 class MockApiService {
   response: any;
-  constructor(resp: any) { this.response = resp; }
+  constructor(resp: any) {
+    this.response = resp;
+  }
   get<T>(_endpoint: string) {
     return of(this.response as T);
   }
@@ -59,4 +61,3 @@ describe('DeviceDetailComponent', () => {
     expect(header?.textContent).toContain('abcdefgh…'); // shortId
   });
 });
-

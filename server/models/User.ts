@@ -1,13 +1,22 @@
 // User Model - với RBAC (Role-Based Access Control)
-import { Table, Column, Model, DataType, PrimaryKey, Default, Unique, AllowNull } from 'sequelize-typescript';
-import { Optional } from 'sequelize';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  PrimaryKey,
+  Default,
+  Unique,
+  AllowNull,
+} from "sequelize-typescript";
+import { Optional } from "sequelize";
 
 // User roles
 export enum UserRole {
-  ADMIN = 'admin',
-  MANAGER = 'manager',
-  OPERATOR = 'operator',
-  VIEWER = 'viewer'
+  ADMIN = "admin",
+  MANAGER = "manager",
+  OPERATOR = "operator",
+  VIEWER = "viewer",
 }
 
 // User attributes interface
@@ -23,13 +32,17 @@ export interface UserAttributes {
 }
 
 // Optional fields when creating
-export interface UserCreationAttributes extends Optional<UserAttributes, 'id' | 'created_at' | 'updated_at' | 'last_login_at'> {}
+export interface UserCreationAttributes
+  extends Optional<
+    UserAttributes,
+    "id" | "created_at" | "updated_at" | "last_login_at"
+  > {}
 
 @Table({
-  tableName: 'users',
+  tableName: "users",
   timestamps: true,
-  createdAt: 'created_at',
-  updatedAt: 'updated_at',
+  createdAt: "created_at",
+  updatedAt: "updated_at",
 })
 export class User extends Model<UserAttributes, UserCreationAttributes> {
   @PrimaryKey

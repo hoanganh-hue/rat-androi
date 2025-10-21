@@ -4,17 +4,10 @@ import { Router } from '@angular/router';
 import { Observable, BehaviorSubject, tap, catchError, of } from 'rxjs';
 import { ApiService } from './api.service';
 import { SocketService } from './socket.service';
-import {
-  User,
-  UserRole,
-  LoginRequest,
-  LoginResponse,
-  RegisterRequest,
-  AuthState
-} from '../models';
+import { User, UserRole, LoginRequest, LoginResponse, RegisterRequest, AuthState } from '../models';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private api = inject(ApiService);
@@ -28,11 +21,11 @@ export class AuthService {
   private authStateSubject = new BehaviorSubject<AuthState>({
     isAuthenticated: false,
     user: null,
-    token: null
+    token: null,
   });
 
   public authState$ = this.authStateSubject.asObservable();
-  
+
   // Signals for reactive state
   public isAuthenticated = signal(false);
   public currentUser = signal<User | null>(null);
@@ -51,10 +44,10 @@ export class AuthService {
 
     if (token && user) {
       this.setAuthState(user, token);
-      
+
       // Initialize Socket.IO connection
       this.socketService.connect();
-      
+
       // Verify token with backend
       this.verifyToken().subscribe({
         next: (user) => {
@@ -63,7 +56,7 @@ export class AuthService {
         error: () => {
           this.clearAuth();
           this.socketService.disconnect();
-        }
+        },
       });
     }
   }
@@ -73,14 +66,14 @@ export class AuthService {
    */
   login(credentials: LoginRequest): Observable<LoginResponse> {
     return this.api.post<LoginResponse>('/auth/login', credentials).pipe(
-      tap(response => {
+      tap((response) => {
         this.setAuthState(response.user, response.token);
-        
+
         // Initialize Socket.IO connection after successful login
         this.socketService.connect();
-        
+
         this.router.navigate(['/dashboard']);
-      })
+      }),
     );
   }
 
@@ -97,7 +90,7 @@ export class AuthService {
   logout(): void {
     // Disconnect Socket.IO before clearing auth
     this.socketService.disconnect();
-    
+
     this.clearAuth();
     this.router.navigate(['/login']);
   }
@@ -134,7 +127,7 @@ export class AuthService {
     this.authStateSubject.next({
       isAuthenticated: true,
       user,
-      token
+      token,
     });
 
     this.isAuthenticated.set(true);
@@ -152,7 +145,7 @@ export class AuthService {
     this.authStateSubject.next({
       isAuthenticated: false,
       user: null,
-      token: null
+      token: null,
     });
 
     this.isAuthenticated.set(false);
@@ -196,4 +189,3 @@ export class AuthService {
     return this.hasAnyRole([UserRole.ADMIN, UserRole.MANAGER, UserRole.OPERATOR]);
   }
 }
-

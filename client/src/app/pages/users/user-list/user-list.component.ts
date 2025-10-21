@@ -25,7 +25,7 @@ import { UserFormComponent } from '../user-form/user-form.component';
     MatMenuModule,
     MatDialogModule,
     MatSnackBarModule,
-    MatDividerModule
+    MatDividerModule,
   ],
   template: `
     <div class="users-container">
@@ -68,7 +68,8 @@ import { UserFormComponent } from '../user-form/user-form.component';
                 [class.admin]="user.role === 'admin'"
                 [class.manager]="user.role === 'manager'"
                 [class.operator]="user.role === 'operator'"
-                [class.viewer]="user.role === 'viewer'">
+                [class.viewer]="user.role === 'viewer'"
+              >
                 {{ user.role }}
               </mat-chip>
             </td>
@@ -78,7 +79,7 @@ import { UserFormComponent } from '../user-form/user-form.component';
           <ng-container matColumnDef="created_at">
             <th mat-header-cell *matHeaderCellDef>Created</th>
             <td mat-cell *matCellDef="let user">
-              {{ user.created_at | date:'short' }}
+              {{ user.created_at | date: 'short' }}
             </td>
           </ng-container>
 
@@ -104,7 +105,8 @@ import { UserFormComponent } from '../user-form/user-form.component';
                   mat-menu-item
                   (click)="deleteUser(user)"
                   [disabled]="user.role === 'admin'"
-                  class="danger">
+                  class="danger"
+                >
                   <mat-icon>delete</mat-icon>
                   <span>Delete</span>
                 </button>
@@ -113,7 +115,7 @@ import { UserFormComponent } from '../user-form/user-form.component';
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
         </table>
 
         @if (users().length === 0) {
@@ -126,99 +128,101 @@ import { UserFormComponent } from '../user-form/user-form.component';
       </div>
     </div>
   `,
-  styles: [`
-    .users-container {
-      padding: var(--spacing-lg);
-    }
-
-    .page-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: var(--spacing-xl);
-    }
-
-    .page-header h1 {
-      margin: 0;
-    }
-
-    .page-header button {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-sm);
-    }
-
-    .table-container {
-      background-color: var(--bg-secondary);
-      border-radius: var(--radius-md);
-      overflow: hidden;
-    }
-
-    .users-table {
-      width: 100%;
-    }
-
-    .user-cell {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-sm);
-    }
-
-    .user-cell mat-icon {
-      color: var(--text-secondary);
-    }
-
-    mat-chip {
-      text-transform: capitalize;
-      font-size: 12px;
-    }
-
-    mat-chip.admin {
-      background-color: rgba(244, 67, 54, 0.15);
-      color: var(--accent-error);
-    }
-
-    mat-chip.manager {
-      background-color: rgba(33, 150, 243, 0.15);
-      color: var(--primary-brand);
-    }
-
-    mat-chip.operator {
-      background-color: rgba(76, 175, 80, 0.15);
-      color: var(--accent-success);
-    }
-
-    mat-chip.viewer {
-      background-color: rgba(158, 158, 158, 0.15);
-      color: var(--text-secondary);
-    }
-
-    .danger {
-      color: var(--accent-error);
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: var(--spacing-xl);
-      color: var(--text-secondary);
-    }
-
-    .empty-state mat-icon {
-      font-size: 64px;
-      width: 64px;
-      height: 64px;
-      opacity: 0.5;
-      margin-bottom: var(--spacing-md);
-    }
-
-    @media (max-width: 768px) {
-      .page-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--spacing-md);
+  styles: [
+    `
+      .users-container {
+        padding: var(--spacing-lg);
       }
-    }
-  `]
+
+      .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--spacing-xl);
+      }
+
+      .page-header h1 {
+        margin: 0;
+      }
+
+      .page-header button {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+      }
+
+      .table-container {
+        background-color: var(--bg-secondary);
+        border-radius: var(--radius-md);
+        overflow: hidden;
+      }
+
+      .users-table {
+        width: 100%;
+      }
+
+      .user-cell {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+      }
+
+      .user-cell mat-icon {
+        color: var(--text-secondary);
+      }
+
+      mat-chip {
+        text-transform: capitalize;
+        font-size: 12px;
+      }
+
+      mat-chip.admin {
+        background-color: rgba(244, 67, 54, 0.15);
+        color: var(--accent-error);
+      }
+
+      mat-chip.manager {
+        background-color: rgba(33, 150, 243, 0.15);
+        color: var(--primary-brand);
+      }
+
+      mat-chip.operator {
+        background-color: rgba(76, 175, 80, 0.15);
+        color: var(--accent-success);
+      }
+
+      mat-chip.viewer {
+        background-color: rgba(158, 158, 158, 0.15);
+        color: var(--text-secondary);
+      }
+
+      .danger {
+        color: var(--accent-error);
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: var(--spacing-xl);
+        color: var(--text-secondary);
+      }
+
+      .empty-state mat-icon {
+        font-size: 64px;
+        width: 64px;
+        height: 64px;
+        opacity: 0.5;
+        margin-bottom: var(--spacing-md);
+      }
+
+      @media (max-width: 768px) {
+        .page-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: var(--spacing-md);
+        }
+      }
+    `,
+  ],
 })
 export class UserListComponent implements OnInit {
   private api = inject(ApiService);
@@ -240,17 +244,17 @@ export class UserListComponent implements OnInit {
       error: (error) => {
         console.error('Failed to load users:', error);
         this.snackBar.open('Failed to load users', 'Close', { duration: 3000 });
-      }
+      },
     });
   }
 
   createUser() {
     const dialogRef = this.dialog.open(UserFormComponent, {
       width: '600px',
-      data: null
+      data: null,
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.loadUsers();
       }
@@ -260,10 +264,10 @@ export class UserListComponent implements OnInit {
   editUser(user: User) {
     const dialogRef = this.dialog.open(UserFormComponent, {
       width: '600px',
-      data: user
+      data: user,
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.loadUsers();
       }
@@ -279,7 +283,7 @@ export class UserListComponent implements OnInit {
         },
         error: (error) => {
           this.snackBar.open('Failed to reset password', 'Close', { duration: 3000 });
-        }
+        },
       });
     }
   }
@@ -293,9 +297,8 @@ export class UserListComponent implements OnInit {
         },
         error: (error) => {
           this.snackBar.open('Failed to delete user', 'Close', { duration: 3000 });
-        }
+        },
       });
     }
   }
 }
-

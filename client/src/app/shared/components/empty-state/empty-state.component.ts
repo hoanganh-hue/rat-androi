@@ -22,30 +22,32 @@ import { MatButtonModule } from '@angular/material/button';
       }
     </div>
   `,
-  styles: [`
-    .empty-state {
-      text-align: center;
-      padding: var(--spacing-xl);
-      color: var(--text-secondary);
-    }
+  styles: [
+    `
+      .empty-state {
+        text-align: center;
+        padding: var(--spacing-xl);
+        color: var(--text-secondary);
+      }
 
-    mat-icon {
-      font-size: 64px;
-      width: 64px;
-      height: 64px;
-      opacity: 0.5;
-      margin-bottom: var(--spacing-md);
-    }
+      mat-icon {
+        font-size: 64px;
+        width: 64px;
+        height: 64px;
+        opacity: 0.5;
+        margin-bottom: var(--spacing-md);
+      }
 
-    h3 {
-      margin: var(--spacing-sm) 0;
-      color: var(--text-primary);
-    }
+      h3 {
+        margin: var(--spacing-sm) 0;
+        color: var(--text-primary);
+      }
 
-    p {
-      margin: var(--spacing-sm) 0 var(--spacing-lg) 0;
-    }
-  `]
+      p {
+        margin: var(--spacing-sm) 0 var(--spacing-lg) 0;
+      }
+    `,
+  ],
 })
 export class EmptyStateComponent {
   @Input() icon = 'inbox';
@@ -57,4 +59,3 @@ export class EmptyStateComponent {
     // Override in parent component
   }
 }
-

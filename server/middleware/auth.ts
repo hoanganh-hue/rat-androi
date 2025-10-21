@@ -1,11 +1,12 @@
 // Authentication Middleware - JWT verification
-import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
 
 // Local role type to avoid importing models in middleware
-export type UserRole = 'admin' | 'manager' | 'operator' | 'viewer';
+export type UserRole = "admin" | "manager" | "operator" | "viewer";
 
-const JWT_SECRET = process.env.JWT_SECRET || 'dogerat-secret-key-change-in-production';
+const JWT_SECRET =
+  process.env.JWT_SECRET || "dogerat-secret-key-change-in-production";
 
 export interface AuthRequest extends Request {
   user?: {
@@ -18,13 +19,13 @@ export interface AuthRequest extends Request {
 export const authenticate = async (
   req: AuthRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
     const authHeader = req.headers.authorization;
-    
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      res.status(401).json({ error: 'No token provided' });
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      res.status(401).json({ error: "No token provided" });
       return;
     }
 
@@ -41,17 +42,21 @@ export const authenticate = async (
       req.user = decoded;
       next();
     } catch (jwtError) {
-      res.status(401).json({ error: 'Invalid token' });
+      res.status(401).json({ error: "Invalid token" });
       return;
     }
   } catch (error) {
-    console.error('Authentication error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error("Authentication error:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
 // Generate JWT token
-export const generateToken = (user: { id: number; username: string; role: UserRole }): string => {
+export const generateToken = (user: {
+  id: number;
+  username: string;
+  role: UserRole;
+}): string => {
   return jwt.sign(
     {
       id: user.id,
@@ -59,7 +64,7 @@ export const generateToken = (user: { id: number; username: string; role: UserRo
       role: user.role,
     },
     JWT_SECRET,
-    { expiresIn: '24h' }
+    { expiresIn: "24h" },
   );
 };
 

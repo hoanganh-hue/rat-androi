@@ -35,7 +35,7 @@ import { Device } from '../../../core/models';
     MatMenuModule,
     MatDialogModule,
     MatSnackBarModule,
-    MatDividerModule
+    MatDividerModule,
   ],
   template: `
     <div class="devices-container">
@@ -58,25 +58,26 @@ import { Device } from '../../../core/models';
             matInput
             [(ngModel)]="searchQuery"
             (ngModelChange)="onSearchChange()"
-            placeholder="Search by model, IP, or ID...">
+            placeholder="Search by model, IP, or ID..."
+          />
           <mat-icon matPrefix>search</mat-icon>
         </mat-form-field>
 
         <div class="filter-chips">
           <mat-chip-listbox>
-            <mat-chip-option
-              [selected]="statusFilter() === 'all'"
-              (click)="setStatusFilter('all')">
+            <mat-chip-option [selected]="statusFilter() === 'all'" (click)="setStatusFilter('all')">
               All ({{ devices().length }})
             </mat-chip-option>
             <mat-chip-option
               [selected]="statusFilter() === 'online'"
-              (click)="setStatusFilter('online')">
+              (click)="setStatusFilter('online')"
+            >
               Online ({{ getOnlineCount() }})
             </mat-chip-option>
             <mat-chip-option
               [selected]="statusFilter() === 'offline'"
-              (click)="setStatusFilter('offline')">
+              (click)="setStatusFilter('offline')"
+            >
               Offline ({{ getOfflineCount() }})
             </mat-chip-option>
           </mat-chip-listbox>
@@ -93,7 +94,8 @@ import { Device } from '../../../core/models';
               <span
                 class="status-badge"
                 [class.online]="device.isOnline"
-                [class.offline]="!device.isOnline">
+                [class.offline]="!device.isOnline"
+              >
                 <mat-icon>{{ device.isOnline ? 'check_circle' : 'cancel' }}</mat-icon>
                 {{ device.isOnline ? 'Online' : 'Offline' }}
               </span>
@@ -132,7 +134,7 @@ import { Device } from '../../../core/models';
           <ng-container matColumnDef="last_seen">
             <th mat-header-cell *matHeaderCellDef>Last Seen</th>
             <td mat-cell *matCellDef="let device">
-              {{ device.last_seen_at | date:'short' }}
+              {{ device.last_seen_at | date: 'short' }}
             </td>
           </ng-container>
 
@@ -143,7 +145,8 @@ import { Device } from '../../../core/models';
               <button
                 mat-icon-button
                 [matMenuTriggerFor]="deviceMenu"
-                [disabled]="!device.isOnline">
+                [disabled]="!device.isOnline"
+              >
                 <mat-icon>more_vert</mat-icon>
               </button>
 
@@ -170,7 +173,7 @@ import { Device } from '../../../core/models';
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
         </table>
 
         @if (filteredDevices().length === 0) {
@@ -194,132 +197,135 @@ import { Device } from '../../../core/models';
         [pageSize]="pageSize"
         [pageSizeOptions]="[10, 25, 50, 100]"
         (page)="onPageChange($event)"
-        showFirstLastButtons>
+        showFirstLastButtons
+      >
       </mat-paginator>
     </div>
   `,
-  styles: [`
-    .devices-container {
-      padding: var(--spacing-lg);
-    }
+  styles: [
+    `
+      .devices-container {
+        padding: var(--spacing-lg);
+      }
 
-    .page-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: var(--spacing-xl);
-    }
-
-    .page-header h1 {
-      margin: 0;
-    }
-
-    .page-header button {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-sm);
-    }
-
-    .filters-section {
-      margin-bottom: var(--spacing-lg);
-      display: flex;
-      flex-direction: column;
-      gap: var(--spacing-md);
-    }
-
-    .search-field {
-      max-width: 500px;
-    }
-
-    .filter-chips mat-chip-listbox {
-      display: flex;
-      gap: var(--spacing-sm);
-    }
-
-    .table-container {
-      background-color: var(--bg-secondary);
-      border-radius: var(--radius-md);
-      overflow: hidden;
-      margin-bottom: var(--spacing-md);
-    }
-
-    .devices-table {
-      width: 100%;
-    }
-
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: var(--spacing-xs);
-      padding: 4px 12px;
-      border-radius: var(--radius-full);
-      font-size: 12px;
-      font-weight: 500;
-    }
-
-    .status-badge mat-icon {
-      font-size: 16px;
-      width: 16px;
-      height: 16px;
-    }
-
-    .status-badge.online {
-      background-color: rgba(76, 175, 80, 0.15);
-      color: var(--accent-success);
-    }
-
-    .status-badge.offline {
-      background-color: rgba(158, 158, 158, 0.15);
-      color: var(--status-offline);
-    }
-
-    .device-id {
-      font-family: 'Courier New', monospace;
-      font-size: 12px;
-      padding: 2px 6px;
-      background-color: var(--bg-tertiary);
-      border-radius: var(--radius-sm);
-    }
-
-    code {
-      font-family: 'Courier New', monospace;
-      font-size: 13px;
-    }
-
-    .danger {
-      color: var(--accent-error);
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: var(--spacing-xl);
-      color: var(--text-secondary);
-    }
-
-    .empty-state mat-icon {
-      font-size: 64px;
-      width: 64px;
-      height: 64px;
-      opacity: 0.5;
-      margin-bottom: var(--spacing-md);
-    }
-
-    .empty-state h3 {
-      margin: var(--spacing-sm) 0;
-    }
-
-    @media (max-width: 768px) {
       .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--spacing-xl);
+      }
+
+      .page-header h1 {
+        margin: 0;
+      }
+
+      .page-header button {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+      }
+
+      .filters-section {
+        margin-bottom: var(--spacing-lg);
+        display: flex;
         flex-direction: column;
-        align-items: flex-start;
         gap: var(--spacing-md);
       }
 
       .search-field {
-        max-width: 100%;
+        max-width: 500px;
       }
-    }
-  `]
+
+      .filter-chips mat-chip-listbox {
+        display: flex;
+        gap: var(--spacing-sm);
+      }
+
+      .table-container {
+        background-color: var(--bg-secondary);
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        margin-bottom: var(--spacing-md);
+      }
+
+      .devices-table {
+        width: 100%;
+      }
+
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+        padding: 4px 12px;
+        border-radius: var(--radius-full);
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      .status-badge mat-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+      }
+
+      .status-badge.online {
+        background-color: rgba(76, 175, 80, 0.15);
+        color: var(--accent-success);
+      }
+
+      .status-badge.offline {
+        background-color: rgba(158, 158, 158, 0.15);
+        color: var(--status-offline);
+      }
+
+      .device-id {
+        font-family: 'Courier New', monospace;
+        font-size: 12px;
+        padding: 2px 6px;
+        background-color: var(--bg-tertiary);
+        border-radius: var(--radius-sm);
+      }
+
+      code {
+        font-family: 'Courier New', monospace;
+        font-size: 13px;
+      }
+
+      .danger {
+        color: var(--accent-error);
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: var(--spacing-xl);
+        color: var(--text-secondary);
+      }
+
+      .empty-state mat-icon {
+        font-size: 64px;
+        width: 64px;
+        height: 64px;
+        opacity: 0.5;
+        margin-bottom: var(--spacing-md);
+      }
+
+      .empty-state h3 {
+        margin: var(--spacing-sm) 0;
+      }
+
+      @media (max-width: 768px) {
+        .page-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: var(--spacing-md);
+        }
+
+        .search-field {
+          max-width: 100%;
+        }
+      }
+    `,
+  ],
 })
 export class DeviceListComponent implements OnInit {
   private api = inject(ApiService);
@@ -348,7 +354,7 @@ export class DeviceListComponent implements OnInit {
       error: (error) => {
         console.error('Failed to load devices:', error);
         this.snackBar.open('Failed to load devices', 'Close', { duration: 3000 });
-      }
+      },
     });
   }
 
@@ -357,18 +363,19 @@ export class DeviceListComponent implements OnInit {
 
     // Status filter
     if (this.statusFilter() === 'online') {
-      filtered = filtered.filter(d => d.isOnline);
+      filtered = filtered.filter((d) => d.isOnline);
     } else if (this.statusFilter() === 'offline') {
-      filtered = filtered.filter(d => !d.isOnline);
+      filtered = filtered.filter((d) => !d.isOnline);
     }
 
     // Search filter
     if (this.searchQuery) {
       const query = this.searchQuery.toLowerCase();
-      filtered = filtered.filter(d =>
-        d.model.toLowerCase().includes(query) ||
-        d.ip.toLowerCase().includes(query) ||
-        d.device_id.toLowerCase().includes(query)
+      filtered = filtered.filter(
+        (d) =>
+          d.model.toLowerCase().includes(query) ||
+          d.ip.toLowerCase().includes(query) ||
+          d.device_id.toLowerCase().includes(query),
       );
     }
 
@@ -385,11 +392,11 @@ export class DeviceListComponent implements OnInit {
   }
 
   getOnlineCount(): number {
-    return this.devices().filter(d => d.isOnline).length;
+    return this.devices().filter((d) => d.isOnline).length;
   }
 
   getOfflineCount(): number {
-    return this.devices().filter(d => !d.isOnline).length;
+    return this.devices().filter((d) => !d.isOnline).length;
   }
 
   onPageChange(event: PageEvent) {
@@ -412,7 +419,7 @@ export class DeviceListComponent implements OnInit {
       },
       error: (error) => {
         this.snackBar.open('Failed to send command', 'Close', { duration: 3000 });
-      }
+      },
     });
   }
 
@@ -425,9 +432,8 @@ export class DeviceListComponent implements OnInit {
         },
         error: (error) => {
           this.snackBar.open('Failed to delete device', 'Close', { duration: 3000 });
-        }
+        },
       });
     }
   }
 }
-

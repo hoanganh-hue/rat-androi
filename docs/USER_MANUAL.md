@@ -21,6 +21,7 @@
 DogeRat Web Admin is a comprehensive web-based administration panel for managing and controlling Android devices remotely. The platform provides real-time device monitoring, command execution, user management, and comprehensive audit logging.
 
 **Key Features:**
+
 - Real-time device status monitoring
 - Remote device control
 - Role-based access control (RBAC)
@@ -52,6 +53,7 @@ DogeRat Web Admin is a comprehensive web-based administration panel for managing
 DogeRat Web Admin supports 4 user roles with different permission levels:
 
 ### Admin
+
 - **Full system access**
 - Can create, edit, and delete users
 - Can manage all devices
@@ -59,18 +61,21 @@ DogeRat Web Admin supports 4 user roles with different permission levels:
 - Can configure system settings
 
 ### Manager
+
 - Can view and manage users (limited)
 - Can control all devices
 - Can view audit logs
 - Cannot modify system-critical settings
 
 ### Operator
+
 - Can view all devices
 - Can send commands to devices
 - Cannot manage users
 - Cannot view audit logs
 
 ### Viewer
+
 - **Read-only access**
 - Can view device list and status
 - Cannot execute commands
@@ -98,6 +103,7 @@ The Dashboard provides a quick overview of your system.
    - Device model, IP address, and last seen time
 
 **How to Use:**
+
 - Click "Refresh" to manually reload dashboard data
 - Real-time updates automatically reflect device status changes
 
@@ -129,6 +135,7 @@ For **Online devices**, you can:
 4. **Send Custom Commands**: Execute specific actions
 
 **Available Commands:**
+
 - `get_info` - Device information
 - `get_location` - GPS coordinates
 - `get_sms` - Read SMS messages
@@ -220,6 +227,7 @@ Use the filter section to narrow down results:
 3. The filtered audit log will download as a CSV file
 
 **CSV Format:**
+
 ```
 Timestamp,User,Action,Resource,Details,IP Address
 2024-10-20T10:30:00Z,admin,LOGIN,user,"Successful login",192.168.1.100
@@ -232,6 +240,7 @@ Timestamp,User,Action,Resource,Details,IP Address
 ### Q: What happens if I lose my admin password?
 
 **A:** You need to reset it using the backend script:
+
 ```bash
 cd /path/to/project
 npm run db:seed  # This recreates the admin user
@@ -248,6 +257,7 @@ npm run db:seed  # This recreates the admin user
 ### Q: What's the difference between Manager and Operator roles?
 
 **A:**
+
 - **Manager**: Can manage users + control devices + view audit logs
 - **Operator**: Can only control devices (no user management or audit access)
 
@@ -266,6 +276,7 @@ npm run db:seed  # This recreates the admin user
 ### Issue: "Login failed" error
 
 **Solutions:**
+
 1. Check username and password (case-sensitive)
 2. Ensure backend server is running
 3. Clear browser cache and cookies
@@ -274,6 +285,7 @@ npm run db:seed  # This recreates the admin user
 ### Issue: Devices not appearing
 
 **Solutions:**
+
 1. Verify the Android app is running on the target device
 2. Check network connectivity
 3. Ensure the device app is configured with correct server URL
@@ -282,6 +294,7 @@ npm run db:seed  # This recreates the admin user
 ### Issue: Commands not executing
 
 **Solutions:**
+
 1. Verify the device is **Online** (green status)
 2. Check device app permissions
 3. Review audit logs for error messages
@@ -290,6 +303,7 @@ npm run db:seed  # This recreates the admin user
 ### Issue: Real-time updates not working
 
 **Solutions:**
+
 1. Check browser console for WebSocket errors
 2. Ensure firewall/proxy allows WebSocket connections
 3. Refresh the page to re-establish connection
@@ -321,6 +335,7 @@ npm run db:seed  # This recreates the admin user
 ⚠️ **Important**: DogeRat is developed for **educational and research purposes only**. Unauthorized use of this software to monitor or control devices without explicit permission is illegal and unethical.
 
 By using this software, you agree to:
+
 - Use it only in controlled, authorized environments
 - Obtain proper consent before deploying on any device
 - Comply with all applicable laws and regulations
@@ -340,14 +355,17 @@ By using this software, you agree to:
 ## Quick Reference
 
 ### Default Credentials
+
 - Username: `admin`
 - Password: `Admin@123456`
 
 ### Keyboard Shortcuts
+
 - `Ctrl + R` / `Cmd + R`: Refresh current page
 - `Esc`: Close dialogs and modals
 
 ### Important URLs
+
 - Dashboard: `/dashboard`
 - Devices: `/devices`
 - Users: `/users` (Admin/Manager only)
@@ -356,5 +374,4 @@ By using this software, you agree to:
 
 ---
 
-*End of User Manual*
-
+_End of User Manual_

@@ -30,6 +30,7 @@ This document summarizes the security measures implemented in DogeRat Web Admin 
 ### 1. Authentication & Authorization
 
 #### JWT Token-Based Authentication
+
 - **Implementation**: JSON Web Tokens (JWT)
 - **Algorithm**: HS256
 - **Token Expiry**: Configurable (default: 24h)
@@ -37,6 +38,7 @@ This document summarizes the security measures implemented in DogeRat Web Admin 
 - **Status**: ✅ Implemented
 
 **Features**:
+
 - Secure token generation
 - Token validation on every request
 - Automatic token expiration
@@ -44,29 +46,32 @@ This document summarizes the security measures implemented in DogeRat Web Admin 
 - Logout functionality
 
 #### Role-Based Access Control (RBAC)
+
 - **Roles Implemented**: 4 (Admin, Manager, Operator, Viewer)
 - **Enforcement**: Backend middleware + Frontend guards
 - **Status**: ✅ Implemented
 
 **Permission Matrix**:
 
-| Action | Admin | Manager | Operator | Viewer |
-|--------|-------|---------|----------|--------|
-| View devices | ✅ | ✅ | ✅ | ✅ |
-| Send commands | ✅ | ✅ | ✅ | ❌ |
-| Manage users | ✅ | ❌ | ❌ | ❌ |
-| View audit logs | ✅ | ✅ | ❌ | ❌ |
-| Screen streaming | ✅ | ✅ | ✅ | ❌ |
-| Remote control | ✅ | ✅ | ✅ | ❌ |
+| Action           | Admin | Manager | Operator | Viewer |
+| ---------------- | ----- | ------- | -------- | ------ |
+| View devices     | ✅    | ✅      | ✅       | ✅     |
+| Send commands    | ✅    | ✅      | ✅       | ❌     |
+| Manage users     | ✅    | ❌      | ❌       | ❌     |
+| View audit logs  | ✅    | ✅      | ❌       | ❌     |
+| Screen streaming | ✅    | ✅      | ✅       | ❌     |
+| Remote control   | ✅    | ✅      | ✅       | ❌     |
 
 ### 2. Input Validation
 
 #### Backend Validation
+
 - **Library**: express-validator
 - **Coverage**: 100% of endpoints
 - **Status**: ✅ Implemented
 
 **Validations**:
+
 - Email format validation
 - Password strength requirements (min 8 chars, uppercase, lowercase, number, special char)
 - Username format (alphanumeric, 3-50 chars)
@@ -75,11 +80,13 @@ This document summarizes the security measures implemented in DogeRat Web Admin 
 - File upload validation (type, size)
 
 #### Frontend Validation
+
 - **Framework**: Angular Reactive Forms
 - **Validators**: Built-in + custom
 - **Status**: ✅ Implemented
 
 **Validations**:
+
 - Required field validation
 - Email format validation
 - Password matching
@@ -89,25 +96,30 @@ This document summarizes the security measures implemented in DogeRat Web Admin 
 ### 3. Rate Limiting
 
 #### Configuration
+
 - **Window**: 15 minutes
 - **Max Requests**: 100 per window
 - **Status**: ✅ Implemented
 
 **Endpoints Protected**:
+
 - Authentication endpoints (login, register)
 - API endpoints (all protected routes)
 - File upload endpoints
 
 **Response**:
+
 - Status Code: 429 Too Many Requests
 - Headers: X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset
 
 ### 4. Security Headers
 
 #### Helmet.js Configuration
+
 - **Status**: ✅ Implemented
 
 **Headers Set**:
+
 ```
 Content-Security-Policy: default-src 'self'
 X-Content-Type-Options: nosniff
@@ -121,6 +133,7 @@ Permissions-Policy: geolocation=(), microphone=(), camera=()
 ### 5. CORS Configuration
 
 #### Settings
+
 - **Origin**: Configurable (default: localhost:4200)
 - **Credentials**: Enabled
 - **Methods**: GET, POST, PATCH, DELETE
@@ -128,23 +141,26 @@ Permissions-Policy: geolocation=(), microphone=(), camera=()
 - **Status**: ✅ Implemented
 
 **Production Configuration**:
+
 ```typescript
 cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:4200',
+  origin: process.env.CORS_ORIGIN || "http://localhost:4200",
   credentials: true,
-  optionsSuccessStatus: 200
-})
+  optionsSuccessStatus: 200,
+});
 ```
 
 ### 6. SQL Injection Prevention
 
 #### ORM-Based Queries
+
 - **ORM**: Sequelize
 - **Parameterized Queries**: Yes
 - **Raw Queries**: Avoided
 - **Status**: ✅ Protected
 
 **Protection**:
+
 - All database queries use ORM methods
 - No string concatenation in queries
 - Prepared statements for all operations
@@ -153,6 +169,7 @@ cors({
 ### 7. XSS Prevention
 
 #### Measures
+
 - **Content-Type Headers**: Set correctly
 - **Output Encoding**: Automatic (Angular)
 - **Input Sanitization**: express-validator
@@ -160,6 +177,7 @@ cors({
 - **Status**: ✅ Protected
 
 **Angular Protection**:
+
 - Automatic HTML escaping in templates
 - Sanitization of user input
 - Safe navigation operators
@@ -168,6 +186,7 @@ cors({
 ### 8. CSRF Protection
 
 #### Implementation
+
 - **Method**: CORS + Origin checking
 - **Tokens**: Not needed (API-only, no cookies for auth)
 - **SameSite Cookies**: N/A (JWT in headers)
@@ -176,36 +195,40 @@ cors({
 ### 9. File Upload Security
 
 #### Validation
+
 - **Max Size**: 50MB (configurable)
 - **Allowed Types**: Configurable whitelist
 - **Virus Scanning**: Recommended for production
 - **Status**: ✅ Implemented
 
 **Security Measures**:
+
 ```typescript
 multer({
   limits: { fileSize: 50 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     // Type validation
-    const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+    const allowedTypes = ["image/jpeg", "image/png", "application/pdf"];
     if (allowedTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error('Invalid file type'));
+      cb(new Error("Invalid file type"));
     }
-  }
-})
+  },
+});
 ```
 
 ### 10. Audit Logging
 
 #### Coverage
+
 - **Events Logged**: All user actions
 - **Data Captured**: User, IP, timestamp, action, target
 - **Retention**: Configurable
 - **Status**: ✅ Implemented
 
 **Logged Actions**:
+
 - Authentication (login, logout)
 - User management (create, update, delete)
 - Device management (view, command, delete)
@@ -217,6 +240,7 @@ multer({
 ## 🔍 Security Audit Results
 
 ### CodeQL Analysis
+
 - **Date**: October 21, 2025
 - **Status**: ✅ **PASSED**
 - **Critical Vulnerabilities**: 0
@@ -226,9 +250,11 @@ multer({
 - **Informational**: 6 (fixed)
 
 **Issues Found and Fixed**:
+
 1. ✅ GitHub Actions workflow permissions - Fixed by adding explicit permissions
 
 ### NPM Audit
+
 ```bash
 npm audit
 
@@ -237,6 +263,7 @@ npm audit
 ```
 
 ### Dependency Security
+
 - **Total Dependencies**: 48
 - **Vulnerabilities**: 0 critical, 0 high, 0 medium
 - **Last Updated**: October 21, 2025
@@ -245,6 +272,7 @@ npm audit
 ### Manual Security Review
 
 #### Checked Items
+
 - ✅ No hardcoded credentials
 - ✅ No sensitive data in logs
 - ✅ No SQL injection vulnerabilities
@@ -318,6 +346,7 @@ npm audit
 ## 🔐 Production Security Checklist
 
 ### Pre-Deployment
+
 - [ ] Change default admin password
 - [ ] Generate strong JWT secret
 - [ ] Configure CORS for production domain
@@ -330,6 +359,7 @@ npm audit
 - [ ] Review .env file for sensitive data
 
 ### Post-Deployment
+
 - [ ] Run deployment validation script
 - [ ] Test authentication flow
 - [ ] Test authorization for all roles
@@ -376,23 +406,27 @@ npm audit
 ## 📊 Security Metrics
 
 ### Authentication
+
 - Failed login attempts: Logged
 - Successful logins: Logged
 - Token expiration: 24h (configurable)
 - Password policy: Strong
 
 ### Authorization
+
 - Role-based access: 100% enforced
 - Permission checks: Every request
 - Unauthorized attempts: Logged
 
 ### Audit Logging
+
 - Coverage: 100% of sensitive actions
 - Retention: Configurable
 - Format: Structured JSON
 - Storage: Database (persistent)
 
 ### Rate Limiting
+
 - Protection: 100% of endpoints
 - False positives: < 0.1%
 - Effectiveness: > 99%
@@ -402,6 +436,7 @@ npm audit
 ## 🔄 Security Update Process
 
 ### Regular Updates
+
 - **Frequency**: Monthly
 - **Actions**:
   - Run `npm audit`
@@ -410,11 +445,13 @@ npm audit
   - Test for regressions
 
 ### Security Patches
+
 - **Response Time**: < 24 hours for critical
 - **Testing**: Required before deployment
 - **Notification**: Users notified via email
 
 ### Vulnerability Disclosure
+
 - **Email**: security@dogerat.local
 - **Response Time**: < 48 hours
 - **Reward**: Acknowledgment in SECURITY.md
@@ -424,12 +461,14 @@ npm audit
 ## 📚 Security Resources
 
 ### Documentation
+
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
 - [Express Security Best Practices](https://expressjs.com/en/advanced/best-practice-security.html)
 - [Node.js Security Checklist](https://github.com/goldbergyoni/nodebestpractices#6-security-best-practices)
 - [Angular Security Guide](https://angular.io/guide/security)
 
 ### Tools Used
+
 - CodeQL (static analysis)
 - npm audit (dependency scanning)
 - Helmet.js (security headers)
@@ -441,6 +480,7 @@ npm audit
 ## ✅ Security Compliance
 
 ### Standards Met
+
 - ✅ OWASP Top 10 (2021)
 - ✅ CWE Top 25
 - ✅ SANS Top 25
