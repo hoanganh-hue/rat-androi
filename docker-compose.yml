@@ -1,4 +1,5 @@
 # DogeRat Web Admin - Docker Compose Configuration
+# Production-ready with Zero-Trust security
 
 version: '3.8'
 
@@ -79,20 +80,26 @@ services:
     networks:
       - dogerat-network
 
-  # Ngrok tunnel for backend API (expose server:5000 to internet)
-  ngrok:
-    image: ngrok/ngrok:latest
-    container_name: dogerat-ngrok
-    depends_on:
-      - server
-    environment:
-      NGROK_AUTHTOKEN: 349egkHrIWSE7NzXDFCEnw9ulph_5PtSyXrWpJDq4tJHWhzFu
-    command: http --url=evelina-duchesslike-solely.ngrok-free.dev server:5000
-    ports:
-      - "4040:4040"  # Ngrok web interface
-    restart: unless-stopped
-    networks:
-      - dogerat-network
+  # OPTIONAL: Cloudflare Tunnel (Zero-Trust alternative to ngrok)
+  # Uncomment to enable secure tunnel with authentication
+  # cloudflared:
+  #   image: cloudflare/cloudflared:latest
+  #   container_name: dogerat-cloudflared
+  #   command: tunnel --config /etc/cloudflared/config.yml run
+  #   volumes:
+  #     - ./cloudflared.yml:/etc/cloudflared/config.yml:ro
+  #     - ./cloudflared-credentials.json:/etc/cloudflared/credentials.json:ro
+  #   depends_on:
+  #     - server
+  #   restart: unless-stopped
+  #   networks:
+  #     - dogerat-network
+
+  # DEPRECATED: ngrok tunnel (removed for security)
+  # Use Cloudflare Tunnel, Tailscale, or mTLS reverse proxy instead
+  # ngrok:
+  #   ⚠️ SECURITY WARNING: ngrok provides anonymous public access
+  #   ⚠️ Use Zero-Trust alternatives (see cloudflared above or docker-compose.tailscale.yml)
 
 volumes:
   postgres_data:
@@ -105,3 +112,22 @@ volumes:
 networks:
   dogerat-network:
     driver: bridge
+
+# Zero-Trust Deployment Options:
+# 
+# 1. Cloudflare Tunnel (recommended):
+#    - Uncomment cloudflared service above
+#    - Configure cloudflared.yml with your tunnel credentials
+#    - Benefits: mTLS, OIDC/SSO auth, WAF, access logs
+#
+# 2. Tailscale (see docker-compose.tailscale.yml):
+#    - Ideal for private mesh networks
+#    - Benefits: WireGuard encryption, ACLs, MagicDNS
+#
+# 3. Reverse Proxy with mTLS:
+#    - Use nginx/traefik with client certificate authentication
+#    - Benefits: Full control, on-premise deployment
+#
+# 4. API Gateway (enterprise):
+#    - Kong, AWS API Gateway, Azure API Management
+#    - Benefits: Rate limiting, transformation, monitoring
