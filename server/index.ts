@@ -229,6 +229,42 @@ io.on('connection', (socket) => {
     }
   });
 
+  // Screen streaming events
+  socket.on('screen-frame', (data) => {
+    const { frame, timestamp } = data;
+    
+    // Broadcast frame to admin clients watching this device
+    io.to(`admin-watching-${deviceId}`).emit('device-screen-frame', {
+      deviceId,
+      frame,
+      timestamp: timestamp || Date.now(),
+    });
+  });
+
+  socket.on('start-screen-stream', () => {
+    logger.info(`📺 Screen stream started for device: ${deviceId}`);
+    socket.emit('stream-started', { status: 'ok' });
+  });
+
+  socket.on('stop-screen-stream', () => {
+    logger.info(`📺 Screen stream stopped for device: ${deviceId}`);
+    socket.emit('stream-stopped', { status: 'ok' });
+  });
+
+  // Remote control events
+  socket.on('remote-control-event', (data) => {
+    const { targetDeviceId, eventType, eventData } = data;
+    
+    logger.info(`🎮 Remote control event: ${eventType} for device: ${targetDeviceId}`);
+    
+    // Relay to target device
+    io.to(targetDeviceId).emit('control-event', {
+      type: eventType,
+      data: eventData,
+      timestamp: Date.now(),
+    });
+  });
+
   // Heartbeat to keep connection alive
   const heartbeatInterval = setInterval(() => {
     socket.emit('ping');

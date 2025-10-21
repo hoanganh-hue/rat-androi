@@ -79,16 +79,17 @@ services:
     networks:
       - dogerat-network
 
-  # Ngrok tunnel for frontend (expose client:80 to internet)
+  # Ngrok tunnel for backend API (expose server:5000 to internet)
   ngrok:
     image: ngrok/ngrok:latest
     container_name: dogerat-ngrok
     depends_on:
-      - client
+      - server
     environment:
-      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
-    command: >
-      sh -c "ngrok config add-authtoken $$NGROK_AUTHTOKEN && ngrok http --url=${NGROK_FIXED_DOMAIN:-evelina-duchesslike-solely.ngrok-free.dev} client:80"
+      NGROK_AUTHTOKEN: 349egkHrIWSE7NzXDFCEnw9ulph_5PtSyXrWpJDq4tJHWhzFu
+    command: http --url=evelina-duchesslike-solely.ngrok-free.dev server:5000
+    ports:
+      - "4040:4040"  # Ngrok web interface
     restart: unless-stopped
     networks:
       - dogerat-network
