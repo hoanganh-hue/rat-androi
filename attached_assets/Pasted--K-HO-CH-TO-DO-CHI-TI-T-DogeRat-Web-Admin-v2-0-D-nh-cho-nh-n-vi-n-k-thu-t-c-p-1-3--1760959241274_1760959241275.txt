@@ -1,0 +1,209 @@
+## 📋 KẾ HOẠCH TO‑DO CHI TIẾT – “DogeRat Web‑Admin v2.0”  
+*Dành cho nhân viên kỹ thuật (cấp 1‑3).  Mỗi mục được đánh dấu ✅ khi hoàn thành, kèm thời gian dự kiến, người chịu trách nhiệm và deliverable cụ thể.  Khi toàn bộ ✔ được đánh dấu, dự án sẽ đạt **100 % hoàn thiện**.*
+
+---
+
+## Ⅰ. PHÁP THUẬT & MỤC TIÊU DỰ ÁN  
+
+| Mục tiêu | Mô tả ngắn gọn |
+|----------|----------------|
+| **Chuyển giao** | Thay thế giao diện quản trị dựa trên Telegram Bot bằng **Web‑Admin** (SPA) chạy trên trình duyệt. |
+| **Bảo mật** | Áp dụng JWT, RBAC, HTTPS, CORS, Rate‑limit, input validation. |
+| **Quản trị người dùng** | Tạo, phân quyền, audit log, hỗ trợ “sub‑account” cho nhân viên cấp dưới. |
+| **Quản lý thiết bị** | Hiển thị danh sách, trạng thái, chi tiết, và thực thi mọi lệnh hiện có (contacts, sms, toast, …). |
+| **Độ tin cậy** | Docker‑Compose, CI/CD, unit & integration test, health‑check, log‑monitoring. |
+| **Tài liệu** | README mới, hướng dẫn cài đặt, hướng dẫn vận hành, diagram kiến trúc. |
+
+---
+
+## Ⅱ. THỜI GIAN & ĐỘI NGŨ  
+
+| Giai đoạn | Thời gian dự kiến | Thành viên | Ghi chú |
+|----------|-------------------|-----------|--------|
+| **A. Khởi động** | 2 ngày | PM + Tech‑Lead | Đặt môi trường, tạo repo, xác định yêu cầu. |
+| **B. Thiết kế kiến trúc** | 3 ngày | Architect + DB‑Admin | ER‑diagram, API spec, UI wireframe. |
+| **C. Backend refactor** | 8 ngày | 2 Dev (Node) | Tách Telegram, xây dựng API, DB, Auth. |
+| **D. Frontend SPA** | 10 ngày | 2 Dev (Vue/React) | Scaffold, login, dashboard, device‑detail. |
+| **E. Tích hợp Socket‑IO bridge** | 3 ngày | 1 Dev (Node) + 1 Dev (Frontend) | Lệnh thời gian thực, heartbeat. |
+| **F. Kiểm thử & Bảo mật** | 5 ngày | QA + Security | Unit, integration, pen‑test, lint. |
+| **G. Docker & CI/CD** | 4 ngày | DevOps | Dockerfile, compose, GitHub Actions. |
+| **H. Triển khai & Handover** | 2 ngày | Ops + PM | Deploy prod, doc training. |
+| **Tổng** | **≈ 37 ngày** (~ 8 tuần làm việc) | | |
+
+> **Lưu ý:** Các ngày là **điểm chuẩn**; nếu có phụ thuộc (backend → frontend) thì tuần tự thực hiện.  
+
+---
+
+## Ⅲ. ĐIỂM CHỈ – CHECKLIST CHI TIẾT  
+
+> **Cú pháp:** `[ ]` = chưa làm, `[x]` = đã xong, `⏳` = đang thực hiện.  
+> **Deliverable**: tập tin/ folder / tài liệu cần nộp cho PM.
+
+### A. Chuẩn bị môi trường (2 ngày)
+
+| # | Nhiệm vụ | Trách nhiệm | Deliverable |
+|---|----------|-------------|--------------|
+| A1 | Tạo **repo** trên GitHub (private). Branch `feature/web-admin`. | PM | URL repo + README tạm. |
+| A2 | Thiết lập **ci/cd** skeleton (GitHub Actions, badge trạng thái). | DevOps | `.github/workflows/ci.yml`. |
+| A3 | Chuẩn bị **Docker Desktop** / Docker Engine trên máy dev. | All | `docker version` xác nhận. |
+| A4 | Tạo file `.env.example` (DB, JWT, PORT, FRONTEND_URL). | Backend Dev | `.env.example`. |
+| A5 | Cài **PostgreSQL** (hoặc MySQL) local, tạo DB `dogerat`. | DB‑Admin | DB ready, user/password. |
+| A6 | Pull **server.js** gốc, chạy thử `npm install && node server.js`. | Backend Dev | Console “server listening …”. |
+
+### B. Thiết kế kiến trúc (3 ngày)
+
+| # | Nhiệm vụ | Trách nhiệm | Deliverable |
+|---|----------|-------------|--------------|
+| B1 | Vẽ **ER‑diagram** (users, devices, device_logs, commands, audit_trail). | Architect | `docs/ER-diagram.png`. |
+| B2 | Định nghĩa **API spec** (OpenAPI 3.0) cho auth, devices, commands, audit. | Backend Dev | `docs/api-spec.yaml`. |
+| B3 | Thiết kế **UI wireframe** (Dashboard, Device List, Device Detail, User Management). | UI/UX Designer | `docs/wireframes.pdf`. |
+| B4 | Xác định **Roles & Permissions** (Admin, Manager, Operator, Viewer). | Architect | `docs/rbac-matrix.xlsx`. |
+| B5 | Đánh giá **các tính năng cần giữ lại** (các ACTIONS trong server.js) và **các tính năng premium** (đánh dấu). | PM | `docs/features.md`. |
+| B6 | Phê duyệt **architecture diagram** (Server ↔ DB ↔ Web‑Admin ↔ Android clients). | All | `docs/architecture.png`. |
+
+### C. Refactor Backend (8 ngày)
+
+| # | Nhiệm vụ | Trách nhiệm | Deliverable |
+|---|----------|-------------|--------------|
+| C1 | **Tách Telegram Bot**: di chuyển `TelegramBot` vào `services/telegramBot.js` (để legacy, không khởi chạy). | Backend Dev | `services/telegramBot.js` (commented). |
+| C2 | **Xây dựng Express API**: `src/routes/api/*.js` (auth, devices, commands, audit). | Backend Dev | `src/routes/api/*.js`. |
+| C3 | **Kết nối DB**: cài Sequelize/TypeORM, tạo models (User, Device, DeviceLog, Command, Audit). | DB‑Admin | `src/models/*.js`. |
+| C4 | **Migrations**: script tạo bảng, seed admin user. | DB‑Admin | `migrations/*.js`. |
+| C5 | **Authentication**: `passport-jwt` + `bcrypt`. Middleware `authorize(roles)`. | Backend Dev | `src/middlewares/auth.js`, `src/middlewares/authorize.js`. |
+| C6 | **CORS & Security**: `helmet`, `cors({origin: process.env.FRONTEND_URL})`, `rate-limit`. | Backend Dev | `src/middlewares/security.js`. |
+| C7 | **Logging**: `winston` + `morgan`. Log file `logs/server.log`. | Backend Dev | `src/utils/logger.js`. |
+| C8 | **Socket‑IO bridge**: tạo `services/socketBridge.js` (emitCommand). | Backend Dev | `services/socketBridge.js`. |
+| C9 | **Device connection handling**: cập nhật DB `devices` khi `socket.connect`/`disconnect`, heartbeat. | Backend Dev | `src/socket.js`. |
+| C10 | **Persist incoming data** (contacts, sms, etc.) vào bảng `device_logs`. | Backend Dev | `src/events/deviceDataHandler.js`. |
+| C11 | **Remove Telegram references** trong `server.js` → chỉ export `app`, `server`, `io`. | Backend Dev | `src/index.js`. |
+| C12 | **Unit tests** (Jest) cho API, auth, DB models. | QA | `tests/**/*.test.js`. |
+| C13 | **Document API**: tích hợp Swagger UI (`/api-docs`). | Backend Dev | `src/swagger.js`. |
+| **Kết quả** | **Dockerfile** cho backend (Node‑alpine) | DevOps | `Dockerfile` (backend). |
+
+### D. Xây dựng Frontend SPA (10 ngày)
+
+| # | Nhiệm vụ | Trách nhiệm | Deliverable |
+|---|----------|-------------|--------------|
+| D1 | Scaffold dự án **Vite + Vue3 (hoặc React)**, cài **TailwindCSS**. | Frontend Dev | `admin/` repo, `package.json`. |
+| D2 | Thiết kế **Login page** → gọi `/api/auth/login`, lưu JWT trong **HttpOnly cookie** hoặc **localStorage**. | Frontend Dev | `src/pages/Login.vue`. |
+| D3 | **Route Guard** dựa trên role (admin, manager, …). | Frontend Dev | `router/index.js`. |
+| D4 | **Dashboard**: số lượng device, biểu đồ online/offline (Chart.js). | Frontend Dev | `src/pages/Dashboard.vue`. |
+| D5 | **Device List**: table (DataTables) – filter, search, select (single / all). | Frontend Dev | `src/pages/Devices.vue`. |
+| D6 | **Device Detail**: hiển thị thông tin, các **action buttons** (contacts, toast, sms, …). Mỗi action mở **modal** để nhập dữ liệu (text, file). | Frontend Dev | `src/pages/DeviceDetail.vue`. |
+| D7 | **User Management** (admin only): CRUD users, assign role. | Frontend Dev | `src/pages/Users.vue`. |
+| D8 | **Audit Log** page – table, filter by user/date. | Frontend Dev | `src/pages/Audit.vue`. |
+| D9 | **API wrapper** (`src/services/api.js`) – axios, tự thêm `Authorization: Bearer <token>` và xử lý lỗi 401 → logout. | Frontend Dev | `src/services/api.js`. |
+| D10 | **Socket‑IO client**: kết nối tới server, nhận **real‑time notifications** (new device, device disconnect, command result). | Frontend Dev | `src/plugins/socket.js`. |
+| D11 | **Responsive UI** – kiểm tra trên desktop, tablet, mobile. | Frontend Dev | CSS media queries. |
+| D12 | **Unit / component tests** (Vitest + Vue Testing Library). | QA | `tests/unit/**/*.spec.js`. |
+| D13 | **Build script** – `npm run build` tạo `/dist`. | Frontend Dev | `dist/`. |
+| **Kết quả** | **Dockerfile** cho frontend (nginx static). | DevOps | `Dockerfile` (frontend). |
+
+### E. Tích hợp Socket‑IO Bridge (3 ngày)
+
+| # | Nhiệm vụ | Trách nhiệm | Deliverable |
+|---|----------|-------------|--------------|
+| E1 | Cài `socket.io-client` trong SPA, thiết lập **event listeners** (`device-connected`, `device-disconnected`, `command-response`). | Frontend Dev | `socket.js`. |
+| E2 | Kiểm tra **độ trễ**: gửi lệnh từ UI → API → `socketBridge.emitCommand` → thiết bị → phản hồi → UI cập nhật. | Backend + Frontend | Demo video (độ trễ < 1 s). |
+| E3 | Đảm bảo **heartbeat** (server → client ping 5 s) để cập nhật trạng thái `online/offline`. | Backend Dev | `socket.js` + `socketBridge`. |
+| E4 | Ghi log **command history** vào bảng `commands` và hiển thị trong UI (tab “History”). | Backend Dev | API `/api/commands/:id/status`. |
+| E5 | Test **broadcast** (`All`) và **targeted** (`deviceId`). | QA | Test case checklist. |
+
+### F. Kiểm thử & Bảo mật (5 ngày)
+
+| # | Nhiệm vụ | Trách nhiệm | Deliverable |
+|---|----------|-------------|--------------|
+| F1 | **Unit tests** (backend + frontend) – coverage ≥ 80 %. | QA | `coverage/` report. |
+| F2 | **Integration tests**: đăng nhập → lấy danh sách device → gửi lệnh → nhận phản hồi (using supertest & socket.io‑client). | QA | `tests/integration/*.test.js`. |
+| F3 | **Pen‑test**: OWASP ZAP scan toàn bộ API + UI. | Security Team | `security/report-zap.pdf`. |
+| F4 | **Static analysis**: ESLint, Prettier, SonarQube (optional). | DevOps | Lint pass. |
+| F5 | **Performance test**: 100 concurrent devices (mock sockets) → đo latency, CPU, RAM. | DevOps | Grafana dashboard (optional). |
+| F6 | **Bug‑fix sprint**: sửa mọi lỗi/ cảnh báo được báo cáo. | All | Updated code. |
+| F7 | **Security hardening**: cập nhật `helmet` options, CORS whitelist, JWT expiry (1 h) + refresh token. | Backend Dev | Config file. |
+| F8 | **Final QA sign‑off**: checklist đã ✅, báo cáo QA. | PM | `QA‑Signoff.pdf`. |
+
+### G. Docker, CI/CD & Deploy (4 ngày)
+
+| # | Nhiệm vụ | Trách nhiệm | Deliverable |
+|---|----------|-------------|--------------|
+| G1 | **Dockerfile – Backend** (node‑alpine, copy src, run migrations, expose 3000). | DevOps | `backend/Dockerfile`. |
+| G2 | **Dockerfile – Frontend** (nginx + static files). | DevOps | `frontend/Dockerfile`. |
+| G3 | **docker‑compose.yml**: services `db`, `server`, `admin`, `nginx‑reverse‑proxy` (optional). | DevOps | `docker-compose.yml`. |
+| G4 | **GitHub Actions**: build images, run tests, push to Docker Hub, deploy to staging. | DevOps | `.github/workflows/ci.yml`. |
+| G5 | **Staging deployment** (Docker Swarm / simple compose). Validate UI, API, socket. | Ops | URL staging (`staging.my‑dogerat.com`). |
+| G6 | **Production rollout**: chạy `docker stack deploy` hoặc `docker compose -f prod.yml up -d`. | Ops | URL prod (`admin.my‑dogerat.com`). |
+| G7 | **Monitoring**: set up Prometheus + Grafana (optional) hoặc dùng `docker stats`. | Ops | Dashboard link. |
+| G8 | **Backup**: script `pg_dump` nightly, lưu trên S3/Cloud. | DB‑Admin | `backup.sh`. |
+| G9 | **Rollback plan**: giữ version image `v2.0`, `v1.9` để `docker pull <tag>` khi cần. | Ops | Document `rollback.md`. |
+
+### H. Triển khai cuối & Bàn giao (2 ngày)
+
+| # | Nhiệm vụ | Trách nhiệm | Deliverable |
+|---|----------|-------------|--------------|
+| H1 | **Kiểm tra cuối**: smoke test toàn bộ flow (login → device list → lệnh → audit). | PM + QA | Test checklist ký. |
+| H2 | **Đào tạo**: buổi truyền đạt cho đội hỗ trợ (30 phút) – demo UI, quy trình tạo user, xem log. | PM | Slide `handover.pptx`. |
+| H3 | **Giao tài liệu**:  
+- README mới (đã viết).  
+- Kiến trúc diagram.  
+- API spec.  
+- DB schema.  
+- Hướng dẫn cài đặt Docker. | PM | `docs/` folder. |
+| H4 | **Bảo trì**: lên lịch “maintenance window” (weekly) để cập nhật dependency, renew SSL. | Ops | Calendar entry. |
+| H5 | **Ký nghiệm thu**: biên bản nghiệm thu (100 % hoàn thành). | PM | `Acceptance‑Report.pdf`. |
+
+---
+
+## Ⅳ. KHUÔN MÃ & TÊN FILE QUAN TRỌNG
+
+| Thư mục | Mô tả | Ví dụ |
+|---------|------|-------|
+| `server/` | Backend source | `src/index.js`, `src/routes/api/devices.js` |
+| `admin/` | Frontend SPA | `src/pages/Dashboard.vue` |
+| `docs/` | Tài liệu dự án | `ER-diagram.png`, `api-spec.yaml`, `architecture.png` |
+| `tests/` | Unit & integration tests | `backend/tests/auth.test.js` |
+| `docker/` | Dockerfiles & compose | `backend/Dockerfile`, `frontend/Dockerfile`, `docker-compose.yml` |
+| `scripts/` | Migration, backup | `scripts/migrate.js`, `scripts/backup.sh` |
+
+---
+
+## Ⅴ. Dòng thời gian Tóm tắt (Gantt‑like)
+
+```
+Ngày 1‑2   : A – Khởi động
+Ngày 3‑5   : B – Thiết kế
+Ngày 6‑13  : C – Backend refactor
+Ngày 14‑23 : D – Frontend SPA
+Ngày 24‑26 : E – Socket‑IO bridge
+Ngày 27‑31 : F – Kiểm thử & Bảo mật
+Ngày 32‑35 : G – Docker & CI/CD
+Ngày 36‑37 : H – Triển khai & Bàn giao
+```
+
+*Các ngày có thể kéo dài/ rút tùy theo tốc độ đội, nhưng các **phụ thuộc** (backend → frontend) cần được giữ tuần tự.*
+
+---
+
+## Ⅵ. Kiểm soát chất lượng (Definition of Done)
+
+| Thành phần | Điều kiện “Done” |
+|------------|-----------------|
+| **Backend** | API đáp ứng spec, unit test ≥ 80 %, JWT & RBAC hoạt động, Docker image builds thành công. |
+| **Frontend** | UI hiển thị đúng wireframe, login/auth, device list, command execution, responsive, build thành công. |
+| **Security** | No critical vulnerabilities (OWASP Top 10), HTTPS, CORS, rate‑limit, JWT expiry. |
+| **Docs** | README, API spec, architecture diagram, deployment guide, user manual. |
+| **Deployment** | Docker‑Compose up on Staging → all health‑checks pass, smoke test 100 % thành công. |
+| **Sign‑off** | QA sign‑off, PM acceptance, handover to ops. |
+
+Khi **tất cả** các mục ở bảng trên đều ✅ → Dự án được xem là **100 % hoàn thiện**.
+
+---
+
+## Ⅶ. GHI CHÚ CUỐI CÙNG  
+
+- **Tiếp tục cập nhật**: Mỗi commit nên chứa tiêu đề ngắn gọn (`[Backend] Add JWT middleware`) và liên kết tới issue trên GitHub.  
+- **Communication**: Sử dụng kênh Slack/Discord “#dogerat‑project” để báo cáo tiến độ hằng ngày (Stand‑up) và ghi lại blockers.  
+- **Risk Management**: Nếu Telegram Bot vẫn cần dùng tạm thời, chỉ **keep** file `services/telegramBot.js` và **disable** khởi chạy bằng biến môi trường `DISABLE_TELEGRAM=true`.  
+
+---  
+
+**Chúc đội ngũ triển khai thành công và dự án đạt mục tiêu “Web‑Admin đầy đủ, an toàn, chuyên nghiệp”.** 🚀
