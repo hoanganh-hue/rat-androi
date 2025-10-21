@@ -1,6 +1,7 @@
 // Tests for Screen Streaming and Remote Control endpoints
 import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
 import request from 'supertest';
+import bcrypt from 'bcrypt';
 import { app, server } from '../../index';
 import { initializeDatabase, User, Device, UserRole } from '../../models';
 
@@ -11,11 +12,14 @@ beforeAll(async () => {
   // Initialize database
   await initializeDatabase();
 
-  // Create test user
+  // Create test user with properly hashed password
+  const password = 'Test@123';
+  const password_hash = await bcrypt.hash(password, 10);
+  
   const testUser = await User.create({
     username: 'testoperator',
     email: 'test@operator.com',
-    password_hash: '$2b$10$abcdefghijklmnopqrstuvwxyz', // dummy hash
+    password_hash,
     role: UserRole.OPERATOR,
   });
 
@@ -24,7 +28,7 @@ beforeAll(async () => {
     .post('/api/auth/login')
     .send({
       username: 'testoperator',
-      password: 'Test@123',
+      password,
     });
 
   if (loginRes.body.token) {
@@ -75,8 +79,9 @@ describe('Screen Streaming Endpoints', () => {
   });
 
   it('should return 404 for non-existent device', async () => {
+    // Use a valid UUID format that doesn't exist in the database
     const response = await request(app)
-      .post('/api/devices/99999999/start-screen-stream')
+      .post('/api/devices/00000000-0000-0000-0000-000000000000/start-screen-stream')
       .set('Authorization', `Bearer ${authToken}`)
       .send({
         quality: 'medium',

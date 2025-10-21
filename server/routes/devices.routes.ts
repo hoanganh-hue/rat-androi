@@ -230,6 +230,7 @@ router.delete(
  */
 router.post(
   '/:id/start-screen-stream',
+  deviceValidation.screenStream,
   canControlDevices,
   auditLog({ action: 'devices.startScreenStream', targetType: 'device' }),
   async (req: AuthRequest, res: Response): Promise<void> => {
@@ -274,6 +275,7 @@ router.post(
  */
 router.post(
   '/:id/stop-screen-stream',
+  deviceValidation.screenStream,
   canControlDevices,
   auditLog({ action: 'devices.stopScreenStream', targetType: 'device' }),
   async (req: AuthRequest, res: Response): Promise<void> => {
@@ -307,6 +309,7 @@ router.post(
  */
 router.post(
   '/:id/inject-touch',
+  deviceValidation.injectTouch,
   canControlDevices,
   auditLog({ action: 'devices.injectTouch', targetType: 'device' }),
   async (req: AuthRequest, res: Response): Promise<void> => {
@@ -350,6 +353,7 @@ router.post(
  */
 router.post(
   '/:id/inject-keyboard',
+  deviceValidation.injectKeyboard,
   canControlDevices,
   auditLog({ action: 'devices.injectKeyboard', targetType: 'device' }),
   async (req: AuthRequest, res: Response): Promise<void> => {
