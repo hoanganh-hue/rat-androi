@@ -1,0 +1,18 @@
+{
+  "extends": ["web-recommended"],
+  "hints": {
+    "compat-api/css": [
+      "warning",
+      {
+        "ignore": ["-webkit-app-region"]
+      }
+    ],
+    "meta-viewport": "warning",
+    "no-inline-styles": "warning"
+  },
+  "browserslist": [
+    "Electron >= 9.0",
+    "Chrome >= 83"
+  ]
+}
+
