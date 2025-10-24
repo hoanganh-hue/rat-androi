@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # AhMyth Android RAT + Remote Control
 ###### Version 1.3 (Beta) - Fully Implemented
 
@@ -711,3 +712,27 @@ See [LICENSE.md](LICENSE.md) for full text.
 **⭐ Star this repo if you find it useful!**
 
 **🎉 Version 1.3 - Fully Implemented and Production Ready!**
+=======
+# Project Removed
+
+This repository previously contained a Remote Access Trojan (RAT) application called "DogeRat Web Admin".
+
+## Notice
+
+The entire project has been removed from this repository as of October 24, 2025.
+
+**Reason:** This project contained malicious software designed for unauthorized remote access and control of Android devices.
+
+## Repository Status
+
+- ✅ All source code deleted
+- ✅ All documentation deleted
+- ✅ All configuration files deleted
+- ✅ Repository cleaned
+
+This repository is now empty and should be archived or deleted entirely.
+
+---
+
+*For questions, please contact the repository owner.*
+>>>>>>> d6dedcead6762ab62762609184892cf204f535bd
